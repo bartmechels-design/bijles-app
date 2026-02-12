@@ -109,17 +109,63 @@ Expliciet uitgesloten. Gedocumenteerd om scope creep te voorkomen.
 
 ## Traceability
 
-Welke fases welke requirements dekken. Wordt bijgewerkt tijdens roadmap-creatie.
+Welke fases welke requirements dekken. Bijgewerkt na roadmap-creatie.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (wordt ingevuld door roadmapper) | | |
+| AUTH-01 | Phase 2 | Pending |
+| AUTH-02 | Phase 2 | Pending |
+| AUTH-03 | Phase 2 | Pending |
+| AUTH-04 | Phase 2 | Pending |
+| AUTH-05 | Phase 2 | Pending |
+| AUTH-06 | Phase 2 | Pending |
+| TUTOR-01 | Phase 4 | Pending |
+| TUTOR-02 | Phase 4 | Pending |
+| TUTOR-03 | Phase 4 | Pending |
+| TUTOR-04 | Phase 4 | Pending |
+| TUTOR-05 | Phase 4 | Pending |
+| TUTOR-06 | Phase 4 | Pending |
+| TUTOR-07 | Phase 4 | Pending |
+| TUTOR-08 | Phase 6 | Pending |
+| TUTOR-09 | Phase 6 | Pending |
+| TUTOR-10 | Phase 6 | Pending |
+| TUTOR-11 | Phase 6 | Pending |
+| TUTOR-12 | Phase 6 | Pending |
+| TOETS-01 | Phase 5 | Pending |
+| TOETS-02 | Phase 5 | Pending |
+| TOETS-03 | Phase 5 | Pending |
+| OUDER-01 | Phase 7 | Pending |
+| OUDER-02 | Phase 7 | Pending |
+| OUDER-03 | Phase 7 | Pending |
+| OUDER-04 | Phase 7 | Pending |
+| OUDER-05 | Phase 7 | Pending |
+| PAY-01 | Phase 3 | Pending |
+| PAY-02 | Phase 3 | Pending |
+| PAY-03 | Phase 3 | Pending |
+| PAY-04 | Phase 3 | Pending |
+| ADMIN-01 | Phase 3 | Pending |
+| ADMIN-02 | Phase 3 | Pending |
+| ADMIN-03 | Phase 7 | Pending |
+| ADMIN-04 | Phase 7 | Pending |
+| ADMIN-05 | Phase 7 | Pending |
+| ADMIN-06 | Phase 6 | Pending |
+| I18N-01 | Phase 1 | Pending |
+| I18N-02 | Phase 1 | Pending |
+| PRIV-01 | Phase 1 | Pending |
+| PRIV-02 | Phase 1 | Pending |
+| PRIV-03 | Phase 1 | Pending |
+| PRIV-04 | Phase 1 | Pending |
+| PROG-01 | Phase 5 | Pending |
+| PROG-02 | Phase 5 | Pending |
+| PROG-03 | Phase 5 | Pending |
 
 **Coverage:**
 - v1.0 requirements: 37 totaal
-- Mapped to phases: 0
-- Unmapped: 37
+- Mapped to phases: 37
+- Unmapped: 0
+
+**Coverage validation:** All 37 v1.0 requirements mapped to exactly one phase.
 
 ---
 *Requirements defined: 2026-02-12*
-*Last updated: 2026-02-12 after initial definition*
+*Last updated: 2026-02-12 after roadmap creation*
