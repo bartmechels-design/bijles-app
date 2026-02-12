@@ -8,6 +8,20 @@ Een autonoom AI-bijlesplatform voor basisschoolleerlingen (6-12 jaar) op Aruba. 
 
 Kinderen op Aruba krijgen persoonlijke bijles die zich aanpast aan hun niveau, zonder dat een ouder of leerkracht erbij hoeft te zitten — volledig zelfstandig, in hun eigen taal en context.
 
+## Current Milestone: v1.0 MVP Launch
+
+**Goal:** Een volledig werkend AI-bijlesplatform waar Arubaanse kinderen zelfstandig bijles krijgen van Koko in alle 6 vakken, met ouderportaal, admin panel, en tweetalige interface.
+
+**Target features:**
+- Ouder authenticatie (Google, Facebook, email) met kindprofielen
+- AI-tutor Koko met Socratische methode voor alle 6 vakken
+- Beginsituatietoets per vak via chat-interface
+- Ouder dashboard met voortgang per kind
+- Admin panel voor betalingsverificatie en gebruikersbeheer
+- Handmatige betalingsflow (bankovermaking/contant)
+- Tweetalige UI (Nederlands/Papiamento)
+- Voortgangstracking per kind, per vak, per niveau
+
 ## Requirements
 
 ### Validated
@@ -51,8 +65,8 @@ Kinderen op Aruba krijgen persoonlijke bijles die zich aanpast aan hun niveau, z
 
 ## Constraints
 
-- **Tech Stack:** Next.js 14+ (App Router), TypeScript, Tailwind CSS, Supabase (PostgreSQL, Auth, Real-time), Vercel AI SDK met Anthropic Claude 3.5 Sonnet, Vercel deployment
-- **Tweetaligheid:** Volledige UI-switch Nederlands/Papiamento vereist (next-intl of vergelijkbaar)
+- **Tech Stack:** Next.js 16+ (App Router), TypeScript, Tailwind CSS 4, Supabase (PostgreSQL, Auth, Real-time), Vercel AI SDK 6 met Anthropic Claude 3.5 Sonnet, Vercel deployment
+- **Tweetaligheid:** Volledige UI-switch Nederlands/Papiamento vereist (next-intl 3.x)
 - **Authenticatie:** Supabase Auth met Google, Facebook en email/password providers
 - **AI Budget:** Claude API-kosten moeten beheersbaar blijven — sessielengtes en prompt-effici\u00ebntie zijn belangrijk
 - **Deployment:** Vercel (serverless) — past bij Next.js stack
@@ -67,6 +81,7 @@ Kinderen op Aruba krijgen persoonlijke bijles die zich aanpast aan hun niveau, z
 | Tweetalige UI (NL/PAP) | Sluit aan bij de taalrealiteit van Arubaanse kinderen | — Pending |
 | Meerdere kinderen per ouderaccount | Gezinnen op Aruba hebben vaak meerdere schoolgaande kinderen | — Pending |
 | Koko als tutor-persona | Vriendelijke, herkenbare naam; pedagogische regels vastgelegd in skill-bestand | — Pending |
+| Next.js 16 + Tailwind 4 + Vercel AI SDK 6 | Meest recente stabiele stack per research (2026-02-11) | — Pending |
 
 ---
-*Last updated: 2026-02-11 after initialization*
+*Last updated: 2026-02-12 after milestone v1.0 start*
