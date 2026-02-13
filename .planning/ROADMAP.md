@@ -3,7 +3,7 @@
 **Milestone:** v1.0 MVP Launch
 **Created:** 2026-02-12
 **Depth:** Standard (5-8 phases)
-**Status:** Draft
+**Status:** In Progress
 
 ## Overview
 
@@ -15,11 +15,18 @@ This roadmap delivers a complete AI-powered tutoring platform where Arubaanse ki
 
 ### Phase 1: Foundation & Infrastructure
 
-**Goal:** Project infrastructure is operational with secure database, bilingual routing, and privacy-compliant data handling.
+**Goal:** Project infrastructure is operational with secure database, trilingual routing, and privacy-compliant data handling.
 
 **Dependencies:** None (starting point)
 
 **Requirements Covered:** PRIV-01, PRIV-02, PRIV-03, PRIV-04, I18N-01, I18N-02
+
+**Plans:** 3 plans
+
+Plans:
+- [ ] 01-01-PLAN.md -- Wire next-intl routing and create header with language switcher
+- [ ] 01-02-PLAN.md -- Set up Supabase database with RLS and environment variables
+- [ ] 01-03-PLAN.md -- Create privacy policy page with trilingual content
 
 **Success Criteria:**
 1. Database tables created with Row Level Security (RLS) enabled and policies tested
@@ -143,7 +150,7 @@ This roadmap delivers a complete AI-powered tutoring platform where Arubaanse ki
 
 | Phase | Requirements | Status | Progress |
 |-------|--------------|--------|----------|
-| Phase 1: Foundation & Infrastructure | 6 | Pending | 0% |
+| Phase 1: Foundation & Infrastructure | 6 | Planning | 0% |
 | Phase 2: Authentication & Family Accounts | 6 | Pending | 0% |
 | Phase 3: Payment Verification System | 6 | Pending | 0% |
 | Phase 4: AI Tutor - Core Foundations | 7 | Pending | 0% |
@@ -192,4 +199,4 @@ Research findings from ARCHITECTURE.md, FEATURES.md, PITFALLS.md, and STACK.md i
 ---
 
 *Roadmap created: 2026-02-12*
-*Last updated: 2026-02-12*
+*Last updated: 2026-02-13*
