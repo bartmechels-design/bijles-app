@@ -24,9 +24,9 @@ This roadmap delivers a complete AI-powered tutoring platform where Arubaanse ki
 **Plans:** 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md -- Wire next-intl routing and create header with language switcher
-- [ ] 01-02-PLAN.md -- Set up Supabase database with RLS and environment variables
-- [ ] 01-03-PLAN.md -- Create privacy policy page with trilingual content
+- [x] 01-01-PLAN.md -- Wire next-intl routing and create header with language switcher
+- [x] 01-02-PLAN.md -- Set up Supabase database with RLS and environment variables
+- [x] 01-03-PLAN.md -- Create privacy policy page with trilingual content
 
 **Success Criteria:**
 1. Database tables created with Row Level Security (RLS) enabled and policies tested
@@ -44,6 +44,13 @@ Plans:
 **Dependencies:** Phase 1 (requires database and privacy infrastructure)
 
 **Requirements Covered:** AUTH-01, AUTH-02, AUTH-03, AUTH-04, AUTH-05, AUTH-06
+
+**Plans:** 3 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Database schema + auth server actions
+- [ ] 02-02-PLAN.md — Login/signup UI + OAuth + session middleware
+- [ ] 02-03-PLAN.md — Child management dashboard + verification
 
 **Success Criteria:**
 1. Parent can create account via email/password and authenticate successfully
@@ -104,7 +111,7 @@ Plans:
 3. Assessment determines startniveau per vak at completion
 4. Progress tracking captures data per kind, per vak, per niveau
 5. Child sees own voortgang with visuele indicatoren (progress bars, level badges)
-6. System flags when child vastloopt 3x achtereen op a concept (triggers notification)
+6. System flags when child vastloopt 3x achtereen on a concept (triggers notification)
 
 ---
 
@@ -150,8 +157,8 @@ Plans:
 
 | Phase | Requirements | Status | Progress |
 |-------|--------------|--------|----------|
-| Phase 1: Foundation & Infrastructure | 6 | Planning | 0% |
-| Phase 2: Authentication & Family Accounts | 6 | Pending | 0% |
+| Phase 1: Foundation & Infrastructure | 6 | Complete | 100% |
+| Phase 2: Authentication & Family Accounts | 6 | Planned | 0% |
 | Phase 3: Payment Verification System | 6 | Pending | 0% |
 | Phase 4: AI Tutor - Core Foundations | 7 | Pending | 0% |
 | Phase 5: Baseline Assessment & Progress Tracking | 6 | Pending | 0% |
@@ -199,4 +206,4 @@ Research findings from ARCHITECTURE.md, FEATURES.md, PITFALLS.md, and STACK.md i
 ---
 
 *Roadmap created: 2026-02-12*
-*Last updated: 2026-02-13*
+*Last updated: 2026-02-14*
