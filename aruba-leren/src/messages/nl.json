@@ -1,0 +1,156 @@
+{
+  "common": {
+    "appName": "ArubaLeren",
+    "loading": "Laden...",
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "back": "Terug",
+    "next": "Volgende",
+    "submit": "Versturen",
+    "delete": "Verwijderen",
+    "edit": "Bewerken",
+    "close": "Sluiten",
+    "yes": "Ja",
+    "no": "Nee",
+    "error": "Er is iets misgegaan",
+    "success": "Gelukt!",
+    "language": "Taal"
+  },
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "subjects": "Vakken",
+    "progress": "Voortgang",
+    "settings": "Instellingen",
+    "login": "Inloggen",
+    "signup": "Registreren",
+    "logout": "Uitloggen",
+    "admin": "Beheer",
+    "privacy": "Privacy"
+  },
+  "auth": {
+    "loginTitle": "Inloggen bij ArubaLeren",
+    "signupTitle": "Account aanmaken",
+    "email": "E-mailadres",
+    "password": "Wachtwoord",
+    "confirmPassword": "Wachtwoord bevestigen",
+    "loginWithGoogle": "Inloggen met Google",
+    "loginWithFacebook": "Inloggen met Facebook",
+    "orContinueWith": "Of ga verder met",
+    "noAccount": "Nog geen account?",
+    "hasAccount": "Al een account?",
+    "consent": "Ik geef toestemming dat de AI mijn kind helpt bij het leren.",
+    "consentRequired": "Toestemming is verplicht om verder te gaan."
+  },
+  "subjects": {
+    "taal": "Taal (Nederlands)",
+    "rekenen": "Rekenen",
+    "begrijpendLezen": "Begrijpend Lezen",
+    "geschiedenis": "Geschiedenis",
+    "aardrijkskunde": "Aardrijkskunde",
+    "kennisdernatuur": "Kennis der Natuur",
+    "startSession": "Bijles starten",
+    "chooseSubject": "Kies een vak"
+  },
+  "child": {
+    "addChild": "Kind toevoegen",
+    "name": "Voornaam",
+    "age": "Leeftijd",
+    "grade": "Klas",
+    "gradeOptions": {
+      "1": "Klas 1",
+      "2": "Klas 2",
+      "3": "Klas 3",
+      "4": "Klas 4",
+      "5": "Klas 5",
+      "6": "Klas 6"
+    }
+  },
+  "parent": {
+    "dashboardTitle": "Ouder Dashboard",
+    "children": "Kinderen",
+    "payments": "Betalingen",
+    "subscription": "Abonnement",
+    "subscriptionStatus": "Abonnementsstatus",
+    "uploadPayment": "Betalingsbewijs uploaden",
+    "requestCash": "Contante betaling aanvragen",
+    "weeklyReport": "Wekelijks voortgangsrapport",
+    "vacationSchedule": "Vakantierooster"
+  },
+  "payment": {
+    "perSession": "Per keer",
+    "perWeek": "Per week",
+    "perMonth": "Per maand",
+    "perSchoolYear": "Per schooljaar",
+    "selectPlan": "Kies een abonnement",
+    "active": "Actief",
+    "expired": "Verlopen",
+    "pending": "In behandeling"
+  },
+  "privacy": {
+    "title": "Privacyverklaring",
+    "intro": "Bij ArubaLeren vinden we de privacy van uw kind heel belangrijk. Hieronder leggen we uit hoe we met gegevens omgaan.",
+    "whatWeCollect": "Wat we bewaren",
+    "whatWeCollectDesc": "We bewaren alleen de voornaam van uw kind, de klas, en hoe het gaat met leren. Meer niet.",
+    "whatWeDontDo": "Wat we NIET doen",
+    "whatWeDontDoDesc": "We verkopen geen gegevens. We tonen geen reclame. We delen niks met anderen.",
+    "howWeUseAI": "Hoe de AI werkt",
+    "howWeUseAIDesc": "Koko (onze AI-leraar) gebruikt de gegevens alleen om uw kind te helpen met leren. De gesprekken worden bewaard zodat Koko weet waar uw kind mee bezig was.",
+    "parentControl": "Ouders beslissen",
+    "parentControlDesc": "U beslist of uw kind meedoet. Bij het aanmelden geeft u toestemming. U kunt altijd stoppen en dan verwijderen we alle gegevens.",
+    "contact": "Vragen?",
+    "contactDesc": "Stuur een bericht naar info@arubaleren.com."
+  },
+  "home": {
+    "title": "Welkom bij ArubaLeren",
+    "subtitle": "Persoonlijke bijles voor elk kind op Aruba",
+    "cta": "Begin nu",
+    "features": {
+      "ai": "AI-tutor Koko helpt je kind",
+      "subjects": "6 vakken beschikbaar",
+      "languages": "Nederlands, Papiamento en Spaans"
+    }
+  },
+  "languageSwitcher": {
+    "nl": "Nederlands",
+    "pap": "Papiamento",
+    "es": "Español"
+  },
+  "privacyPolicy": {
+    "title": "Privacyverklaring ArubaLeren",
+    "lastUpdated": "Laatst bijgewerkt: februari 2026",
+    "introTitle": "Wat is ArubaLeren?",
+    "introText": "ArubaLeren is een online platform voor bijles. Kinderen op Aruba krijgen hier hulp van Koko, onze AI-leraar. Koko helpt met zes vakken: taal, rekenen, begrijpend lezen, geschiedenis, aardrijkskunde en kennis der natuur.",
+    "dataCollectionTitle": "Welke gegevens bewaren we?",
+    "dataCollectionIntro": "We bewaren zo min mogelijk. Dit is alles wat we opslaan:",
+    "dataItems": [
+      "De voornaam van uw kind",
+      "De leeftijd en klas van uw kind",
+      "Chatgesprekken met Koko, onze AI-leraar",
+      "Voortgang per vak (hoe het gaat met leren)"
+    ],
+    "dataCollectionNote": "Meer slaan we niet op. Geen achternaam. Geen adres. Geen foto's.",
+    "whyTitle": "Waarom bewaren we dit?",
+    "whyText": "Elke gegevens heeft een reden. De voornaam gebruiken we zodat Koko uw kind kan aanspreken. De leeftijd en klas helpen Koko om de moeilijkheid goed te maken. We bewaren gesprekken zodat Koko weet waar uw kind mee bezig was. De voortgang slaan we op zodat u ziet hoe het gaat.",
+    "notDoTitle": "Wat doen we NIET?",
+    "notDoItems": [
+      "We verkopen geen gegevens aan anderen",
+      "We tonen geen reclame",
+      "We delen geen gegevens met andere bedrijven",
+      "We gebruiken gegevens niet voor iets anders dan bijles"
+    ],
+    "aiTitle": "Hoe werkt de AI-leraar?",
+    "aiText": "Koko gebruikt alleen de gegevens om uw kind te helpen leren. De gesprekken worden bewaard. Zo weet Koko waar uw kind de vorige keer mee bezig was. Koko kan dan beter helpen. De AI doet niks anders met de gegevens.",
+    "parentControlTitle": "U beslist",
+    "parentControlItems": [
+      "Bij het aanmelden geeft u toestemming",
+      "U kunt altijd stoppen",
+      "Als u stopt, verwijderen we alle gegevens van uw kind",
+      "U kunt altijd vragen welke gegevens we hebben"
+    ],
+    "consentTitle": "Toestemming",
+    "consentText": "Bij registratie vinkt u een vakje aan. Daarmee geeft u toestemming dat de AI uw kind helpt bij het leren. Zonder toestemming kan uw kind niet starten.",
+    "contactTitle": "Vragen?",
+    "contactText": "Stuur een e-mail naar info@arubaleren.com. We antwoorden zo snel mogelijk."
+  }
+}

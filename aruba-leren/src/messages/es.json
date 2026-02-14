@@ -1,0 +1,156 @@
+{
+  "common": {
+    "appName": "ArubaLeren",
+    "loading": "Cargando...",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "back": "Volver",
+    "next": "Siguiente",
+    "submit": "Enviar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "close": "Cerrar",
+    "yes": "Sí",
+    "no": "No",
+    "error": "Algo salió mal",
+    "success": "¡Listo!",
+    "language": "Idioma"
+  },
+  "nav": {
+    "home": "Inicio",
+    "dashboard": "Panel",
+    "subjects": "Materias",
+    "progress": "Progreso",
+    "settings": "Configuración",
+    "login": "Iniciar sesión",
+    "signup": "Registrarse",
+    "logout": "Cerrar sesión",
+    "admin": "Administración",
+    "privacy": "Privacidad"
+  },
+  "auth": {
+    "loginTitle": "Iniciar sesión en ArubaLeren",
+    "signupTitle": "Crear una cuenta",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "loginWithGoogle": "Iniciar sesión con Google",
+    "loginWithFacebook": "Iniciar sesión con Facebook",
+    "orContinueWith": "O continuar con",
+    "noAccount": "¿No tienes cuenta?",
+    "hasAccount": "¿Ya tienes cuenta?",
+    "consent": "Doy permiso para que la IA ayude a mi hijo con el aprendizaje.",
+    "consentRequired": "El permiso es obligatorio para continuar."
+  },
+  "subjects": {
+    "taal": "Lengua (Neerlandés)",
+    "rekenen": "Matemáticas",
+    "begrijpendLezen": "Comprensión Lectora",
+    "geschiedenis": "Historia",
+    "aardrijkskunde": "Geografía",
+    "kennisdernatuur": "Ciencias Naturales",
+    "startSession": "Iniciar clase",
+    "chooseSubject": "Elige una materia"
+  },
+  "child": {
+    "addChild": "Agregar hijo",
+    "name": "Nombre",
+    "age": "Edad",
+    "grade": "Clase",
+    "gradeOptions": {
+      "1": "Clase 1",
+      "2": "Clase 2",
+      "3": "Clase 3",
+      "4": "Clase 4",
+      "5": "Clase 5",
+      "6": "Clase 6"
+    }
+  },
+  "parent": {
+    "dashboardTitle": "Panel de Padres",
+    "children": "Hijos",
+    "payments": "Pagos",
+    "subscription": "Suscripción",
+    "subscriptionStatus": "Estado de suscripción",
+    "uploadPayment": "Subir comprobante de pago",
+    "requestCash": "Solicitar pago en efectivo",
+    "weeklyReport": "Informe semanal",
+    "vacationSchedule": "Calendario de vacaciones"
+  },
+  "payment": {
+    "perSession": "Por sesión",
+    "perWeek": "Por semana",
+    "perMonth": "Por mes",
+    "perSchoolYear": "Por año escolar",
+    "selectPlan": "Elige un plan",
+    "active": "Activo",
+    "expired": "Expirado",
+    "pending": "Pendiente"
+  },
+  "privacy": {
+    "title": "Declaración de Privacidad",
+    "intro": "En ArubaLeren consideramos muy importante la privacidad de su hijo. A continuación explicamos cómo manejamos los datos.",
+    "whatWeCollect": "Qué guardamos",
+    "whatWeCollectDesc": "Solo guardamos el nombre de su hijo, la clase y su progreso de aprendizaje. Nada más.",
+    "whatWeDontDo": "Qué NO hacemos",
+    "whatWeDontDoDesc": "No vendemos datos. No mostramos publicidad. No compartimos nada con terceros.",
+    "howWeUseAI": "Cómo funciona la IA",
+    "howWeUseAIDesc": "Koko (nuestro tutor de IA) usa los datos solo para ayudar a su hijo con el aprendizaje. Las conversaciones se guardan para que Koko sepa en qué estaba trabajando su hijo.",
+    "parentControl": "Los padres deciden",
+    "parentControlDesc": "Usted decide si su hijo participa. Al registrarse da su permiso. Siempre puede parar y eliminaremos todos los datos.",
+    "contact": "¿Preguntas?",
+    "contactDesc": "Envíe un mensaje a info@arubaleren.com."
+  },
+  "home": {
+    "title": "Bienvenido a ArubaLeren",
+    "subtitle": "Clases particulares personalizadas para cada niño en Aruba",
+    "cta": "Comenzar ahora",
+    "features": {
+      "ai": "El tutor de IA Koko ayuda a tu hijo",
+      "subjects": "6 materias disponibles",
+      "languages": "Neerlandés, Papiamento y Español"
+    }
+  },
+  "languageSwitcher": {
+    "nl": "Neerlandés",
+    "pap": "Papiamento",
+    "es": "Español"
+  },
+  "privacyPolicy": {
+    "title": "Declaración de Privacidad ArubaLeren",
+    "lastUpdated": "Última actualización: febrero 2026",
+    "introTitle": "¿Qué es ArubaLeren?",
+    "introText": "ArubaLeren es una plataforma en línea para clases particulares. Los niños en Aruba reciben ayuda de Koko, nuestro tutor de IA. Koko ayuda con seis materias: lengua, matemáticas, comprensión lectora, historia, geografía y ciencias naturales.",
+    "dataCollectionTitle": "¿Qué datos guardamos?",
+    "dataCollectionIntro": "Guardamos lo mínimo posible. Esto es todo lo que almacenamos:",
+    "dataItems": [
+      "El nombre de su hijo",
+      "La edad y clase de su hijo",
+      "Conversaciones con Koko, nuestro tutor de IA",
+      "Progreso por materia (cómo va con el aprendizaje)"
+    ],
+    "dataCollectionNote": "No guardamos más. Sin apellido. Sin dirección. Sin fotos.",
+    "whyTitle": "¿Por qué guardamos esto?",
+    "whyText": "Cada dato tiene una razón. Usamos el nombre para que Koko pueda dirigirse a su hijo. La edad y clase ayudan a Koko a ajustar la dificultad. Guardamos las conversaciones para que Koko sepa en qué estaba trabajando su hijo. El progreso lo guardamos para que usted vea cómo va.",
+    "notDoTitle": "¿Qué NO hacemos?",
+    "notDoItems": [
+      "No vendemos datos a terceros",
+      "No mostramos publicidad",
+      "No compartimos datos con otras empresas",
+      "No usamos datos para nada más que clases"
+    ],
+    "aiTitle": "¿Cómo funciona el tutor de IA?",
+    "aiText": "Koko solo usa los datos para ayudar a su hijo a aprender. Las conversaciones se guardan. Así Koko sabe en qué estaba trabajando su hijo la vez anterior. Koko puede ayudar mejor así. La IA no hace nada más con los datos.",
+    "parentControlTitle": "Usted decide",
+    "parentControlItems": [
+      "Al registrarse da su permiso",
+      "Siempre puede parar",
+      "Si para, eliminamos todos los datos de su hijo",
+      "Siempre puede preguntar qué datos tenemos"
+    ],
+    "consentTitle": "Permiso",
+    "consentText": "Al registrarse marca una casilla. Con esto da permiso para que la IA ayude a su hijo con el aprendizaje. Sin permiso su hijo no puede comenzar.",
+    "contactTitle": "¿Preguntas?",
+    "contactText": "Envíe un correo electrónico a info@arubaleren.com. Respondemos lo más rápido posible."
+  }
+}

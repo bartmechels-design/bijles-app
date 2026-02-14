@@ -1,0 +1,156 @@
+{
+  "common": {
+    "appName": "ArubaLeren",
+    "loading": "Ta carga...",
+    "save": "Warda",
+    "cancel": "Cancela",
+    "back": "Bai bek",
+    "next": "Siguiente",
+    "submit": "Manda",
+    "delete": "Bora",
+    "edit": "Cambia",
+    "close": "Sera",
+    "yes": "Si",
+    "no": "No",
+    "error": "Algo a bai robes",
+    "success": "A logra!",
+    "language": "Idioma"
+  },
+  "nav": {
+    "home": "Inicio",
+    "dashboard": "Dashboard",
+    "subjects": "Materia",
+    "progress": "Progreso",
+    "settings": "Preferencia",
+    "login": "Drenta",
+    "signup": "Registra",
+    "logout": "Sali",
+    "admin": "Beheer",
+    "privacy": "Privacidad"
+  },
+  "auth": {
+    "loginTitle": "Drenta den ArubaLeren",
+    "signupTitle": "Crea un cuenta",
+    "email": "E-mail",
+    "password": "Contrase\u00f1a",
+    "confirmPassword": "Confirma contrase\u00f1a",
+    "loginWithGoogle": "Drenta cu Google",
+    "loginWithFacebook": "Drenta cu Facebook",
+    "orContinueWith": "Of sigui cu",
+    "noAccount": "No tin cuenta ainda?",
+    "hasAccount": "Ya tin un cuenta?",
+    "consent": "Mi ta duna permiso pa e AI yuda mi yiu cu su estudio.",
+    "consentRequired": "Permiso ta obligatorio pa sigui."
+  },
+  "subjects": {
+    "taal": "Taal (Hulandes)",
+    "rekenen": "Rekenen",
+    "begrijpendLezen": "Comprension di Lectura",
+    "geschiedenis": "Historia",
+    "aardrijkskunde": "Heografia",
+    "kennisdernatuur": "Conocemento di Naturalesa",
+    "startSession": "Cuminsa les",
+    "chooseSubject": "Scoge un materia"
+  },
+  "child": {
+    "addChild": "Agrega yiu",
+    "name": "Prome nomber",
+    "age": "Edad",
+    "grade": "Klas",
+    "gradeOptions": {
+      "1": "Klas 1",
+      "2": "Klas 2",
+      "3": "Klas 3",
+      "4": "Klas 4",
+      "5": "Klas 5",
+      "6": "Klas 6"
+    }
+  },
+  "parent": {
+    "dashboardTitle": "Dashboard di Mayornan",
+    "children": "Yuinan",
+    "payments": "Pagonan",
+    "subscription": "Abonamento",
+    "subscriptionStatus": "Status di abonamento",
+    "uploadPayment": "Upload prueba di pago",
+    "requestCash": "Pidi pago cash",
+    "weeklyReport": "Rapòrt semanal",
+    "vacationSchedule": "Horario di vakantie"
+  },
+  "payment": {
+    "perSession": "Pa biaha",
+    "perWeek": "Pa siman",
+    "perMonth": "Pa luna",
+    "perSchoolYear": "Pa aña escolar",
+    "selectPlan": "Scoge un plan",
+    "active": "Activo",
+    "expired": "Expira",
+    "pending": "Pendiente"
+  },
+  "privacy": {
+    "title": "Declaracion di Privacidad",
+    "intro": "Na ArubaLeren nos ta haya e privacidad di bo yiu hopi importante. Aki bou nos ta splica con nos ta trata cu e datonan.",
+    "whatWeCollect": "Kiko nos ta warda",
+    "whatWeCollectDesc": "Nos ta warda solamente e prome nomber di bo yiu, e klas, y con e ta bay cu su estudio. Nada mas.",
+    "whatWeDontDo": "Kiko nos NO ta hasi",
+    "whatWeDontDoDesc": "Nos no ta bende dato. Nos no ta mustra reclame. Nos no ta comparti nada cu otronan.",
+    "howWeUseAI": "Con e AI ta traha",
+    "howWeUseAIDesc": "Koko (nos maestro di AI) ta usa e datonan solamente pa yuda bo yiu cu su estudio. E combersacionnan ta keda warda pa Koko sa kiko bo yiu tabata trahando riba dje.",
+    "parentControl": "Mayornan ta dicidi",
+    "parentControlDesc": "Bo ta dicidi si bo yiu ta participa. Ora di registra bo ta duna permiso. Semper bo por para y nos lo bora tur dato.",
+    "contact": "Pregunta?",
+    "contactDesc": "Manda un mensahe na info@arubaleren.com."
+  },
+  "home": {
+    "title": "Bon bini na ArubaLeren",
+    "subtitle": "Les particular personal pa tur yiu na Aruba",
+    "cta": "Cuminsa awor",
+    "features": {
+      "ai": "Maestro di AI Koko ta yuda bo yiu",
+      "subjects": "6 materia disponibel",
+      "languages": "Hulandes, Papiamento y Spaño"
+    }
+  },
+  "languageSwitcher": {
+    "nl": "Hulandes",
+    "pap": "Papiamento",
+    "es": "Spaño"
+  },
+  "privacyPolicy": {
+    "title": "Declaracion di Privacidad ArubaLeren",
+    "lastUpdated": "Ultimo actualisacion: februari 2026",
+    "introTitle": "Kiko ta ArubaLeren?",
+    "introText": "ArubaLeren ta un plataforma online pa les particular. Yuinan na Aruba ta hana yudansa di Koko, nos maestro di AI. Koko ta yuda cu seis materia: taal, rekenen, comprension di lectura, historia, heografia y conocemento di naturalesa.",
+    "dataCollectionTitle": "Kico datanan nos ta warda?",
+    "dataCollectionIntro": "Nos ta warda lo menos posibel. Esaki ta tur loke nos ta warda:",
+    "dataItems": [
+      "E prome nomber di bo yiu",
+      "E edad y klas di bo yiu",
+      "E combersacionnan cu Koko, nos maestro di AI",
+      "Progreso pa materia (con e ta bay cu su estudio)"
+    ],
+    "dataCollectionNote": "Mas nos no ta warda. Sin fam. Sin direccion. Sin portret.",
+    "whyTitle": "Pakico nos ta warda esaki?",
+    "whyText": "Cada dato tin un motibo. E prome nomber nos ta usa pa Koko por papia cu bo yiu. E edad y klas ta yuda Koko pa haci e dificultad bon. Nos ta warda e combersacionnan pa Koko sa kico bo yiu tabata trahando riba dje. E progreso nos ta warda pa bo por mira con e ta bay.",
+    "notDoTitle": "Kico nos NO ta hasi?",
+    "notDoItems": [
+      "Nos no ta bende datonan na otro hende",
+      "Nos no ta mustra reclame",
+      "Nos no ta comparti datonan cu otro companianan",
+      "Nos no ta usa datonan pa otro cos cu no ta les"
+    ],
+    "aiTitle": "Con e maestro di AI ta traha?",
+    "aiText": "Koko solamente ta usa e datonan pa yuda bo yiu studia. E combersacionnan ta keda warda. Asina Koko sa kico bo yiu tabata trahando riba dje e biaha pasa. Koko por yuda mihó asina. E AI no ta hasi nada mas cu e datonan.",
+    "parentControlTitle": "Bo ta dicidi",
+    "parentControlItems": [
+      "Ora di registra bo ta duna permiso",
+      "Semper bo por para",
+      "Si bo para, nos lo bora tur dato di bo yiu",
+      "Semper bo por puntra kico dato nos tin"
+    ],
+    "consentTitle": "Permiso",
+    "consentText": "Ora di registra bo ta marca un cachitonan. Cu esaki bo ta duna permiso pa e AI yuda bo yiu cu su estudio. Sin permiso bo yiu no por cuminsa.",
+    "contactTitle": "Tin pregunta?",
+    "contactText": "Manda un e-mail na info@arubaleren.com. Nos lo contesta lo mas liher posibel."
+  }
+}
