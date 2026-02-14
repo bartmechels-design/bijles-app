@@ -1,4 +1,3 @@
-import { useTranslations } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 
@@ -20,7 +19,7 @@ export default async function PrivacyPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const t = useTranslations("privacyPolicy");
+  const t = await getTranslations("privacyPolicy");
 
   const dataItems = [
     t("dataItems.0"),
