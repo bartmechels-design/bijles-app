@@ -11,24 +11,24 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 ## Current Position
 
 Phase: 2 of 7 (Authentication & Family Accounts)
-Plan: 1 of ? (02-01 complete)
+Plan: 2 of ? (02-02 complete)
 Status: Executing
-Last activity: 2026-02-14 — Completed 02-01-PLAN.md (auth schema and server actions)
+Last activity: 2026-02-14 — Completed 02-02-PLAN.md (login/signup pages and OAuth)
 
-Progress: [███████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 16%
+Progress: [████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 18%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
-- Total execution time: ~0.6 hours
+- Total plans completed: 5
+- Total execution time: ~0.7 hours
 
 **By Phase:**
 
 | Phase | Plans | Status |
 |-------|-------|--------|
 | 01 - Foundation & Infrastructure | 3/3 | Complete |
-| 02 - Authentication & Family Accounts | 1/? | In progress |
+| 02 - Authentication & Family Accounts | 2/? | In progress |
 
 ## Accumulated Context
 
@@ -52,10 +52,14 @@ Recent decisions affecting current work:
 - 02-01: Auth trigger creates profile automatically on auth.users INSERT
 - 02-01: Server actions translate Supabase errors to Dutch for user-facing messages
 - 02-01: Server actions use redirect() after successful auth instead of returning success
+- 02-02: Client components for forms to handle server action errors with local state
+- 02-02: Middleware refreshes Supabase session before next-intl routing (layered approach)
+- 02-02: OAuth redirects to /dashboard on success, /login on error
+- 02-02: Consent checkbox renders in amber-highlighted section for visibility
 
 ### Pending Todos
 
-None yet.
+- Phase 4: Koko moet hints/suggesties geven als een kind iets verkeerd spelt (spellingcorrectie met begrip)
 
 ### Blockers/Concerns
 
@@ -64,7 +68,7 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-14
-Stopped at: Completed 02-01-PLAN.md — Auth schema and server actions implemented
+Stopped at: Completed 02-02-PLAN.md — Login/signup pages and OAuth integration
 Resume file: None
 
-**Next action:** Continue Phase 2 planning or execute next plan
+**Next action:** Continue Phase 2 planning or execute next plan (likely 02-03 dashboard)
