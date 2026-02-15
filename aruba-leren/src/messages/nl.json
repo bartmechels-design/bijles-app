@@ -191,5 +191,28 @@
       "expired": "Verlopen"
     },
     "checking": "Abonnement controleren..."
+  },
+  "tutor": {
+    "selectChild": "Kies wie er gaat leren met Koko!",
+    "selectSubject": "Wat wil {childName} vandaag leren?",
+    "noChildren": "Je hebt nog geen kinderen toegevoegd.",
+    "addChildFirst": "Voeg eerst een kind toe op het dashboard.",
+    "backToDashboard": "Terug naar Dashboard",
+    "backToChildren": "Terug naar kindkeuze",
+    "backToSubjects": "Terug naar vakkeuze",
+    "kernVakken": "Kernvakken",
+    "zaakVakken": "Zaakvakken",
+    "startSession": "Start les",
+    "resumeSession": "Hervat les",
+    "sessionTimer": "Lestijd",
+    "sessionLimitReached": "Je hebt al {minutes} minuten geoefend! Wil je doorgaan of stoppen?",
+    "continueSession": "Doorgaan",
+    "endSession": "Stoppen",
+    "sendMessage": "Typ je antwoord...",
+    "send": "Verstuur",
+    "kokoGreeting": "Hoi {childName}! Ik ben Koko 🐵 Ik ga je helpen met {subject}. Ben je er klaar voor?",
+    "rateLimitReached": "Je hebt vandaag al veel geoefend! Probeer het morgen weer.",
+    "connectionError": "Oeps, er ging iets mis. Probeer het nog een keer.",
+    "thinking": "Koko denkt na..."
   }
 }

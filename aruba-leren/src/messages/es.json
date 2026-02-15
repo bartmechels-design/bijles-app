@@ -191,5 +191,28 @@
       "expired": "Expirado"
     },
     "checking": "Comprobando suscripción..."
+  },
+  "tutor": {
+    "selectChild": "¡Elige quién va a aprender con Koko!",
+    "selectSubject": "¿Qué quiere aprender {childName} hoy?",
+    "noChildren": "Aún no has agregado ningún hijo.",
+    "addChildFirst": "Primero agrega un hijo en el panel.",
+    "backToDashboard": "Volver al Panel",
+    "backToChildren": "Volver a elegir hijo",
+    "backToSubjects": "Volver a elegir materia",
+    "kernVakken": "Materias Principales",
+    "zaakVakken": "Materias de Conocimiento",
+    "startSession": "Iniciar clase",
+    "resumeSession": "Reanudar clase",
+    "sessionTimer": "Tiempo de clase",
+    "sessionLimitReached": "¡Ya has practicado {minutes} minutos! ¿Quieres continuar o parar?",
+    "continueSession": "Continuar",
+    "endSession": "Parar",
+    "sendMessage": "Escribe tu respuesta...",
+    "send": "Enviar",
+    "kokoGreeting": "¡Hola {childName}! Soy Koko 🐵 Voy a ayudarte con {subject}. ¿Estás listo?",
+    "rateLimitReached": "¡Ya has practicado mucho hoy! Inténtalo de nuevo mañana.",
+    "connectionError": "Ups, algo salió mal. Inténtalo de nuevo.",
+    "thinking": "Koko está pensando..."
   }
 }

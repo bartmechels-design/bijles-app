@@ -191,5 +191,28 @@
       "expired": "Expira"
     },
     "checking": "Ta controla abonamento..."
+  },
+  "tutor": {
+    "selectChild": "Scoge ken lo studia cu Koko!",
+    "selectSubject": "Kico {childName} ke studia awe?",
+    "noChildren": "Bo no tin yuinan agrega ainda.",
+    "addChildFirst": "Agrega un yiu prome na e dashboard.",
+    "backToDashboard": "Bai bek na Dashboard",
+    "backToChildren": "Bai bek na scogimento di yiu",
+    "backToSubjects": "Bai bek na scogimento di materia",
+    "kernVakken": "Materia Principal",
+    "zaakVakken": "Materia di Conocemento",
+    "startSession": "Cuminsa les",
+    "resumeSession": "Sigui cu les",
+    "sessionTimer": "Tempo di les",
+    "sessionLimitReached": "Bo a practica caba {minutes} minuut! Bo ke sigui of kier para?",
+    "continueSession": "Sigui",
+    "endSession": "Para",
+    "sendMessage": "Tipea bo contesta...",
+    "send": "Manda",
+    "kokoGreeting": "Hola {childName}! Mi ta Koko 🐵 Mi lo yuda bo cu {subject}. Bo ta cla?",
+    "rateLimitReached": "Bo a practica hopi awe caba! Intenta atrobe manan.",
+    "connectionError": "Oi, algo a bai robes. Intenta un biaha mas.",
+    "thinking": "Koko ta pensa..."
   }
 }
