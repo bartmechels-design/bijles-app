@@ -6,29 +6,29 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 
 **Core value:** Kinderen op Aruba krijgen persoonlijke bijles die zich aanpast aan hun niveau, volledig zelfstandig, in hun eigen taal en context.
 
-**Current focus:** Phase 2 in progress — Auth foundation complete
+**Current focus:** Phase 2 complete — Ready for Phase 3
 
 ## Current Position
 
 Phase: 2 of 7 (Authentication & Family Accounts)
-Plan: 2 of ? (02-02 complete)
-Status: Executing
-Last activity: 2026-02-14 — Completed 02-02-PLAN.md (login/signup pages and OAuth)
+Plan: 3 of 3 (02-03 complete)
+Status: Phase complete
+Last activity: 2026-02-15 — Completed 02-03 (dashboard + child management + auth verification)
 
-Progress: [████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 18%
+Progress: [████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 28%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
-- Total execution time: ~0.7 hours
+- Total plans completed: 6
+- Total execution time: ~1.0 hours
 
 **By Phase:**
 
 | Phase | Plans | Status |
 |-------|-------|--------|
 | 01 - Foundation & Infrastructure | 3/3 | Complete |
-| 02 - Authentication & Family Accounts | 2/? | In progress |
+| 02 - Authentication & Family Accounts | 3/3 | Complete |
 
 ## Accumulated Context
 
@@ -51,15 +51,19 @@ Recent decisions affecting current work:
 - 02-01: Consent tracking stored at profile level with boolean + timestamp
 - 02-01: Auth trigger creates profile automatically on auth.users INSERT
 - 02-01: Server actions translate Supabase errors to Dutch for user-facing messages
-- 02-01: Server actions use redirect() after successful auth instead of returning success
 - 02-02: Client components for forms to handle server action errors with local state
 - 02-02: Middleware refreshes Supabase session before next-intl routing (layered approach)
 - 02-02: OAuth redirects to /dashboard on success, /login on error
 - 02-02: Consent checkbox renders in amber-highlighted section for visibility
+- 02-03: Client-side redirect after auth (router.push) instead of server-side redirect() to preserve cookies
+- 02-03: profiles.id is auto-generated UUID, user_id references auth.users — all lookups must use user_id
+- 02-03: Disable email confirmation for development (re-enable for production)
 
 ### Pending Todos
 
 - Phase 4: Koko moet hints/suggesties geven als een kind iets verkeerd spelt (spellingcorrectie met begrip)
+- Phase 4: IGDI-model integreren bij Koko (instructie, geleide inoefening, diagnostische toets, individuele verwerking)
+- Phase 4: Lesduur moet passen bij leeftijd (algemene richtlijnen: jonger = kortere sessies)
 
 ### Blockers/Concerns
 
@@ -67,8 +71,8 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-14
-Stopped at: Completed 02-02-PLAN.md — Login/signup pages and OAuth integration
+Last session: 2026-02-15
+Stopped at: Phase 2 complete — all auth flows verified
 Resume file: None
 
-**Next action:** Continue Phase 2 planning or execute next plan (likely 02-03 dashboard)
+**Next action:** Start Phase 3 (Payment Verification System) — `/gsd:plan-phase 3`
