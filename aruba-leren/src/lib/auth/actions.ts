@@ -39,6 +39,9 @@ export async function signUp(formData: FormData) {
     if (error.message.includes('already registered')) {
       return { error: 'E-mailadres is al geregistreerd' }
     }
+    if (error.message.includes('rate limit')) {
+      return { error: 'Te veel pogingen. Wacht even en probeer het opnieuw.' }
+    }
     return { error: error.message }
   }
 
@@ -50,7 +53,7 @@ export async function signUp(formData: FormData) {
         consent_given: true,
         consent_date: new Date().toISOString(),
       })
-      .eq('id', data.user.id)
+      .eq('user_id', data.user.id)
 
     if (updateError) {
       console.error('Failed to update consent:', updateError)
@@ -58,8 +61,7 @@ export async function signUp(formData: FormData) {
     }
   }
 
-  // Redirect to dashboard after successful signup
-  redirect(`/${locale}/dashboard`)
+  return { success: true }
 }
 
 /**
@@ -88,8 +90,7 @@ export async function signIn(formData: FormData) {
     return { error: error.message }
   }
 
-  // Redirect to dashboard after successful signin
-  redirect(`/${locale}/dashboard`)
+  return { success: true }
 }
 
 /**

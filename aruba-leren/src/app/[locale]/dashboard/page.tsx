@@ -19,19 +19,27 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
   const { data: { user }, error: authError } = await supabase.auth.getUser()
 
   if (authError || !user) {
-    // Redirect unauthenticated users to login
     redirect(`/${locale}/login`)
   }
 
-  // Fetch current user's profile
-  const { data: profile, error: profileError } = await supabase
+  // Fetch current user's profile - create if missing (trigger may not have fired)
+  let { data: profile } = await supabase
     .from('profiles')
     .select('id')
-    .eq('id', user.id)
+    .eq('user_id', user.id)
     .single()
 
-  if (profileError || !profile) {
-    console.error('Profile fetch error:', profileError)
+  if (!profile) {
+    // Profile missing - create it manually
+    const { data: newProfile } = await supabase
+      .from('profiles')
+      .insert({ user_id: user.id, role: 'parent', display_name: user.email, consent_given: true, consent_date: new Date().toISOString() })
+      .select('id')
+      .single()
+    profile = newProfile
+  }
+
+  if (!profile) {
     redirect(`/${locale}/login`)
   }
 

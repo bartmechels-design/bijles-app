@@ -2,10 +2,12 @@
 
 import { signIn } from '@/lib/auth/actions'
 import { useTranslations } from 'next-intl'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 export default function LoginForm({ locale }: { locale: string }) {
   const t = useTranslations('auth')
+  const router = useRouter()
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -18,8 +20,9 @@ export default function LoginForm({ locale }: { locale: string }) {
     if (result?.error) {
       setError(result.error)
       setIsLoading(false)
+    } else {
+      router.push(`/${locale}/dashboard`)
     }
-    // If no error, redirect() was called in the action
   }
 
   return (

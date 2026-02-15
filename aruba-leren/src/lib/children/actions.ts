@@ -40,7 +40,7 @@ export async function addChild(formData: FormData) {
   const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select('id')
-    .eq('id', user.id)
+    .eq('user_id', user.id)
     .single()
 
   if (profileError || !profile) {
@@ -101,6 +101,17 @@ export async function updateChild(childId: string, formData: FormData) {
     return { error: 'Niet ingelogd' }
   }
 
+  // Get parent profile
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('id')
+    .eq('user_id', user.id)
+    .single()
+
+  if (!profile) {
+    return { error: 'Profiel niet gevonden' }
+  }
+
   // Verify ownership - child must belong to current user's profile
   const { data: child, error: fetchError } = await supabase
     .from('children')
@@ -112,7 +123,7 @@ export async function updateChild(childId: string, formData: FormData) {
     return { error: 'Kind niet gevonden' }
   }
 
-  if (child.parent_id !== user.id) {
+  if (child.parent_id !== profile.id) {
     return { error: 'Geen toegang tot dit kind' }
   }
 
@@ -151,6 +162,17 @@ export async function deleteChild(childId: string, locale: string = 'nl') {
     return { error: 'Niet ingelogd' }
   }
 
+  // Get parent profile
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('id')
+    .eq('user_id', user.id)
+    .single()
+
+  if (!profile) {
+    return { error: 'Profiel niet gevonden' }
+  }
+
   // Verify ownership - child must belong to current user's profile
   const { data: child, error: fetchError } = await supabase
     .from('children')
@@ -162,7 +184,7 @@ export async function deleteChild(childId: string, locale: string = 'nl') {
     return { error: 'Kind niet gevonden' }
   }
 
-  if (child.parent_id !== user.id) {
+  if (child.parent_id !== profile.id) {
     return { error: 'Geen toegang tot dit kind' }
   }
 
