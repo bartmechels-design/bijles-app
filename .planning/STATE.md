@@ -6,22 +6,22 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 
 **Core value:** Kinderen op Aruba krijgen persoonlijke bijles die zich aanpast aan hun niveau, volledig zelfstandig, in hun eigen taal en context.
 
-**Current focus:** Phase 2 complete — Ready for Phase 3
+**Current focus:** Phase 4 in progress — AI Tutor Core Foundations
 
 ## Current Position
 
-Phase: 3 of 7 (Payment Verification System)
-Plan: 3 of 3 (03-03 complete)
-Status: Phase complete
-Last activity: 2026-02-15 — Completed 03-03 (admin panel + subscription guard)
+Phase: 4 of 7 (AI Tutor Core Foundations)
+Plan: 1 of 4 (04-01 complete)
+Status: In progress
+Last activity: 2026-02-15 — Completed 04-01 (tutoring types, Claude provider, Koko prompts)
 
-Progress: [████████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░] 39%
+Progress: [████████████████████████████████░░░░░░░░░░░░░░░░░░░░] 43%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 9
-- Total execution time: ~1.3 hours
+- Total plans completed: 10
+- Total execution time: ~1.4 hours
 
 **By Phase:**
 
@@ -30,6 +30,7 @@ Progress: [███████████████████████
 | 01 - Foundation & Infrastructure | 3/3 | Complete |
 | 02 - Authentication & Family Accounts | 3/3 | Complete |
 | 03 - Payment Verification System | 3/3 | Complete |
+| 04 - AI Tutor Core Foundations | 1/4 | In progress |
 
 **Recent Executions:**
 
@@ -37,6 +38,7 @@ Progress: [███████████████████████
 |-------|------|----------|-------|-------|
 | 03 | 02 | 7 min | 2 | 8 |
 | 03 | 03 | 8 min | 2 | 7 |
+| 04 | 01 | 6 min | 2 | 6 |
 
 ## Accumulated Context
 
@@ -73,12 +75,19 @@ Recent decisions affecting current work:
 - 03-03: Payment proof images use signed URLs with 1-hour expiry for security
 - 03-03: Approve action upserts subscription (handles both new and renewal cases)
 - 03-03: Admin panel uses dark header (bg-gray-900) for visual distinction from parent UI
+- 04-01: Claude Sonnet 4.5 as primary tutor model (cost-effective at $3/MTok input, $15/MTok output)
+- 04-01: Prompt caching architecture (static base + guards first, dynamic parts after) reduces costs by ~90%
+- 04-01: 7 Socratic guard scenarios with few-shot examples prevent direct answer giving
+- 04-01: IGDI model phases integrated (instructie → geleide inoefening → diagnostische toets → individuele verwerking)
+- 04-01: Age-based session duration limits (6 years = 8 min, 12 years = 25 min) match attention spans
+- 04-01: Daily token limit of 50K per child controls costs (~$0.50/day max per child)
+- 04-01: All 6 subjects have Arubaanse context (Florin currency, Hooiberg, Shoco bird, local examples)
 
 ### Pending Todos
 
-- Phase 4: Koko moet hints/suggesties geven als een kind iets verkeerd spelt (spellingcorrectie met begrip)
-- Phase 4: IGDI-model integreren bij Koko (instructie, geleide inoefening, diagnostische toets, individuele verwerking)
-- Phase 4: Lesduur moet passen bij leeftijd (algemene richtlijnen: jonger = kortere sessies)
+- Phase 4: ✅ DONE (04-01) — Koko hints/suggesties voor spellingcorrectie (phonetic hints in Socratic guards)
+- Phase 4: ✅ DONE (04-01) — IGDI-model geïntegreerd in prompt system
+- Phase 4: ✅ DONE (04-01) — Lesduur per leeftijd (SESSION_DURATION_BY_AGE constants)
 
 ### Blockers/Concerns
 
@@ -87,7 +96,7 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-15
-Stopped at: Phase 3 complete — all payment verification system features implemented
+Stopped at: Completed 04-01 (AI tutor foundation: types, Claude provider, Koko prompt system)
 Resume file: None
 
-**Next action:** Start Phase 4 (AI Tutor Core) — `/gsd:plan-phase 4`
+**Next action:** Continue Phase 4 — Execute plan 04-02 (tutoring session API and conversation flow)
