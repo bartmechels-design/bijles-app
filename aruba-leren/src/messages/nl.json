@@ -104,6 +104,7 @@
   "home": {
     "title": "Welkom bij ArubaLeren",
     "subtitle": "Persoonlijke bijles voor elk kind op Aruba",
+    "kokoIntro": "Hoi, ik ben Koko!",
     "cta": "Begin nu",
     "features": {
       "ai": "AI-tutor Koko helpt je kind",
@@ -152,5 +153,43 @@
     "consentText": "Bij registratie vinkt u een vakje aan. Daarmee geeft u toestemming dat de AI uw kind helpt bij het leren. Zonder toestemming kan uw kind niet starten.",
     "contactTitle": "Vragen?",
     "contactText": "Stuur een e-mail naar info@arubaleren.com. We antwoorden zo snel mogelijk."
+  },
+  "subscription": {
+    "requestTitle": "Betalingsverzoek",
+    "statusTitle": "Abonnementsstatus",
+    "selectPeriod": "Kies een abonnementsperiode",
+    "selectMethod": "Betaalmethode",
+    "bankTransfer": "Bankovermaking",
+    "cash": "Contant",
+    "uploadProof": "Upload betalingsbewijs",
+    "uploadHint": "Maximaal 5MB. JPEG, PNG of WebP.",
+    "commentLabel": "Toelichting",
+    "commentPlaceholder": "Beschrijf wanneer en waar u wilt betalen",
+    "commentOptional": "Optioneel: extra toelichting",
+    "submit": "Verzoek indienen",
+    "submitting": "Bezig met indienen...",
+    "successTitle": "Verzoek ingediend!",
+    "successMessage": "Uw betalingsverzoek is ontvangen. We controleren dit zo snel mogelijk.",
+    "viewStatus": "Bekijk status",
+    "noSubscription": "U heeft nog geen actief abonnement",
+    "requestNew": "Nieuw betalingsverzoek",
+    "activeUntil": "Actief tot",
+    "requestHistory": "Betalingsgeschiedenis",
+    "noRequests": "Nog geen betalingsverzoeken",
+    "errors": {
+      "fileTooLarge": "Bestand is te groot (maximaal 5MB)",
+      "invalidFileType": "Alleen JPEG, PNG en WebP zijn toegestaan",
+      "commentRequired": "Vul een toelichting in wanneer en waar u wilt betalen",
+      "uploadFailed": "Bestand kon niet worden geupload",
+      "submitFailed": "Er is iets misgegaan. Probeer het opnieuw."
+    },
+    "status": {
+      "pending": "In behandeling",
+      "approved": "Goedgekeurd",
+      "rejected": "Afgewezen",
+      "active": "Actief",
+      "expired": "Verlopen"
+    },
+    "checking": "Abonnement controleren..."
   }
 }

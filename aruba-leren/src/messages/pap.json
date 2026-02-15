@@ -104,6 +104,7 @@
   "home": {
     "title": "Bon bini na ArubaLeren",
     "subtitle": "Les particular personal pa tur yiu na Aruba",
+    "kokoIntro": "Hola, mi ta Koko!",
     "cta": "Cuminsa awor",
     "features": {
       "ai": "Maestro di AI Koko ta yuda bo yiu",
@@ -152,5 +153,43 @@
     "consentText": "Ora di registra bo ta marca un cachitonan. Cu esaki bo ta duna permiso pa e AI yuda bo yiu cu su estudio. Sin permiso bo yiu no por cuminsa.",
     "contactTitle": "Tin pregunta?",
     "contactText": "Manda un e-mail na info@arubaleren.com. Nos lo contesta lo mas liher posibel."
+  },
+  "subscription": {
+    "requestTitle": "Peticion di pago",
+    "statusTitle": "Status di abonamento",
+    "selectPeriod": "Scoge un periodo di abonamento",
+    "selectMethod": "Metodo di pago",
+    "bankTransfer": "Transferencia bancario",
+    "cash": "Cash",
+    "uploadProof": "Upload prueba di pago",
+    "uploadHint": "Maximo 5MB. JPEG, PNG of WebP.",
+    "commentLabel": "Aclaracion",
+    "commentPlaceholder": "Describi con ora y unda bo ke paga",
+    "commentOptional": "Opcional: aclaracion extra",
+    "submit": "Manda peticion",
+    "submitting": "Ta manda...",
+    "successTitle": "Peticion manda!",
+    "successMessage": "Nos a ricibi bo peticion di pago. Lo nos controla esaki lo mas liher posibel.",
+    "viewStatus": "Mira status",
+    "noSubscription": "Bo no tin un abonamento activo ainda",
+    "requestNew": "Peticion nobo di pago",
+    "activeUntil": "Activo te",
+    "requestHistory": "Historia di pagonan",
+    "noRequests": "Ainda no tin peticion di pago",
+    "errors": {
+      "fileTooLarge": "E file ta demasiado grandi (maximo 5MB)",
+      "invalidFileType": "Solamente JPEG, PNG y WebP ta permiti",
+      "commentRequired": "Yena un aclaracion con ora y unda bo ke paga",
+      "uploadFailed": "E file no por a wordo subi",
+      "submitFailed": "Algo a bai robes. Intenta atrobe."
+    },
+    "status": {
+      "pending": "Pendiente",
+      "approved": "Aproba",
+      "rejected": "Rechasa",
+      "active": "Activo",
+      "expired": "Expira"
+    },
+    "checking": "Ta controla abonamento..."
   }
 }

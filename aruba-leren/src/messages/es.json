@@ -104,6 +104,7 @@
   "home": {
     "title": "Bienvenido a ArubaLeren",
     "subtitle": "Clases particulares personalizadas para cada niño en Aruba",
+    "kokoIntro": "¡Hola, soy Koko!",
     "cta": "Comenzar ahora",
     "features": {
       "ai": "El tutor de IA Koko ayuda a tu hijo",
@@ -152,5 +153,43 @@
     "consentText": "Al registrarse marca una casilla. Con esto da permiso para que la IA ayude a su hijo con el aprendizaje. Sin permiso su hijo no puede comenzar.",
     "contactTitle": "¿Preguntas?",
     "contactText": "Envíe un correo electrónico a info@arubaleren.com. Respondemos lo más rápido posible."
+  },
+  "subscription": {
+    "requestTitle": "Solicitud de pago",
+    "statusTitle": "Estado de suscripción",
+    "selectPeriod": "Elija un período de suscripción",
+    "selectMethod": "Método de pago",
+    "bankTransfer": "Transferencia bancaria",
+    "cash": "Efectivo",
+    "uploadProof": "Subir comprobante de pago",
+    "uploadHint": "Máximo 5MB. JPEG, PNG o WebP.",
+    "commentLabel": "Comentario",
+    "commentPlaceholder": "Describa cuándo y dónde quiere pagar",
+    "commentOptional": "Opcional: comentario adicional",
+    "submit": "Enviar solicitud",
+    "submitting": "Enviando...",
+    "successTitle": "¡Solicitud enviada!",
+    "successMessage": "Hemos recibido su solicitud de pago. La revisaremos lo antes posible.",
+    "viewStatus": "Ver estado",
+    "noSubscription": "Aún no tiene una suscripción activa",
+    "requestNew": "Nueva solicitud de pago",
+    "activeUntil": "Activo hasta",
+    "requestHistory": "Historial de pagos",
+    "noRequests": "Aún no hay solicitudes de pago",
+    "errors": {
+      "fileTooLarge": "El archivo es demasiado grande (máximo 5MB)",
+      "invalidFileType": "Solo se permiten JPEG, PNG y WebP",
+      "commentRequired": "Rellene un comentario indicando cuándo y dónde quiere pagar",
+      "uploadFailed": "No se pudo subir el archivo",
+      "submitFailed": "Algo salió mal. Inténtelo de nuevo."
+    },
+    "status": {
+      "pending": "Pendiente",
+      "approved": "Aprobado",
+      "rejected": "Rechazado",
+      "active": "Activo",
+      "expired": "Expirado"
+    },
+    "checking": "Comprobando suscripción..."
   }
 }
