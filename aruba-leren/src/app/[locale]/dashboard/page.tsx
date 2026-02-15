@@ -4,6 +4,7 @@ import { getTranslations } from 'next-intl/server'
 import AddChildForm from '@/components/AddChildForm'
 import ChildList from '@/components/ChildList'
 import { signOut } from '@/lib/auth/actions'
+import Link from 'next/link'
 
 interface DashboardPageProps {
   params: Promise<{
@@ -43,6 +44,27 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
     redirect(`/${locale}/login`)
   }
 
+  // Check if user is admin (admins bypass subscription check)
+  const isAdmin = user.app_metadata?.role === 'admin'
+
+  // Check subscription status (unless user is admin)
+  let hasActiveSubscription = false
+  if (isAdmin) {
+    hasActiveSubscription = true // Admins always have access
+  } else {
+    const { data: subscription } = await supabase
+      .from('subscriptions')
+      .select('status, expires_at')
+      .eq('profile_id', profile.id)
+      .single()
+
+    const now = new Date()
+    hasActiveSubscription =
+      !!subscription &&
+      subscription.status === 'active' &&
+      new Date(subscription.expires_at) > now
+  }
+
   // Fetch children for this parent
   const { data: children, error: childrenError } = await supabase
     .from('children')
@@ -71,33 +93,99 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
               </p>
             </div>
 
-            {/* Logout Button */}
-            <form action={signOut}>
-              <button
-                type="submit"
-                className="bg-white text-sky-600 font-bold py-3 px-6 rounded-xl hover:bg-sky-50 focus:outline-none focus:ring-4 focus:ring-white/50 shadow-md transition-all"
+            {/* Action Buttons */}
+            <div className="flex gap-3">
+              <Link
+                href={`/${locale}/subscription/status`}
+                className="bg-amber-500 text-white font-bold py-3 px-6 rounded-xl hover:bg-amber-600 focus:outline-none focus:ring-4 focus:ring-amber-300/50 shadow-md transition-all"
               >
-                {t('nav.logout')}
-              </button>
-            </form>
+                Abonnement
+              </Link>
+              <form action={signOut}>
+                <button
+                  type="submit"
+                  className="bg-white text-sky-600 font-bold py-3 px-6 rounded-xl hover:bg-sky-50 focus:outline-none focus:ring-4 focus:ring-white/50 shadow-md transition-all"
+                >
+                  {t('nav.logout')}
+                </button>
+              </form>
+            </div>
           </div>
         </div>
 
-        {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Add Child Form */}
-          <div>
-            <AddChildForm locale={locale} />
-          </div>
+        {/* Main Content - Conditional based on subscription */}
+        {hasActiveSubscription ? (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Add Child Form */}
+            <div>
+              <AddChildForm locale={locale} />
+            </div>
 
-          {/* Child List */}
-          <div className="lg:col-span-1">
-            <ChildList
-              children={children || []}
-              locale={locale}
-            />
+            {/* Child List */}
+            <div className="lg:col-span-1">
+              <ChildList
+                children={children || []}
+                locale={locale}
+              />
+            </div>
           </div>
-        </div>
+        ) : (
+          /* No Active Subscription Message */
+          <div className="bg-white rounded-2xl shadow-xl p-8 border-t-4 border-amber-500">
+            {/* Icon */}
+            <div className="flex justify-center mb-6">
+              <div className="bg-amber-100 p-4 rounded-full">
+                <svg
+                  className="w-12 h-12 text-amber-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            {/* Title */}
+            <h2 className="text-3xl font-bold text-gray-900 text-center mb-4">
+              Actief abonnement vereist
+            </h2>
+
+            {/* Message */}
+            <p className="text-gray-700 text-center text-lg mb-8">
+              U heeft een actief abonnement nodig om ArubaLeren te gebruiken en kinderen toe te voegen.
+            </p>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                href={`/${locale}/subscription/request`}
+                className="bg-amber-500 text-white font-bold py-4 px-8 rounded-xl hover:bg-amber-600 focus:outline-none focus:ring-4 focus:ring-amber-300 transition-all text-center"
+              >
+                Betalingsverzoek indienen
+              </Link>
+              <Link
+                href={`/${locale}/subscription/status`}
+                className="bg-sky-500 text-white font-bold py-4 px-8 rounded-xl hover:bg-sky-600 focus:outline-none focus:ring-4 focus:ring-sky-300 transition-all text-center"
+              >
+                Bekijk abonnementsstatus
+              </Link>
+            </div>
+
+            {/* Additional Info */}
+            <div className="mt-8 bg-sky-50 rounded-lg p-4">
+              <p className="text-sm text-gray-600 text-center">
+                Na het indienen van een betalingsverzoek, controleren we uw betaling
+                en activeren we uw abonnement binnen 24 uur.
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
