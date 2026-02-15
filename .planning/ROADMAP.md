@@ -69,6 +69,13 @@ Plans:
 
 **Requirements Covered:** PAY-01, PAY-02, PAY-03, PAY-04, ADMIN-01, ADMIN-02
 
+**Plans:** 3 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — Database schema, storage setup, and shared utilities
+- [ ] 03-02-PLAN.md — Parent payment request flow (upload proof, cash request, status page)
+- [ ] 03-03-PLAN.md — Admin panel and subscription-based access control
+
 **Success Criteria:**
 1. Parent can upload betalingsbewijs (foto bankovermaking) with file validation
 2. Parent can request contante betaling aanvraag
@@ -206,4 +213,4 @@ Research findings from ARCHITECTURE.md, FEATURES.md, PITFALLS.md, and STACK.md i
 ---
 
 *Roadmap created: 2026-02-12*
-*Last updated: 2026-02-14*
+*Last updated: 2026-02-15*
