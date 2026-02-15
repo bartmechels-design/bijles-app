@@ -11,17 +11,17 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 ## Current Position
 
 Phase: 4 of 7 (AI Tutor Core Foundations)
-Plan: 1 of 4 (04-01 complete)
+Plan: 2 of 4 (04-02 complete)
 Status: In progress
-Last activity: 2026-02-15 — Completed 04-01 (tutoring types, Claude provider, Koko prompts)
+Last activity: 2026-02-15 — Completed 04-02 (tutoring session API and conversation flow)
 
-Progress: [████████████████████████████████░░░░░░░░░░░░░░░░░░░░] 43%
+Progress: [█████████████████████████████████████░░░░░░░░░░░░░░░] 47%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 10
-- Total execution time: ~1.4 hours
+- Total plans completed: 11
+- Total execution time: ~1.5 hours
 
 **By Phase:**
 
@@ -30,15 +30,15 @@ Progress: [███████████████████████
 | 01 - Foundation & Infrastructure | 3/3 | Complete |
 | 02 - Authentication & Family Accounts | 3/3 | Complete |
 | 03 - Payment Verification System | 3/3 | Complete |
-| 04 - AI Tutor Core Foundations | 1/4 | In progress |
+| 04 - AI Tutor Core Foundations | 2/4 | In progress |
 
 **Recent Executions:**
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
-| 03 | 02 | 7 min | 2 | 8 |
 | 03 | 03 | 8 min | 2 | 7 |
 | 04 | 01 | 6 min | 2 | 6 |
+| 04 | 02 | 5 min | 2 | 4 |
 
 ## Accumulated Context
 
@@ -82,6 +82,10 @@ Recent decisions affecting current work:
 - 04-01: Age-based session duration limits (6 years = 8 min, 12 years = 25 min) match attention spans
 - 04-01: Daily token limit of 50K per child controls costs (~$0.50/day max per child)
 - 04-01: All 6 subjects have Arubaanse context (Florin currency, Hooiberg, Shoco bird, local examples)
+- [Phase 04]: Session manager handles both creation and resumption with 30-minute activity window
+- [Phase 04]: Rate limiter queries 24-hour rolling window from tutoring_sessions metadata (not separate table)
+- [Phase 04]: Difficulty adjuster as pure functions (no DB calls) — caller controls persistence
+- [Phase 04]: Vercel AI SDK v4 API: maxOutputTokens (not maxTokens), toTextStreamResponse() for text streaming
 
 ### Pending Todos
 
@@ -96,7 +100,7 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-15
-Stopped at: Completed 04-01 (AI tutor foundation: types, Claude provider, Koko prompt system)
+Stopped at: Completed 04-02 (tutoring session API and conversation flow)
 Resume file: None
 
-**Next action:** Continue Phase 4 — Execute plan 04-02 (tutoring session API and conversation flow)
+**Next action:** Continue Phase 4 — Execute plan 04-03 (chat UI and streaming interface)
