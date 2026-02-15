@@ -73,6 +73,7 @@ export default async function ChatPage({ params }: ChatPageProps) {
   const getSubjectLabel = () => {
     if (locale === 'pap') return subjectInfo.labelPap
     if (locale === 'es') return subjectInfo.labelEs
+    if (locale === 'en') return subjectInfo.labelEn
     return subjectInfo.labelNl
   }
 
@@ -96,7 +97,7 @@ export default async function ChatPage({ params }: ChatPageProps) {
               <span className="text-3xl">{subjectInfo.icon}</span>
               <div>
                 <h1 className="text-xl font-bold text-gray-900">
-                  {child.voornaam} • {getSubjectLabel()}
+                  {child.first_name} • {getSubjectLabel()}
                 </h1>
                 <p className="text-sm text-gray-600">
                   {activeSession ? t('tutor.resumeSession') : t('tutor.startSession')}
@@ -113,8 +114,8 @@ export default async function ChatPage({ params }: ChatPageProps) {
       <div className="flex-1 overflow-hidden">
         <ChatInterface
           childId={childId}
-          childAge={child.leeftijd}
-          childName={child.voornaam}
+          childAge={child.age}
+          childName={child.first_name}
           subject={subject as Subject}
           locale={locale}
           existingSessionId={activeSession?.id || null}

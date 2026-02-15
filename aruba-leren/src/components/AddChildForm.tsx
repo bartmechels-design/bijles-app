@@ -20,7 +20,8 @@ export default function AddChildForm({ locale }: AddChildFormProps) {
     setSuccess(false)
     setIsSubmitting(true)
 
-    const formData = new FormData(event.currentTarget)
+    const form = event.currentTarget
+    const formData = new FormData(form)
     formData.append('locale', locale)
 
     const result = await addChild(formData)
@@ -31,9 +32,7 @@ export default function AddChildForm({ locale }: AddChildFormProps) {
       setError(result.error)
     } else {
       setSuccess(true)
-      // Reset form
-      event.currentTarget.reset()
-      // Clear success message after 3 seconds
+      form.reset()
       setTimeout(() => setSuccess(false), 3000)
     }
   }

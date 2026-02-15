@@ -71,7 +71,7 @@ export default async function SubjectSelectionPage({ params }: SubjectSelectionP
               <span className="text-6xl">🐵</span>
               <div>
                 <h1 className="text-4xl font-bold mb-2">
-                  {t('tutor.selectSubject', { childName: child.voornaam })}
+                  {t('tutor.selectSubject', { childName: child.first_name })}
                 </h1>
                 <p className="text-sky-100 text-lg">
                   Kies een vak om mee te beginnen
@@ -84,7 +84,7 @@ export default async function SubjectSelectionPage({ params }: SubjectSelectionP
         {/* Subject Selector */}
         <SubjectSelector
           childId={childId}
-          childName={child.voornaam}
+          childName={child.first_name}
           locale={locale}
         />
       </div>

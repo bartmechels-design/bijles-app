@@ -19,6 +19,7 @@ export default function SubjectSelector({ childId, childName, locale }: SubjectS
   const getSubjectLabel = (subject: typeof SUBJECTS[0]) => {
     if (locale === 'pap') return subject.labelPap;
     if (locale === 'es') return subject.labelEs;
+    if (locale === 'en') return subject.labelEn;
     return subject.labelNl;
   };
 

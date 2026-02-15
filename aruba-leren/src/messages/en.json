@@ -1,0 +1,219 @@
+{
+  "common": {
+    "appName": "ArubaLeren",
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "yes": "Yes",
+    "no": "No",
+    "error": "Something went wrong",
+    "success": "Done!",
+    "language": "Language"
+  },
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "subjects": "Subjects",
+    "progress": "Progress",
+    "settings": "Settings",
+    "login": "Log in",
+    "signup": "Sign up",
+    "logout": "Log out",
+    "admin": "Admin",
+    "privacy": "Privacy"
+  },
+  "auth": {
+    "loginTitle": "Log in to ArubaLeren",
+    "signupTitle": "Create an account",
+    "email": "Email address",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "loginWithGoogle": "Log in with Google",
+    "loginWithFacebook": "Log in with Facebook",
+    "orContinueWith": "Or continue with",
+    "noAccount": "Don't have an account yet?",
+    "hasAccount": "Already have an account?",
+    "consent": "I consent to the AI helping my child with learning.",
+    "consentRequired": "Consent is required to continue."
+  },
+  "subjects": {
+    "taal": "Language (Dutch)",
+    "rekenen": "Mathematics",
+    "begrijpendLezen": "Reading Comprehension",
+    "geschiedenis": "History",
+    "aardrijkskunde": "Geography",
+    "kennisdernatuur": "Natural Sciences",
+    "startSession": "Start tutoring",
+    "chooseSubject": "Choose a subject"
+  },
+  "child": {
+    "addChild": "Add child",
+    "name": "First name",
+    "age": "Age",
+    "grade": "Grade",
+    "gradeOptions": {
+      "1": "Grade 1",
+      "2": "Grade 2",
+      "3": "Grade 3",
+      "4": "Grade 4",
+      "5": "Grade 5",
+      "6": "Grade 6"
+    }
+  },
+  "parent": {
+    "dashboardTitle": "Parent Dashboard",
+    "children": "Children",
+    "payments": "Payments",
+    "subscription": "Subscription",
+    "subscriptionStatus": "Subscription status",
+    "uploadPayment": "Upload payment proof",
+    "requestCash": "Request cash payment",
+    "weeklyReport": "Weekly progress report",
+    "vacationSchedule": "Vacation schedule"
+  },
+  "payment": {
+    "perSession": "Per session",
+    "perWeek": "Per week",
+    "perMonth": "Per month",
+    "perSchoolYear": "Per school year",
+    "selectPlan": "Choose a subscription",
+    "active": "Active",
+    "expired": "Expired",
+    "pending": "Pending"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "intro": "At ArubaLeren, we take your child's privacy very seriously. Below we explain how we handle data.",
+    "whatWeCollect": "What we store",
+    "whatWeCollectDesc": "We only store your child's first name, grade, and learning progress. Nothing more.",
+    "whatWeDontDo": "What we DON'T do",
+    "whatWeDontDoDesc": "We don't sell data. We don't show ads. We don't share anything with others.",
+    "howWeUseAI": "How the AI works",
+    "howWeUseAIDesc": "Koko (our AI tutor) uses the data only to help your child learn. Conversations are saved so Koko knows what your child was working on.",
+    "parentControl": "Parents decide",
+    "parentControlDesc": "You decide if your child participates. You give consent when signing up. You can stop at any time and we will delete all data.",
+    "contact": "Questions?",
+    "contactDesc": "Send a message to info@arubaleren.com."
+  },
+  "home": {
+    "title": "Welcome to ArubaLeren",
+    "subtitle": "Personal tutoring for every child on Aruba",
+    "kokoIntro": "Hi, I'm Koko!",
+    "cta": "Get started",
+    "features": {
+      "ai": "AI tutor Koko helps your child",
+      "subjects": "6 subjects available",
+      "languages": "Dutch, Papiamento, Spanish, and English"
+    }
+  },
+  "languageSwitcher": {
+    "nl": "Nederlands",
+    "pap": "Papiamento",
+    "es": "Español",
+    "en": "English"
+  },
+  "privacyPolicy": {
+    "title": "ArubaLeren Privacy Policy",
+    "lastUpdated": "Last updated: February 2026",
+    "introTitle": "What is ArubaLeren?",
+    "introText": "ArubaLeren is an online tutoring platform. Children on Aruba get help from Koko, our AI tutor. Koko helps with six subjects: language, mathematics, reading comprehension, history, geography, and natural sciences.",
+    "dataCollectionTitle": "What data do we store?",
+    "dataCollectionIntro": "We store as little as possible. This is everything we save:",
+    "dataItems": [
+      "Your child's first name",
+      "Your child's age and grade",
+      "Chat conversations with Koko, our AI tutor",
+      "Progress per subject (how learning is going)"
+    ],
+    "dataCollectionNote": "That's all. No last name. No address. No photos.",
+    "whyTitle": "Why do we store this?",
+    "whyText": "Every piece of data has a purpose. We use the first name so Koko can address your child. The age and grade help Koko set the right difficulty level. We save conversations so Koko knows what your child was working on. We store progress so you can see how things are going.",
+    "notDoTitle": "What do we NOT do?",
+    "notDoItems": [
+      "We don't sell data to others",
+      "We don't show ads",
+      "We don't share data with other companies",
+      "We don't use data for anything other than tutoring"
+    ],
+    "aiTitle": "How does the AI tutor work?",
+    "aiText": "Koko only uses the data to help your child learn. Conversations are saved so Koko knows what your child was working on last time. This helps Koko provide better help. The AI doesn't do anything else with the data.",
+    "parentControlTitle": "You decide",
+    "parentControlItems": [
+      "You give consent when signing up",
+      "You can stop at any time",
+      "If you stop, we delete all your child's data",
+      "You can always ask what data we have"
+    ],
+    "consentTitle": "Consent",
+    "consentText": "During registration, you check a box. This gives consent for the AI to help your child learn. Without consent, your child cannot start.",
+    "contactTitle": "Questions?",
+    "contactText": "Send an email to info@arubaleren.com. We'll respond as soon as possible."
+  },
+  "subscription": {
+    "requestTitle": "Payment Request",
+    "statusTitle": "Subscription Status",
+    "selectPeriod": "Choose a subscription period",
+    "selectMethod": "Payment method",
+    "bankTransfer": "Bank transfer",
+    "cash": "Cash",
+    "uploadProof": "Upload payment proof",
+    "uploadHint": "Maximum 5MB. JPEG, PNG or WebP.",
+    "commentLabel": "Comments",
+    "commentPlaceholder": "Describe when and where you would like to pay",
+    "commentOptional": "Optional: additional comments",
+    "submit": "Submit request",
+    "submitting": "Submitting...",
+    "successTitle": "Request submitted!",
+    "successMessage": "Your payment request has been received. We will verify it as soon as possible.",
+    "viewStatus": "View status",
+    "noSubscription": "You don't have an active subscription yet",
+    "requestNew": "New payment request",
+    "activeUntil": "Active until",
+    "requestHistory": "Payment history",
+    "noRequests": "No payment requests yet",
+    "errors": {
+      "fileTooLarge": "File is too large (maximum 5MB)",
+      "invalidFileType": "Only JPEG, PNG and WebP are allowed",
+      "commentRequired": "Please describe when and where you would like to pay",
+      "uploadFailed": "File could not be uploaded",
+      "submitFailed": "Something went wrong. Please try again."
+    },
+    "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "active": "Active",
+      "expired": "Expired"
+    },
+    "checking": "Checking subscription..."
+  },
+  "tutor": {
+    "selectChild": "Choose who's going to learn with Koko!",
+    "selectSubject": "What does {childName} want to learn today?",
+    "noChildren": "You haven't added any children yet.",
+    "addChildFirst": "Add a child on the dashboard first.",
+    "backToDashboard": "Back to Dashboard",
+    "backToChildren": "Back to child selection",
+    "backToSubjects": "Back to subject selection",
+    "kernVakken": "Core Subjects",
+    "zaakVakken": "Content Subjects",
+    "startSession": "Start lesson",
+    "resumeSession": "Resume lesson",
+    "sessionTimer": "Lesson time",
+    "sessionLimitReached": "You've been practicing for {minutes} minutes! Do you want to continue or stop?",
+    "continueSession": "Continue",
+    "endSession": "Stop",
+    "sendMessage": "Type your answer...",
+    "send": "Send",
+    "kokoGreeting": "Hi {childName}! I'm Koko 🐵 I'm going to help you with {subject}. Are you ready?",
+    "rateLimitReached": "You've practiced a lot today! Try again tomorrow.",
+    "connectionError": "Oops, something went wrong. Try again.",
+    "thinking": "Koko is thinking..."
+  }
+}

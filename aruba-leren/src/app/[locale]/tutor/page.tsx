@@ -130,14 +130,14 @@ export default async function TutorPage({ params }: TutorPageProps) {
                 <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all p-6 border-4 border-transparent hover:border-sky-300 transform hover:scale-105 cursor-pointer">
                   <div className="flex items-center gap-4 mb-4">
                     <div className="bg-gradient-to-br from-sky-400 to-sky-600 text-white w-16 h-16 rounded-full flex items-center justify-center text-3xl font-bold shadow-md">
-                      {child.voornaam.charAt(0).toUpperCase()}
+                      {child.first_name.charAt(0).toUpperCase()}
                     </div>
                     <div className="flex-1">
                       <h3 className="text-2xl font-bold text-gray-900 group-hover:text-sky-600 transition-colors">
-                        {child.voornaam}
+                        {child.first_name}
                       </h3>
                       <p className="text-gray-600">
-                        {child.leeftijd} jaar • Klas {child.klas}
+                        {child.age} jaar • Klas {child.grade}
                       </p>
                     </div>
                   </div>

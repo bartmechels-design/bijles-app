@@ -8,6 +8,7 @@ const localeFlags: Record<string, string> = {
   nl: "🇳🇱",
   pap: "🇦🇼",
   es: "🇪🇸",
+  en: "🇬🇧",
 };
 
 const localeColors: Record<string, { active: string; inactive: string }> = {
@@ -22,6 +23,10 @@ const localeColors: Record<string, { active: string; inactive: string }> = {
   es: {
     active: "bg-red-500 text-white shadow-red-200",
     inactive: "text-red-700 hover:bg-red-50",
+  },
+  en: {
+    active: "bg-indigo-500 text-white shadow-indigo-200",
+    inactive: "text-indigo-700 hover:bg-indigo-50",
   },
 };
 

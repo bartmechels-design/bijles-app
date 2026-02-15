@@ -7,17 +7,18 @@ export interface SubjectInfo {
   labelNl: string;    // "Nederlandse Taal"
   labelPap: string;   // "Idioma Hulandes"
   labelEs: string;    // "Idioma Neerlandés"
+  labelEn: string;    // "Dutch Language"
   icon: string;       // emoji or icon name for UI
   category: 'kern' | 'zaak';
 }
 
 export const SUBJECTS: SubjectInfo[] = [
-  { id: 'taal', labelNl: 'Nederlandse Taal', labelPap: 'Idioma Hulandes', labelEs: 'Idioma Neerlandés', icon: '📖', category: 'kern' },
-  { id: 'rekenen', labelNl: 'Rekenen', labelPap: 'Matematica', labelEs: 'Matemáticas', icon: '🔢', category: 'kern' },
-  { id: 'begrijpend_lezen', labelNl: 'Begrijpend Lezen', labelPap: 'Comprension di Lectura', labelEs: 'Comprensión Lectora', icon: '📚', category: 'kern' },
-  { id: 'geschiedenis', labelNl: 'Geschiedenis', labelPap: 'Historia', labelEs: 'Historia', icon: '🏛️', category: 'zaak' },
-  { id: 'aardrijkskunde', labelNl: 'Aardrijkskunde', labelPap: 'Geografia', labelEs: 'Geografía', icon: '🌍', category: 'zaak' },
-  { id: 'kennis_der_natuur', labelNl: 'Kennis der Natuur', labelPap: 'Conocemento di Naturalesa', labelEs: 'Ciencias Naturales', icon: '🌱', category: 'zaak' },
+  { id: 'taal', labelNl: 'Nederlandse Taal', labelPap: 'Idioma Hulandes', labelEs: 'Idioma Neerlandés', labelEn: 'Dutch Language', icon: '📖', category: 'kern' },
+  { id: 'rekenen', labelNl: 'Rekenen', labelPap: 'Matematica', labelEs: 'Matemáticas', labelEn: 'Mathematics', icon: '🔢', category: 'kern' },
+  { id: 'begrijpend_lezen', labelNl: 'Begrijpend Lezen', labelPap: 'Comprension di Lectura', labelEs: 'Comprensión Lectora', labelEn: 'Reading Comprehension', icon: '📚', category: 'kern' },
+  { id: 'geschiedenis', labelNl: 'Geschiedenis', labelPap: 'Historia', labelEs: 'Historia', labelEn: 'History', icon: '🏛️', category: 'zaak' },
+  { id: 'aardrijkskunde', labelNl: 'Aardrijkskunde', labelPap: 'Geografia', labelEs: 'Geografía', labelEn: 'Geography', icon: '🌍', category: 'zaak' },
+  { id: 'kennis_der_natuur', labelNl: 'Kennis der Natuur', labelPap: 'Conocemento di Naturalesa', labelEs: 'Ciencias Naturales', labelEn: 'Natural Sciences', icon: '🌱', category: 'zaak' },
 ];
 
 // Tutoring session (maps to Supabase tutoring_sessions table)
@@ -70,7 +71,7 @@ export interface DifficultyAdjustment {
 }
 
 // Language preference (matches i18n locales)
-export type TutoringLanguage = 'nl' | 'pap' | 'es';
+export type TutoringLanguage = 'nl' | 'pap' | 'es' | 'en';
 
 // Rate limiting
 export interface TokenBudget {
@@ -80,13 +81,13 @@ export interface TokenBudget {
   used: number;
 }
 
-// Session duration limits by age (minutes)
+// Session duration limits by age (minutes) — suggestion only, user can extend
 export const SESSION_DURATION_BY_AGE: Record<number, number> = {
-  6: 8,   // Very short attention span
-  7: 10,
-  8: 12,
-  9: 15,
-  10: 18,
-  11: 20,
-  12: 25,
+  6: 30,
+  7: 35,
+  8: 40,
+  9: 45,
+  10: 50,
+  11: 55,
+  12: 60,
 };

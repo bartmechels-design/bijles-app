@@ -74,7 +74,85 @@ import type {
 } from '@/types/tutoring';
 
 /**
- * Create a new tutoring session for a child+subject
+ * Get the last difficulty level reached by a child for a specific subject.
+ * Used to carry forward progress between sessions.
+ */
+export async function getLastDifficultyLevel(
+  childId: string,
+  subject: Subject
+): Promise<number> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('tutoring_sessions')
+    .select('difficulty_level')
+    .eq('child_id', childId)
+    .eq('subject', subject)
+    .order('last_activity_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error || !data) {
+    return 1; // Default to level 1 for first-time users
+  }
+
+  return data.difficulty_level;
+}
+
+/**
+ * Get a summary of the most recent session for a child+subject.
+ * Used to give Koko context about what was covered before.
+ */
+export async function getSessionHistory(
+  childId: string,
+  subject: Subject
+): Promise<{ lastLevel: number; lastMessages: string[]; totalSessions: number } | null> {
+  const supabase = await createClient();
+
+  // Get most recent ended session
+  const { data: lastSession, error: sessionError } = await supabase
+    .from('tutoring_sessions')
+    .select('id, difficulty_level, metadata')
+    .eq('child_id', childId)
+    .eq('subject', subject)
+    .not('ended_at', 'is', null)
+    .order('last_activity_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (sessionError || !lastSession) {
+    return null; // No previous sessions
+  }
+
+  // Count total sessions for this child+subject
+  const { count } = await supabase
+    .from('tutoring_sessions')
+    .select('id', { count: 'exact', head: true })
+    .eq('child_id', childId)
+    .eq('subject', subject);
+
+  // Get last 6 messages from the previous session (for context)
+  const { data: messages } = await supabase
+    .from('tutoring_messages')
+    .select('role, content')
+    .eq('session_id', lastSession.id)
+    .order('created_at', { ascending: false })
+    .limit(6);
+
+  const lastMessages = (messages || [])
+    .reverse()
+    .map(m => `${m.role === 'assistant' ? 'Koko' : 'Kind'}: ${m.content.slice(0, 150)}`);
+
+  return {
+    lastLevel: lastSession.difficulty_level,
+    lastMessages,
+    totalSessions: count || 0,
+  };
+}
+
+/**
+ * Create a new tutoring session for a child+subject.
+ * Carries forward the difficulty level from the last session.
  */
 export async function createSession(
   childId: string,
@@ -94,13 +172,16 @@ export async function createSession(
     return null;
   }
 
-  // Create new session with default metadata
+  // Carry forward difficulty from last session
+  const lastLevel = await getLastDifficultyLevel(childId, subject);
+
+  // Create new session with carried-forward difficulty
   const { data, error } = await supabase
     .from('tutoring_sessions')
     .insert({
       child_id: childId,
       subject,
-      difficulty_level: 1,
+      difficulty_level: lastLevel,
       metadata: {
         consecutive_correct: 0,
         consecutive_incorrect: 0,

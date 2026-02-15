@@ -44,8 +44,16 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
     redirect(`/${locale}/login`)
   }
 
-  // Check if user is admin (admins bypass subscription check)
-  const isAdmin = user.app_metadata?.role === 'admin'
+  // Check if user is admin (check both JWT metadata and database)
+  const isAdminFromJWT = user.app_metadata?.role === 'admin'
+  let isAdmin = isAdminFromJWT
+  if (!isAdmin) {
+    // Fallback: check raw_app_meta_data directly in database
+    const { createAdminClient } = await import('@/lib/auth/admin')
+    const adminClient = createAdminClient()
+    const { data: dbUser } = await adminClient.auth.admin.getUserById(user.id)
+    isAdmin = dbUser?.user?.app_metadata?.role === 'admin'
+  }
 
   // Check subscription status (unless user is admin)
   let hasActiveSubscription = false

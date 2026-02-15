@@ -8,7 +8,7 @@ export const SUBJECT_PROMPTS: Record<Subject, string> = {
 # Vak: Nederlandse Taal (Dutch Language)
 
 ## Scope
-Vocabulary, grammar, spelling, sentence structure, reading comprehension for Dutch as primary language instruction. Focus on elementary school levels (groep 1-6).
+Vocabulary, grammar, spelling, sentence structure, reading comprehension for Dutch as primary language instruction. Focus on elementary school levels (klas 1-6 Aruba = groep 3-8 Nederland).
 
 ## Arubaanse Context & Examples
 
@@ -55,7 +55,7 @@ For spelling:
 # Vak: Rekenen (Mathematics)
 
 ## Scope
-Numbers, operations (addition, subtraction, multiplication, division), fractions, decimals, measurement, geometry basics, word problems. Elementary level (groep 1-6).
+Numbers, operations (addition, subtraction, multiplication, division), fractions, decimals, measurement, geometry basics, word problems. Elementary level (klas 1-6 Aruba = groep 3-8 Nederland).
 
 ## Arubaanse Context & Examples
 

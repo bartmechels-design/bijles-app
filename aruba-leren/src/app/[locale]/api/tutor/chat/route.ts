@@ -30,6 +30,7 @@ import {
   createSession,
   getSession,
   getActiveSession,
+  getSessionHistory,
   saveMessage,
   getRecentMessages,
   updateSessionMetadata,
@@ -40,7 +41,7 @@ import { buildSystemPrompt } from '@/lib/ai/prompts/system-prompts';
 import type { Subject, TutoringLanguage } from '@/types/tutoring';
 
 interface ChatRequestBody {
-  messages: Array<{ role: 'user' | 'assistant'; content: string }>;
+  messages: Array<{ role: 'user' | 'assistant'; content: string; imageUrl?: string }>;
   sessionId?: string;
   subject: Subject;
   childId: string;
@@ -168,7 +169,10 @@ export async function POST(
       currentSession.difficulty_level = difficultyAdjustment.newDifficulty;
     }
 
-    // Build system prompt with session context
+    // Get session history for continuity across sessions
+    const sessionHistory = await getSessionHistory(childId, subject);
+
+    // Build system prompt with session context and history
     const systemPrompt =
       buildSystemPrompt(
         subject,
@@ -176,10 +180,27 @@ export async function POST(
         child.age,
         child.first_name,
         currentSession.difficulty_level,
-        currentSession.metadata.igdi_phase
+        currentSession.metadata.igdi_phase,
+        sessionHistory,
+        child.grade
       ) + systemPromptAddition;
 
     // Convert context messages to AI SDK format and append new user message
+    // Support multimodal messages (text + image) for homework uploads
+    const buildMessageContent = (text: string, imageUrl?: string) => {
+      if (!imageUrl) return text;
+
+      // Parse base64 data URL: "data:image/jpeg;base64,..."
+      const match = imageUrl.match(/^data:(image\/\w+);base64,(.+)$/);
+      if (!match) return text;
+
+      const [, mimeType, base64Data] = match;
+      return [
+        { type: 'image' as const, image: base64Data, mimeType },
+        { type: 'text' as const, text: text || 'Bekijk mijn huiswerk' },
+      ];
+    };
+
     const conversationMessages = [
       ...contextMessages.map(msg => ({
         role: msg.role as 'user' | 'assistant',
@@ -187,7 +208,7 @@ export async function POST(
       })),
       {
         role: 'user' as const,
-        content: latestUserMessage.content,
+        content: buildMessageContent(latestUserMessage.content, latestUserMessage.imageUrl),
       },
     ];
 
