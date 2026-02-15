@@ -94,6 +94,13 @@ Plans:
 
 **Requirements Covered:** TUTOR-01, TUTOR-02, TUTOR-03, TUTOR-04, TUTOR-05, TUTOR-06, TUTOR-07
 
+**Plans:** 3 plans
+
+Plans:
+- [ ] 04-01-PLAN.md -- Types, Claude provider, and Koko prompt system (Socratic guards + 6 subjects)
+- [ ] 04-02-PLAN.md -- Streaming chat API, session manager, difficulty adjuster, rate limiter
+- [ ] 04-03-PLAN.md -- Child tutoring UI (child/subject selection + chat interface)
+
 **Success Criteria:**
 1. Child can select a vak from 6 options (Taal, Rekenen, Begrijpend Lezen, Geschiedenis, Aardrijkskunde, Kennis der Natuur) and start bijlessessie
 2. Koko responds using Socratic method - tested with edge cases ("just tell me the answer", "I give up") confirms no direct answers given
