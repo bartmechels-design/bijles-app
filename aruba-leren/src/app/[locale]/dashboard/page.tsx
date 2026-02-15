@@ -115,20 +115,51 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
 
         {/* Main Content - Conditional based on subscription */}
         {hasActiveSubscription ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Add Child Form */}
-            <div>
-              <AddChildForm locale={locale} />
-            </div>
+          <>
+            {/* Tutoring CTA Card */}
+            {children && children.length > 0 && (
+              <div className="mb-8">
+                <Link
+                  href={`/${locale}/tutor`}
+                  className="block group"
+                >
+                  <div className="bg-gradient-to-r from-amber-400 via-amber-500 to-sky-500 rounded-2xl shadow-xl hover:shadow-2xl transition-all p-8 border-4 border-transparent hover:border-white transform hover:scale-[1.02]">
+                    <div className="flex items-center justify-between gap-6">
+                      <div className="flex items-center gap-4">
+                        <span className="text-7xl">🐵</span>
+                        <div className="text-white">
+                          <h2 className="text-3xl font-bold mb-2">
+                            Bijles met Koko
+                          </h2>
+                          <p className="text-amber-100 text-lg">
+                            Start een les met onze AI-leraar
+                          </p>
+                        </div>
+                      </div>
+                      <div className="bg-white text-sky-600 font-bold px-6 py-3 rounded-xl group-hover:bg-sky-50 transition-colors shadow-md">
+                        Start nu →
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            )}
 
-            {/* Child List */}
-            <div className="lg:col-span-1">
-              <ChildList
-                children={children || []}
-                locale={locale}
-              />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Add Child Form */}
+              <div>
+                <AddChildForm locale={locale} />
+              </div>
+
+              {/* Child List */}
+              <div className="lg:col-span-1">
+                <ChildList
+                  children={children || []}
+                  locale={locale}
+                />
+              </div>
             </div>
-          </div>
+          </>
         ) : (
           /* No Active Subscription Message */
           <div className="bg-white rounded-2xl shadow-xl p-8 border-t-4 border-amber-500">
