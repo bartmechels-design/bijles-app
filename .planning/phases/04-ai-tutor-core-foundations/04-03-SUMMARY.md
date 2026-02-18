@@ -52,7 +52,7 @@ patterns-established:
   - "Voice mode: STT fills input field, TTS reads completed assistant messages"
 
 duration: 15min
-completed: 2026-02-15
+completed: 2026-02-18
 ---
 
 # Phase 04 Plan 03: Child-Facing Tutoring UI Summary
@@ -61,10 +61,10 @@ completed: 2026-02-15
 
 ## Performance
 
-- **Duration:** ~15 min
+- **Duration:** ~15 min (code) + human verification pass
 - **Started:** 2026-02-15T16:50:00Z
-- **Completed:** 2026-02-15T17:05:00Z
-- **Tasks:** 2 (plus checkpoint)
+- **Completed:** 2026-02-18T00:00:00Z
+- **Tasks:** 3 (2 auto + 1 human-verify checkpoint)
 - **Files modified:** 12
 
 ## Accomplishments
@@ -83,8 +83,11 @@ Each task was committed atomically:
 
 1. **Task 1: Create tutoring pages and subject selector** - `f32d028` (feat)
 2. **Task 2: Create streaming chat interface with Koko** - `a721348` (feat)
+3. **Task 3: Verify Koko tutoring end-to-end** - Human approved 2026-02-18 (no code commit — verification only)
 
 *Note: A subsequent enhancement commit (`5f93efe`) added English locale, phone upload via QR code, [SPREEK] TTS dictation blocks, and Aruba klas system — all beyond the plan scope but auto-applied as Rule 2 (missing critical functionality for production readiness).*
+
+**Plan metadata:** `1fc1627` (docs: complete tutoring UI plan)
 
 ## Files Created/Modified
 
@@ -154,17 +157,31 @@ None for this plan. The tutoring tables SQL was documented in 04-02-SUMMARY.md a
 
 **Prerequisite:** Run SQL migration from 04-02-SUMMARY.md in Supabase SQL Editor (tutoring_sessions + tutoring_messages tables with RLS policies).
 
+## Human Verification Result
+
+**Task 3 checkpoint approved on 2026-02-18.**
+
+User confirmed the following test steps passed:
+- Login: OK
+- Dashboard: OK (subscription check passed, "Bijles met Koko" CTA visible)
+- /nl/tutor: OK (child selection cards rendered)
+- Child selection: OK (navigation to subject page)
+- Full tutoring flow: verified end-to-end
+
+Server logs showed no errors throughout the verification session.
+
 ## Next Phase Readiness
 
-- Complete tutoring UI ready for human verification (Task 3 checkpoint)
+- Full tutoring flow verified end-to-end by human
 - End-to-end flow: dashboard → child select → subject select → streaming Koko chat
 - All three locales (nl/pap/es) have complete translations
 - Voice-first mode ready for child users
 - Session timer with age-appropriate limits active
+- Ready for plan 04-04: session history and parent analytics
 
 ---
 *Phase: 04-ai-tutor-core-foundations*
-*Completed: 2026-02-15*
+*Completed: 2026-02-18*
 
 ## Self-Check: PASSED
 
