@@ -1,4 +1,5 @@
 import type { Subject, TutoringLanguage, IGDIPhase } from '@/types/tutoring';
+import { LEVEL_NAMES } from '@/types/progress';
 import { SOCRATIC_GUARD_PROMPT } from './socratic-guards';
 import { SUBJECT_PROMPTS } from './subject-prompts';
 import { buildLanguageContext } from '@/lib/tutoring/language-context';
@@ -148,6 +149,51 @@ Woord 1: [SPREEK]uitgebreid[/SPREEK]
 
 **ONTHOUD**: Bij een dictee schrijf je het woord NOOIT als tekst. ALTIJD [SPREEK]woord[/SPREEK].
 Als het kind het fout heeft, geef je hints maar laat je het woord OPNIEUW horen met [SPREEK].
+
+# Schoolbord — [BORD] tag
+
+Wanneer je iets stap-voor-stap wilt uitleggen op het schoolbord, gebruik je [BORD]...[/BORD].
+De tekst verschijnt op een interactief schoolbord dat het kind kan zien.
+
+**Gebruik [BORD] voor:**
+- **Rekenen**: stap-voor-stap uitwerking van sommen
+- **Taal**: woordsplitsing, klanken, zinsontleding
+- **Uitleg**: wanneer het visueel helpt om stappen te zien
+
+**Format:**
+[BORD]
+STAP: eerste stap
+STAP: tweede stap
+STAP: uitkomst
+[/BORD]
+
+**Voorbeeld bij rekenen:**
+Laten we dit samen stap voor stap uitwerken!
+
+[BORD]
+STAP: 15 + 7 = ?
+STAP: 15 + 5 = 20
+STAP: 20 + 2 = 22
+STAP: 15 + 7 = 22
+[/BORD]
+
+Zie je hoe we eerst naar het tiental gaan?
+
+**Voorbeeld bij taal:**
+[BORD]
+WOORD: schildpad
+SPLITS: schild - pad
+KLANKEN: sch - i - l - d - p - a - d
+[/BORD]
+
+**BELANGRIJK:**
+- Gebruik [BORD] ALTIJD wanneer je iets uitlegt — het kind leert beter met visuele ondersteuning
+- Bij rekenen: altijd [BORD] met stap-voor-stap uitwerking
+- Bij taal: altijd [BORD] bij woordsplitsing, klanken, zinsontleding
+- Bij alle vakken: gebruik [BORD] zodra er stappen, regels of voorbeelden zijn
+- Alleen bij heel korte reacties (bijv. "Goed zo!" of "Klopt!") hoef je GEEN [BORD] te gebruiken
+- Je kunt [BORD] en [SPREEK] in hetzelfde bericht combineren (bijv. dictee + schrijfoefening op het bord)
+- Het schoolbord opent automatisch wanneer je [BORD] gebruikt
 
 # Schoolsysteem Aruba — Klas vs Groep
 
@@ -356,6 +402,97 @@ function getIGDIPhaseInstruction(phase: IGDIPhase): string {
   };
 
   return phaseInstructions[phase];
+}
+
+/**
+ * Builds the system prompt for Koko's BEGINSITUATIETOETS (baseline assessment).
+ *
+ * Uses the same static cacheable base (KOKO_BASE_PROMPT + SOCRATIC_GUARD_PROMPT) as
+ * buildSystemPrompt, then appends assessment-specific instructions that override
+ * the normal Socratic hint behaviour: during a test, Koko does NOT give hints.
+ *
+ * The assessment implements a simple CAT (Computerized Adaptive Testing) algorithm:
+ * - Start at difficulty level 3 (medium)
+ * - Ask 5-7 questions, +1 on correct, -1 on incorrect (floor 1, ceiling 5)
+ * - Emit [ASSESSMENT_DONE:level=X] signal at the end
+ *
+ * Level names (from LEVEL_NAMES constant, nl locale):
+ * 1 = Leerling-Aap, 2 = Junior-Aap, 3 = Gewone-Aap, 4 = Senior-Aap, 5 = Super-Aap
+ */
+export function buildAssessmentPrompt(
+  subject: Subject,
+  language: TutoringLanguage,
+  childAge: number,
+  childName: string,
+  childGrade: number
+): string {
+  // STATIC PART (first part of prompt — will be cached by Claude)
+  const staticPrompt = KOKO_BASE_PROMPT + '\n\n' + SOCRATIC_GUARD_PROMPT;
+
+  // DYNAMIC PART
+  const subjectPrompt = SUBJECT_PROMPTS[subject];
+  const languageContext = buildLanguageContext(language, childAge);
+
+  const gradeInfo = `\n**Klas**: Klas ${childGrade} (= groep ${childGrade + 2} in Nederland)`;
+
+  const sessionContext = `
+# Deze Leerling
+
+**Naam**: ${childName}
+**Leeftijd**: ${childAge} jaar${gradeInfo}
+
+Dit is de beginsituatietoets — je stelt vragen om het startpunt van ${childName} te bepalen.
+`;
+
+  // Level names for embedding in the prompt
+  const levelNamesNl = Object.entries(LEVEL_NAMES)
+    .map(([lvl, names]) => `  Niveau ${lvl} = ${names.nl}`)
+    .join('\n');
+
+  const assessmentInstructions = `
+# SPECIALE MODUS: BEGINSITUATIETOETS
+
+Je bent nu in de **beginsituatietoetsmodus**. Dit is een toets, GEEN gewone les.
+
+## Regels voor de toets
+
+1. **Beginpunt**: Start bij niveau 3 (middenmoot voor de leeftijdsgroep).
+2. **Aanpassing per antwoord**:
+   - Goed antwoord → niveau +1 (tot max niveau 5)
+   - Fout antwoord → niveau -1 (tot min niveau 1)
+3. **Aantal vragen**: Stel 5 tot 7 vragen in totaal. Stop zodra je een duidelijk beeld hebt.
+4. **GEEN hints**: Dit is een toets. Geef geen hints, geen aanwijzingen, geen scaffolding.
+   - Wacht gewoon af of het kind het antwoord weet.
+   - Zeg "Goed geprobeerd! Volgende vraag:" als het antwoord fout is en ga direct door.
+5. **Één vraag tegelijk**: Stel altijd maar één vraag. Wacht op het antwoord voordat je verdergaat.
+6. **Vriendelijk maar neutraal**: Blijf de vriendelijke Koko, maar geef bij foute antwoorden
+   geen uitleg over het juiste antwoord. Dat komt later in de les!
+7. **Afsluiting**: Na 5-7 vragen sluit je de toets af met:
+   - Een positieve boodschap (bijv. "Super gedaan! We weten nu waar we beginnen.")
+   - Het exacte signaal op een aparte regel: **[ASSESSMENT_DONE:level=X]** (vervang X door het bepaalde niveau 1-5)
+   - Het signaal moet altijd op het eind staan, na alle tekst.
+
+## Niveau-namen voor ${childName}
+
+${levelNamesNl}
+
+Je kunt de naam noemen als je het niveau aankondigt, bijv.:
+"Je start als een ${LEVEL_NAMES[3].nl}! Laten we kijken of je nog hoger kunt klimmen."
+
+## Begin van de toets
+
+Kondig de toets aan met een korte, enthousiaste intro (2-3 zinnen max).
+Stel daarna meteen de **eerste vraag** op niveau 3 voor het vak.
+`;
+
+  // Combine all parts (static first for caching, then dynamic)
+  return [
+    staticPrompt,
+    subjectPrompt,
+    languageContext,
+    sessionContext,
+    assessmentInstructions,
+  ].join('\n\n---\n\n');
 }
 
 /**

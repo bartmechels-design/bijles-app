@@ -181,6 +181,7 @@ export async function createSession(
     .insert({
       child_id: childId,
       subject,
+      session_type: 'tutoring',  // Explicit — prevents accidental assessment session creation
       difficulty_level: lastLevel,
       metadata: {
         consecutive_correct: 0,
@@ -223,7 +224,9 @@ export async function getSession(sessionId: string): Promise<TutoringSession | n
 }
 
 /**
- * Get the most recent active session for a child+subject
+ * Get the most recent active TUTORING session for a child+subject.
+ * Filters by session_type = 'tutoring' to prevent assessment sessions from
+ * being resumed as tutoring sessions (they use a different system prompt).
  * Returns null if no active session found (ended_at IS NULL AND last_activity_at within 30 minutes)
  */
 export async function getActiveSession(
@@ -240,6 +243,7 @@ export async function getActiveSession(
     .select('*')
     .eq('child_id', childId)
     .eq('subject', subject)
+    .eq('session_type', 'tutoring')
     .is('ended_at', null)
     .gt('last_activity_at', thirtyMinutesAgo)
     .order('last_activity_at', { ascending: false })
@@ -248,6 +252,41 @@ export async function getActiveSession(
 
   if (error) {
     console.error('Error fetching active session:', error);
+    return null;
+  }
+
+  return data as TutoringSession | null;
+}
+
+/**
+ * Get the most recent active ASSESSMENT session for a child+subject.
+ * Mirrors getActiveSession but filters for session_type = 'assessment'.
+ * Used by the assessment entry page to resume an in-progress assessment.
+ * Returns null if no active assessment session found within 30 minutes.
+ */
+export async function getActiveAssessmentSession(
+  childId: string,
+  subject: Subject
+): Promise<TutoringSession | null> {
+  const supabase = await createClient();
+
+  // Calculate 30 minutes ago
+  const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000).toISOString();
+
+  const { data, error } = await supabase
+    .from('tutoring_sessions')
+    .select('*')
+    .eq('child_id', childId)
+    .eq('subject', subject)
+    .eq('session_type', 'assessment')
+    .is('ended_at', null)
+    .gt('last_activity_at', thirtyMinutesAgo)
+    .order('last_activity_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    console.error('Error fetching active assessment session:', error);
     return null;
   }
 
