@@ -51,7 +51,7 @@ export default function SubjectSelector({ childId, childName, locale }: SubjectS
                     Kernvak
                   </div>
                   <div className="flex items-center justify-center gap-2 font-semibold mt-4">
-                    <span>Start les</span>
+                    <span>{t('startSession')}</span>
                     <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                     </svg>
@@ -89,7 +89,7 @@ export default function SubjectSelector({ childId, childName, locale }: SubjectS
                     Zaakvak
                   </div>
                   <div className="flex items-center justify-center gap-2 font-semibold mt-4">
-                    <span>Start les</span>
+                    <span>{t('startSession')}</span>
                     <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                     </svg>
