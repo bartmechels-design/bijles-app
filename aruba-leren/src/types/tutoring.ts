@@ -83,11 +83,11 @@ export interface TokenBudget {
 
 // Session duration limits by age (minutes) — suggestion only, user can extend
 export const SESSION_DURATION_BY_AGE: Record<number, number> = {
-  6: 30,
-  7: 35,
-  8: 40,
-  9: 45,
-  10: 50,
-  11: 55,
+  6: 60,
+  7: 60,
+  8: 60,
+  9: 60,
+  10: 60,
+  11: 60,
   12: 60,
 };
