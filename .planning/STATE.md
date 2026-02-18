@@ -6,22 +6,22 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 
 **Core value:** Kinderen op Aruba krijgen persoonlijke bijles die zich aanpast aan hun niveau, volledig zelfstandig, in hun eigen taal en context.
 
-**Current focus:** Phase 4 in progress — AI Tutor Core Foundations
+**Current focus:** Phase 4 complete — AI Tutor Core Foundations
 
 ## Current Position
 
-Phase: 4 of 7 (AI Tutor Core Foundations)
-Plan: 4 of 4 (04-03 fully complete including human verification, ready for 04-04)
-Status: In progress — 04-03 complete, 04-04 not yet started
-Last activity: 2026-02-18 — 04-03 human verification passed, plan finalized
+Phase: 4 of 7 (AI Tutor Core Foundations) — COMPLETE
+Plan: 4 of 4 (04-04 complete — all plans done)
+Status: Phase 4 complete — ready for Phase 5 planning
+Last activity: 2026-02-18 — 04-04 complete, Phase 4 fully done
 
-Progress: [█████████████████████████████████████████████░░░░░░] 56%
+Progress: [████████████████████████████████████████████████░░░] 60%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 12
-- Total execution time: ~1.6 hours
+- Total plans completed: 13
+- Total execution time: ~1.8 hours
 
 **By Phase:**
 
@@ -30,16 +30,16 @@ Progress: [███████████████████████
 | 01 - Foundation & Infrastructure | 3/3 | Complete |
 | 02 - Authentication & Family Accounts | 3/3 | Complete |
 | 03 - Payment Verification System | 3/3 | Complete |
-| 04 - AI Tutor Core Foundations | 3/4 | In progress (04-03 complete, 04-04 pending) |
+| 04 - AI Tutor Core Foundations | 4/4 | Complete |
 
 **Recent Executions:**
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
-| 03 | 03 | 8 min | 2 | 7 |
 | 04 | 01 | 6 min | 2 | 6 |
 | 04 | 02 | 5 min | 2 | 4 |
 | 04 | 03 | 15 min | 2 | 12 |
+| 04 | 04 | 8 min | 2 | 4 |
 
 ## Accumulated Context
 
@@ -91,6 +91,8 @@ Recent decisions affecting current work:
 - 04-03: Voice-first mode toggle enables large mic button + auto-TTS for younger children
 - 04-03: [SPREEK]/[BORD] segment parsing in ChatMessage integrates with system prompt special blocks
 - 04-03: SessionTimer uses router.back() for stop action (preserves navigation stack)
+- 04-04: Null-as-indeterminate for wasCorrect: skip recordAnswer on neutral Koko responses to avoid false counter increments
+- 04-04: Single updateSessionMetadata call in onFinish combines all updates (messages, tokens, answer counters, hints) to minimize DB round-trips
 
 ### Pending Todos
 
@@ -100,12 +102,12 @@ Recent decisions affecting current work:
 
 ### Blockers/Concerns
 
-- None — 04-03 human verification passed on 2026-02-18. Ready for 04-04.
+- None — Phase 4 complete as of 2026-02-18.
 
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: 04-03 fully complete — human verification passed. Ready to start 04-04.
+Stopped at: Completed 04-04-PLAN.md — Phase 4 all 4 plans complete
 Resume file: None
 
-**Next action:** Execute plan 04-04 (session history + parent analytics)
+**Next action:** Plan Phase 5 with `/gsd:plan-phase 05`
