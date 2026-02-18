@@ -11,17 +11,17 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 ## Current Position
 
 Phase: 4 of 7 (AI Tutor Core Foundations)
-Plan: 2 of 4 (04-02 complete)
-Status: In progress
-Last activity: 2026-02-15 — Completed 04-02 (tutoring session API and conversation flow)
+Plan: 3 of 4 (04-03 tasks complete, awaiting human verification checkpoint)
+Status: In progress — checkpoint reached
+Last activity: 2026-02-18 — Completed 04-03 tasks 1 & 2, awaiting human verify
 
-Progress: [█████████████████████████████████████░░░░░░░░░░░░░░░] 47%
+Progress: [████████████████████████████████████████░░░░░░░░░░░] 50%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 11
-- Total execution time: ~1.5 hours
+- Total plans completed: 12
+- Total execution time: ~1.6 hours
 
 **By Phase:**
 
@@ -30,7 +30,7 @@ Progress: [███████████████████████
 | 01 - Foundation & Infrastructure | 3/3 | Complete |
 | 02 - Authentication & Family Accounts | 3/3 | Complete |
 | 03 - Payment Verification System | 3/3 | Complete |
-| 04 - AI Tutor Core Foundations | 2/4 | In progress |
+| 04 - AI Tutor Core Foundations | 3/4 | In progress (checkpoint) |
 
 **Recent Executions:**
 
@@ -39,6 +39,7 @@ Progress: [███████████████████████
 | 03 | 03 | 8 min | 2 | 7 |
 | 04 | 01 | 6 min | 2 | 6 |
 | 04 | 02 | 5 min | 2 | 4 |
+| 04 | 03 | 15 min | 2 | 12 |
 
 ## Accumulated Context
 
@@ -86,6 +87,10 @@ Recent decisions affecting current work:
 - [Phase 04]: Rate limiter queries 24-hour rolling window from tutoring_sessions metadata (not separate table)
 - [Phase 04]: Difficulty adjuster as pure functions (no DB calls) — caller controls persistence
 - [Phase 04]: Vercel AI SDK v4 API: maxOutputTokens (not maxTokens), toTextStreamResponse() for text streaming
+- 04-03: Custom streaming fetch instead of useChat (toTextStreamResponse is plain text, not AI data stream protocol)
+- 04-03: Voice-first mode toggle enables large mic button + auto-TTS for younger children
+- 04-03: [SPREEK]/[BORD] segment parsing in ChatMessage integrates with system prompt special blocks
+- 04-03: SessionTimer uses router.back() for stop action (preserves navigation stack)
 
 ### Pending Todos
 
@@ -95,12 +100,12 @@ Recent decisions affecting current work:
 
 ### Blockers/Concerns
 
-None.
+- 04-03 CHECKPOINT: Human verification required — test end-to-end tutoring flow before plan 04-04
 
 ## Session Continuity
 
-Last session: 2026-02-15
-Stopped at: Completed 04-02 (tutoring session API and conversation flow)
+Last session: 2026-02-18
+Stopped at: 04-03 Task 3 checkpoint (human-verify) — tasks 1 & 2 complete, awaiting human test
 Resume file: None
 
-**Next action:** Continue Phase 4 — Execute plan 04-03 (chat UI and streaming interface)
+**Next action:** After human verification passes, execute plan 04-04 (session history + parent analytics)
