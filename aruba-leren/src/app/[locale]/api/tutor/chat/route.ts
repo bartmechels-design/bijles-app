@@ -35,10 +35,11 @@ import {
   getRecentMessages,
   updateSessionMetadata,
 } from '@/lib/tutoring/session-manager';
-import { adjustDifficulty } from '@/lib/tutoring/difficulty-adjuster';
+import { adjustDifficulty, recordAnswer } from '@/lib/tutoring/difficulty-adjuster';
+import { analyzeKokoResponse } from '@/lib/tutoring/response-analyzer';
 import { checkTokenBudget, recordTokenUsage } from '@/lib/ai/rate-limiter';
 import { buildSystemPrompt } from '@/lib/ai/prompts/system-prompts';
-import type { Subject, TutoringLanguage } from '@/types/tutoring';
+import type { Subject, TutoringLanguage, SessionMetadata } from '@/types/tutoring';
 
 interface ChatRequestBody {
   messages: Array<{ role: 'user' | 'assistant'; content: string; imageUrl?: string }>;
@@ -224,19 +225,43 @@ export async function POST(
           // Get total tokens (with fallback)
           const totalTokens = usage.totalTokens || 0;
 
-          // Save assistant message with token usage metadata
+          // Analyze Koko's response for correctness and hint signals
+          const analysis = analyzeKokoResponse(text);
+
+          // Save assistant message with analysis metadata for auditability
           await saveMessage(currentSession.id, 'assistant', text, {
             tokens_used: totalTokens,
+            was_correct: analysis.wasCorrect ?? undefined,
+            hints_given: analysis.wasHint ? 1 : 0,
+            difficulty_at_time: currentSession.difficulty_level,
           });
 
           // Record token usage for rate limiting
           await recordTokenUsage(currentSession.id, totalTokens);
 
-          // Update session metadata with message count and token usage
-          await updateSessionMetadata(currentSession.id, {
-            total_messages: (currentSession.metadata.total_messages || 0) + 2, // user + assistant
+          // Build combined metadata updates (messages + tokens + answer counters)
+          const metadataUpdates: Partial<SessionMetadata> = {
+            total_messages: (currentSession.metadata.total_messages || 0) + 2,
             tokens_used: (currentSession.metadata.tokens_used || 0) + totalTokens,
-          });
+          };
+
+          // Record answer if we detected a definitive correct/incorrect signal
+          if (analysis.wasCorrect !== null) {
+            const answerUpdates = recordAnswer(currentSession, analysis.wasCorrect);
+            Object.assign(metadataUpdates, answerUpdates);
+
+            // Update local session reference so adjustDifficulty reads fresh counters on next request
+            Object.assign(currentSession.metadata, answerUpdates);
+          }
+
+          // Increment total_hints_given when Koko gives hints
+          if (analysis.wasHint) {
+            metadataUpdates.total_hints_given = (currentSession.metadata.total_hints_given || 0) + 1;
+            currentSession.metadata.total_hints_given = metadataUpdates.total_hints_given;
+          }
+
+          // Persist all metadata updates in a single call
+          await updateSessionMetadata(currentSession.id, metadataUpdates);
         } catch (error) {
           console.error('Error in onFinish callback:', error);
           // Don't throw — streaming already completed
