@@ -120,6 +120,14 @@ Plans:
 
 **Requirements Covered:** TOETS-01, TOETS-02, TOETS-03, PROG-01, PROG-02, PROG-03
 
+**Plans:** 4 plans
+
+Plans:
+- [ ] 05-01-PLAN.md — SQL migration, types, assessment-manager, progress-tracker (data foundation)
+- [ ] 05-02-PLAN.md — Assessment prompt, chat API integration, assessment page (assessment flow)
+- [ ] 05-03-PLAN.md — Progress UI components and SubjectSelector assessment gate (progress display)
+- [ ] 05-04-PLAN.md — Build verification and end-to-end human testing
+
 **Success Criteria:**
 1. Child completes beginsituatietoets via chat with Koko for selected vak
 2. Assessment adapts moeilijkheid dynamically based on responses (verified with mock student data)
@@ -176,7 +184,7 @@ Plans:
 | Phase 2: Authentication & Family Accounts | 6 | Complete | 100% |
 | Phase 3: Payment Verification System | 6 | Pending | 0% |
 | Phase 4: AI Tutor - Core Foundations | 7 | In Progress | 85% |
-| Phase 5: Baseline Assessment & Progress Tracking | 6 | Pending | 0% |
+| Phase 5: Baseline Assessment & Progress Tracking | 6 | Planning | 0% |
 | Phase 6: Advanced Tutor Features & Content Management | 6 | Pending | 0% |
 | Phase 7: Parent Portal & Admin Monitoring | 8 | Pending | 0% |
 
