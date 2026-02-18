@@ -27,6 +27,7 @@ export interface TutoringSession {
   child_id: string;
   subject: Subject;
   difficulty_level: number;  // 1-5
+  session_type?: 'assessment' | 'tutoring';  // Added in migration 007
   started_at: string;
   last_activity_at: string;
   ended_at: string | null;
@@ -40,6 +41,7 @@ export interface SessionMetadata {
   total_messages: number;
   tokens_used: number;
   igdi_phase: IGDIPhase;
+  assessment_questions_asked?: number;  // Added for assessment sessions (migration 007)
 }
 
 // IGDI model phases mapped to conversation flow
