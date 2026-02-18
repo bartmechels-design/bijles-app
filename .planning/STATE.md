@@ -6,22 +6,22 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 
 **Core value:** Kinderen op Aruba krijgen persoonlijke bijles die zich aanpast aan hun niveau, volledig zelfstandig, in hun eigen taal en context.
 
-**Current focus:** Phase 4 complete — AI Tutor Core Foundations
+**Current focus:** Phase 5 — Baseline Assessment & Progress Tracking (in progress)
 
 ## Current Position
 
-Phase: 4 of 7 (AI Tutor Core Foundations) — COMPLETE
-Plan: 4 of 4 (04-04 complete — all plans done)
-Status: Phase 4 complete — ready for Phase 5 planning
-Last activity: 2026-02-18 — 04-04 complete, Phase 4 fully done
+Phase: 5 of 7 (Baseline Assessment & Progress Tracking) — IN PROGRESS
+Plan: 1 of 4 (05-01 complete)
+Status: Phase 5 plan 1 complete — database foundation and server-side modules done
+Last activity: 2026-02-18 — 05-01 complete, SQL migration + types + assessment-manager + progress-tracker
 
-Progress: [████████████████████████████████████████████████░░░] 60%
+Progress: [█████████████████████████████████████████████████████░░] 65%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 13
-- Total execution time: ~1.8 hours
+- Total plans completed: 14
+- Total execution time: ~1.9 hours
 
 **By Phase:**
 
@@ -31,6 +31,7 @@ Progress: [███████████████████████
 | 02 - Authentication & Family Accounts | 3/3 | Complete |
 | 03 - Payment Verification System | 3/3 | Complete |
 | 04 - AI Tutor Core Foundations | 4/4 | Complete |
+| 05 - Baseline Assessment & Progress Tracking | 1/4 | In Progress |
 
 **Recent Executions:**
 
@@ -40,6 +41,7 @@ Progress: [███████████████████████
 | 04 | 02 | 5 min | 2 | 4 |
 | 04 | 03 | 15 min | 2 | 12 |
 | 04 | 04 | 8 min | 2 | 4 |
+| 05 | 01 | 6 min | 2 | 5 |
 
 ## Accumulated Context
 
@@ -93,21 +95,26 @@ Recent decisions affecting current work:
 - 04-03: SessionTimer uses router.back() for stop action (preserves navigation stack)
 - 04-04: Null-as-indeterminate for wasCorrect: skip recordAnswer on neutral Koko responses to avoid false counter increments
 - 04-04: Single updateSessionMetadata call in onFinish combines all updates (messages, tokens, answer counters, hints) to minimize DB round-trips
+- 05-01: session_type column reuses tutoring_sessions table (not separate assessment_sessions) — avoids schema duplication
+- 05-01: Read-then-write for stuck_concept_count instead of RPC — simpler, no Supabase function dependency
+- 05-01: finishAssessment is idempotent: checks ended_at before writing to handle onFinish double-fire
+- 05-01: LEVEL_NAMES exported from types/progress.ts for reuse across UI and assessment system prompt
 
 ### Pending Todos
 
 - Phase 4: ✅ DONE (04-01) — Koko hints/suggesties voor spellingcorrectie (phonetic hints in Socratic guards)
 - Phase 4: ✅ DONE (04-01) — IGDI-model geïntegreerd in prompt system
 - Phase 4: ✅ DONE (04-01) — Lesduur per leeftijd (SESSION_DURATION_BY_AGE constants)
+- Phase 5: USER ACTION REQUIRED — Run migration 007_assessment_progress_tables.sql in Supabase SQL Editor
 
 ### Blockers/Concerns
 
-- None — Phase 4 complete as of 2026-02-18.
+- None — Phase 5 plan 1 complete. User must run SQL migration 007 in Supabase before Phase 5 can be tested end-to-end.
 
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 04-04-PLAN.md — Phase 4 all 4 plans complete
+Stopped at: Completed 05-01-PLAN.md — SQL migration, types, assessment-manager, progress-tracker done
 Resume file: None
 
-**Next action:** Plan Phase 5 with `/gsd:plan-phase 05`
+**Next action:** Execute Phase 5 plan 02 with `/gsd:execute-phase 05`
