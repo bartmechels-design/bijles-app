@@ -94,12 +94,13 @@ Plans:
 
 **Requirements Covered:** TUTOR-01, TUTOR-02, TUTOR-03, TUTOR-04, TUTOR-05, TUTOR-06, TUTOR-07
 
-**Plans:** 3 plans
+**Plans:** 4 plans
 
 Plans:
-- [ ] 04-01-PLAN.md -- Types, Claude provider, and Koko prompt system (Socratic guards + 6 subjects)
-- [ ] 04-02-PLAN.md -- Streaming chat API, session manager, difficulty adjuster, rate limiter
-- [ ] 04-03-PLAN.md -- Child tutoring UI (child/subject selection + chat interface)
+- [x] 04-01-PLAN.md -- Types, Claude provider, and Koko prompt system (Socratic guards + 6 subjects)
+- [x] 04-02-PLAN.md -- Streaming chat API, session manager, difficulty adjuster, rate limiter
+- [x] 04-03-PLAN.md -- Child tutoring UI (child/subject selection + chat interface)
+- [ ] 04-04-PLAN.md -- Gap closure: wire recordAnswer() + i18n string fixes
 
 **Success Criteria:**
 1. Child can select a vak from 6 options (Taal, Rekenen, Begrijpend Lezen, Geschiedenis, Aardrijkskunde, Kennis der Natuur) and start bijlessessie
@@ -174,7 +175,7 @@ Plans:
 | Phase 1: Foundation & Infrastructure | 6 | Complete | 100% |
 | Phase 2: Authentication & Family Accounts | 6 | Complete | 100% |
 | Phase 3: Payment Verification System | 6 | Pending | 0% |
-| Phase 4: AI Tutor - Core Foundations | 7 | Pending | 0% |
+| Phase 4: AI Tutor - Core Foundations | 7 | In Progress | 85% |
 | Phase 5: Baseline Assessment & Progress Tracking | 6 | Pending | 0% |
 | Phase 6: Advanced Tutor Features & Content Management | 6 | Pending | 0% |
 | Phase 7: Parent Portal & Admin Monitoring | 8 | Pending | 0% |
@@ -220,4 +221,4 @@ Research findings from ARCHITECTURE.md, FEATURES.md, PITFALLS.md, and STACK.md i
 ---
 
 *Roadmap created: 2026-02-12*
-*Last updated: 2026-02-15*
+*Last updated: 2026-02-18*
