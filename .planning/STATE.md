@@ -11,11 +11,11 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 ## Current Position
 
 Phase: 5 of 7 (Baseline Assessment & Progress Tracking) — IN PROGRESS
-Plan: 1 of 4 (05-01 complete)
-Status: Phase 5 plan 1 complete — database foundation and server-side modules done
-Last activity: 2026-02-18 — 05-01 complete, SQL migration + types + assessment-manager + progress-tracker
+Plan: 2 of 4 (05-02 complete)
+Status: Phase 5 plan 2 complete — assessment wiring, chat API integration, ChatInterface assessment UI
+Last activity: 2026-02-19 — 05-02 complete, buildAssessmentPrompt, [ASSESSMENT_DONE] detection, stuck detection, level tracking, assessment page
 
-Progress: [█████████████████████████████████████████████████████░░] 65%
+Progress: [█████████████████████████████████████████████████████████░] 68%
 
 ## Performance Metrics
 
@@ -31,7 +31,7 @@ Progress: [███████████████████████
 | 02 - Authentication & Family Accounts | 3/3 | Complete |
 | 03 - Payment Verification System | 3/3 | Complete |
 | 04 - AI Tutor Core Foundations | 4/4 | Complete |
-| 05 - Baseline Assessment & Progress Tracking | 1/4 | In Progress |
+| 05 - Baseline Assessment & Progress Tracking | 2/4 | In Progress |
 
 **Recent Executions:**
 
@@ -42,6 +42,7 @@ Progress: [███████████████████████
 | 04 | 03 | 15 min | 2 | 12 |
 | 04 | 04 | 8 min | 2 | 4 |
 | 05 | 01 | 6 min | 2 | 5 |
+| 05 | 02 | 15 min | 2 | 5 |
 
 ## Accumulated Context
 
@@ -99,6 +100,10 @@ Recent decisions affecting current work:
 - 05-01: Read-then-write for stuck_concept_count instead of RPC — simpler, no Supabase function dependency
 - 05-01: finishAssessment is idempotent: checks ended_at before writing to handle onFinish double-fire
 - 05-01: LEVEL_NAMES exported from types/progress.ts for reuse across UI and assessment system prompt
+- 05-02: isAssessment derived from currentSession.session_type in route.ts closure — captured correctly in onFinish
+- 05-02: Assessment sessions skip difficulty adjuster — Koko manages level internally via CAT prompt algorithm
+- 05-02: Stuck detection runs for both session types; level change tracking (recordProgressEvent) is tutoring-only
+- 05-02: [ASSESSMENT_DONE] signal stripped from ChatInterface visible text using regex-replace (same as [SPREEK])
 
 ### Pending Todos
 
@@ -113,8 +118,8 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-02-18
-Stopped at: Completed 05-01-PLAN.md — SQL migration, types, assessment-manager, progress-tracker done
+Last session: 2026-02-19
+Stopped at: Completed 05-02-PLAN.md — assessment wiring, [ASSESSMENT_DONE] detection, stuck detection, level tracking, assessment page, ChatInterface assessment UI
 Resume file: None
 
-**Next action:** Execute Phase 5 plan 02 with `/gsd:execute-phase 05`
+**Next action:** Execute Phase 5 plan 03 with `/gsd:execute-phase 05`
