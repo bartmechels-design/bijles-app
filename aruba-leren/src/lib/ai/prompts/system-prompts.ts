@@ -300,9 +300,9 @@ ${sessionHistory.lastMessages.map(m => `> ${m}`).join('\n')}
     historyContext = `
 # Eerste Sessie
 
-Dit is de **allereerste sessie** van ${childName} in dit vak.
+Dit is de **allereerste sessie** van ${childName} voor **${subject}**.
 
-**Instructie**: Begin met een korte kennismaking en peil het niveau van ${childName}. Stel 2-3 eenvoudige vragen om te ontdekken wat het kind al weet. Pas je niveau aan op basis van de antwoorden. Maak het leuk en laagdrempelig!
+**Instructie**: Begroet ${childName} kort en begin DIRECT met ${subject}-vragen. Stel 2-3 eenvoudige ${subject}-vragen om het niveau te peilen. Bied NOOIT een keuzemenu aan — deze sessie gaat uitsluitend over ${subject}. Maak het leuk en laagdrempelig!
 `;
   }
 
