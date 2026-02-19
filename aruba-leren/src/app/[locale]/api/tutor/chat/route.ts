@@ -38,7 +38,9 @@ import {
 import { adjustDifficulty, recordAnswer } from '@/lib/tutoring/difficulty-adjuster';
 import { analyzeKokoResponse } from '@/lib/tutoring/response-analyzer';
 import { checkTokenBudget, recordTokenUsage } from '@/lib/ai/rate-limiter';
-import { buildSystemPrompt } from '@/lib/ai/prompts/system-prompts';
+import { buildSystemPrompt, buildAssessmentPrompt } from '@/lib/ai/prompts/system-prompts';
+import { finishAssessment } from '@/lib/tutoring/assessment-manager';
+import { updateStuckFlag, recordProgressEvent } from '@/lib/tutoring/progress-tracker';
 import type { Subject, TutoringLanguage, SessionMetadata } from '@/types/tutoring';
 
 interface ChatRequestBody {
@@ -152,10 +154,16 @@ export async function POST(
     // Save user message to database
     await saveMessage(currentSession.id, 'user', latestUserMessage.content);
 
-    // Check if difficulty adjustment is needed
-    const difficultyAdjustment = adjustDifficulty(currentSession);
+    // Determine session type — assessment sessions use a different system prompt
+    const isAssessment = currentSession.session_type === 'assessment';
+
+    // Check if difficulty adjustment is needed (tutoring sessions only)
+    // Assessment sessions manage their own difficulty internally via the prompt (CAT algorithm)
+    const difficultyAdjustment = isAssessment
+      ? { reason: 'no_change' as const, newDifficulty: currentSession.difficulty_level, instruction: '' }
+      : adjustDifficulty(currentSession);
     let systemPromptAddition = '';
-    if (difficultyAdjustment.reason !== 'no_change') {
+    if (!isAssessment && difficultyAdjustment.reason !== 'no_change') {
       systemPromptAddition = `\n\n⚠️ MOEILIJKHEIDSAANPASSING:\n${difficultyAdjustment.instruction}`;
 
       // Update session difficulty level
@@ -170,21 +178,31 @@ export async function POST(
       currentSession.difficulty_level = difficultyAdjustment.newDifficulty;
     }
 
-    // Get session history for continuity across sessions
-    const sessionHistory = await getSessionHistory(childId, subject);
-
-    // Build system prompt with session context and history
-    const systemPrompt =
-      buildSystemPrompt(
+    // Build system prompt — assessment vs tutoring use different prompts
+    let systemPrompt: string;
+    if (isAssessment) {
+      systemPrompt = buildAssessmentPrompt(
         subject,
         tutorLanguage,
         child.age,
         child.first_name,
-        currentSession.difficulty_level,
-        currentSession.metadata.igdi_phase,
-        sessionHistory,
         child.grade
-      ) + systemPromptAddition;
+      );
+    } else {
+      // Get session history for continuity across sessions (tutoring only)
+      const sessionHistory = await getSessionHistory(childId, subject);
+      systemPrompt =
+        buildSystemPrompt(
+          subject,
+          tutorLanguage,
+          child.age,
+          child.first_name,
+          currentSession.difficulty_level,
+          currentSession.metadata.igdi_phase,
+          sessionHistory,
+          child.grade
+        ) + systemPromptAddition;
+    }
 
     // Convert context messages to AI SDK format and append new user message
     // Support multimodal messages (text + image) for homework uploads
@@ -262,6 +280,58 @@ export async function POST(
 
           // Persist all metadata updates in a single call
           await updateSessionMetadata(currentSession.id, metadataUpdates);
+
+          // BLOCK 1: Assessment completion detection
+          // Koko emits [ASSESSMENT_DONE:level=X] at end of baseline assessment
+          if (isAssessment) {
+            const levelMatch = text.match(/\[ASSESSMENT_DONE:level=([1-5])\]/);
+            if (levelMatch) {
+              const determinedLevel = parseInt(levelMatch[1]);
+              try {
+                await finishAssessment(childId, subject, determinedLevel, currentSession.id);
+              } catch (e) {
+                console.error('Assessment finalization failed:', e);
+              }
+            }
+          }
+
+          // BLOCK 2: Stuck detection (both assessment and tutoring sessions)
+          // Trigger: 3+ consecutive incorrect answers without a correct one in between
+          const currentConsecutiveIncorrect =
+            metadataUpdates.consecutive_incorrect ?? currentSession.metadata.consecutive_incorrect;
+          if (currentConsecutiveIncorrect >= 3 && analysis.wasCorrect !== true) {
+            try {
+              await updateStuckFlag(childId, subject, true);
+            } catch (e) {
+              console.error('Stuck flag update failed:', e);
+            }
+          }
+          if (analysis.wasCorrect === true) {
+            try {
+              await updateStuckFlag(childId, subject, false);
+            } catch (e) {
+              // Non-fatal: row may not exist yet on first session
+            }
+          }
+
+          // BLOCK 3: Level change tracking (tutoring sessions only)
+          // Records level_up / level_down events to the progress_events ledger
+          if (!isAssessment && difficultyAdjustment.reason !== 'no_change') {
+            try {
+              await recordProgressEvent(
+                childId,
+                subject,
+                currentSession.id,
+                difficultyAdjustment.newDifficulty > currentSession.difficulty_level
+                  ? 'level_up'
+                  : 'level_down',
+                difficultyAdjustment.newDifficulty,
+                difficultyAdjustment.reason
+              );
+            } catch (e) {
+              console.error('Progress event recording failed:', e);
+            }
+          }
         } catch (error) {
           console.error('Error in onFinish callback:', error);
           // Don't throw — streaming already completed
