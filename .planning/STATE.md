@@ -11,11 +11,11 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 ## Current Position
 
 Phase: 5 of 7 (Baseline Assessment & Progress Tracking) — IN PROGRESS
-Plan: 2 of 4 (05-02 complete)
-Status: Phase 5 plan 2 complete — assessment wiring, chat API integration, ChatInterface assessment UI
-Last activity: 2026-02-19 — 05-02 complete, buildAssessmentPrompt, [ASSESSMENT_DONE] detection, stuck detection, level tracking, assessment page
+Plan: 3 of 4 (05-03 complete)
+Status: Phase 5 plan 3 complete — progress visualization components, SubjectSelector assessment gate
+Last activity: 2026-02-19 — 05-03 complete, ProgressBar, LevelBadge, SubjectProgress, assessment gate in SubjectSelector
 
-Progress: [█████████████████████████████████████████████████████████░] 68%
+Progress: [████████████████████████████████████████████████████████████░] 74%
 
 ## Performance Metrics
 
@@ -31,7 +31,7 @@ Progress: [███████████████████████
 | 02 - Authentication & Family Accounts | 3/3 | Complete |
 | 03 - Payment Verification System | 3/3 | Complete |
 | 04 - AI Tutor Core Foundations | 4/4 | Complete |
-| 05 - Baseline Assessment & Progress Tracking | 2/4 | In Progress |
+| 05 - Baseline Assessment & Progress Tracking | 3/4 | In Progress |
 
 **Recent Executions:**
 
@@ -43,6 +43,7 @@ Progress: [███████████████████████
 | 04 | 04 | 8 min | 2 | 4 |
 | 05 | 01 | 6 min | 2 | 5 |
 | 05 | 02 | 15 min | 2 | 5 |
+| 05 | 03 | 10 min | 2 | 5 |
 
 ## Accumulated Context
 
@@ -104,6 +105,9 @@ Recent decisions affecting current work:
 - 05-02: Assessment sessions skip difficulty adjuster — Koko manages level internally via CAT prompt algorithm
 - 05-02: Stuck detection runs for both session types; level change tracking (recordProgressEvent) is tutoring-only
 - 05-02: [ASSESSMENT_DONE] signal stripped from ChatInterface visible text using regex-replace (same as [SPREEK])
+- 05-03: progressMap keyed by subject string for O(1) lookup — server component fetches, passes to client SubjectSelector
+- 05-03: SubjectProgress handles both null and assessment_completed=false with same "Toets nodig" badge — simpler API
+- 05-03: renderCard() helper in SubjectSelector deduplicates kern/zaak card rendering
 
 ### Pending Todos
 
@@ -119,7 +123,7 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Completed 05-02-PLAN.md — assessment wiring, [ASSESSMENT_DONE] detection, stuck detection, level tracking, assessment page, ChatInterface assessment UI
+Stopped at: Completed 05-03-PLAN.md — progress visualization components and SubjectSelector assessment gate
 Resume file: None
 
-**Next action:** Execute Phase 5 plan 03 with `/gsd:execute-phase 05`
+**Next action:** Execute Phase 5 plan 04 with `/gsd:execute-phase 05` (checkpoint — human verification required)
