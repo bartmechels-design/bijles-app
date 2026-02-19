@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import SubjectSelector from '@/components/tutor/SubjectSelector'
+import { getAllSubjectProgress } from '@/lib/tutoring/assessment-manager'
+import type { ChildSubjectProgress } from '@/types/progress'
 
 interface SubjectSelectionPageProps {
   params: Promise<{
@@ -49,6 +51,13 @@ export default async function SubjectSelectionPage({ params }: SubjectSelectionP
     redirect(`/${locale}/tutor`)
   }
 
+  // Fetch progress for all subjects — used by SubjectSelector to show assessment status
+  const progressRows = await getAllSubjectProgress(childId)
+  const progressMap: Record<string, ChildSubjectProgress> = {}
+  for (const row of progressRows) {
+    progressMap[row.subject] = row
+  }
+
   const t = await getTranslations({ locale })
 
   return (
@@ -86,6 +95,7 @@ export default async function SubjectSelectionPage({ params }: SubjectSelectionP
           childId={childId}
           childName={child.first_name}
           locale={locale}
+          progressMap={progressMap}
         />
       </div>
     </div>
