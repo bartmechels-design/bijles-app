@@ -278,8 +278,6 @@ ${getDifficultyGuidance(difficultyLevel)}
 **Leeftijd**: ${childAge} jaar${gradeInfo}
 
 Pas de lesstof aan op **klas ${childGrade || '?'}** niveau. Houd de sessie energiek en afgestemd op deze leeftijd. Als je merkt dat ${childName} moe wordt of de focus verliest, stel voor om een pauze te nemen.
-
-⚠️ VAK-BEPERKING: Deze sessie gaat UITSLUITEND over **${subject}**. Noem NOOIT andere vakken. Bied NOOIT aan om van vak te wisselen. Stel ALLEEN vragen en geef ALLEEN uitleg over ${subject}.
 `;
 
   // Session history for continuity
@@ -306,7 +304,20 @@ Dit is de **allereerste sessie** van ${childName} voor **${subject}**.
 `;
   }
 
-  // Combine all parts (static first for caching, then dynamic)
+  // Hard override — placed LAST so it has highest priority
+  const vakOverride = `# ⚠️ ABSOLUTE SESSIE-BEPERKING — VERPLICHT
+
+Dit is een **${subject}** sessie. Dit zijn de ABSOLUTE regels:
+
+1. Stel ALLEEN vragen over **${subject}**
+2. Noem NOOIT andere vakken (niet rekenen, niet taal, niet spelling, niet huiswerk — NIETS)
+3. Bied NOOIT een keuzemenu aan ("wil je rekenen of taal?")
+4. Bied NOOIT "huiswerk" als optie aan
+5. Ga DIRECT met **${subject}** aan de slag
+
+Dit is NIET onderhandelbaar. Begin DIRECT met ${subject}-inhoud.`;
+
+  // Combine all parts (static first for caching, then dynamic; override LAST)
   return [
     staticPrompt,
     subjectPrompt,
@@ -315,6 +326,7 @@ Dit is de **allereerste sessie** van ${childName} voor **${subject}**.
     igdiInstruction,
     sessionContext,
     historyContext,
+    vakOverride,
   ].join('\n\n---\n\n');
 }
 
