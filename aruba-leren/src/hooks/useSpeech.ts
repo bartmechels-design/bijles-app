@@ -5,35 +5,50 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 /**
+ * Score a voice for quality. Higher = better.
+ * Prioritizes Microsoft Natural/Neural voices on Windows 11.
+ */
+function scoreVoice(v: SpeechSynthesisVoice, lang: string): number {
+  let score = 0;
+  const name = v.name.toLowerCase();
+
+  // Exact language match is essential
+  if (v.lang === lang) score += 100;
+  else if (v.lang.startsWith(lang.split('-')[0])) score += 50;
+  else return 0; // wrong language
+
+  // "Natural" voices (Windows 11) sound much more human
+  if (name.includes('natural')) score += 40;
+  // "Neural" / "Online" voices are also high quality
+  if (name.includes('neural') || name.includes('online')) score += 30;
+  // Non-local (cloud/network) voices are usually better
+  if (!v.localService) score += 10;
+  // Google voices are decent
+  if (name.includes('google')) score += 15;
+
+  return score;
+}
+
+/**
  * Find the best available voice for a given language.
- * Prefers natural/enhanced voices over default ones.
+ * Prioritizes natural/neural voices for the most human-like sound.
  */
 function findBestVoice(lang: string): SpeechSynthesisVoice | null {
   const voices = window.speechSynthesis.getVoices();
   if (voices.length === 0) return null;
 
-  const langPrefix = lang.split('-')[0]; // 'nl' from 'nl-NL'
+  let bestVoice: SpeechSynthesisVoice | null = null;
+  let bestScore = 0;
 
-  // 1. Exact match, prefer non-default (often higher quality)
-  const exactNatural = voices.find(
-    v => v.lang === lang && !v.localService
-  );
-  if (exactNatural) return exactNatural;
+  for (const v of voices) {
+    const s = scoreVoice(v, lang);
+    if (s > bestScore) {
+      bestScore = s;
+      bestVoice = v;
+    }
+  }
 
-  // 2. Exact match, any
-  const exact = voices.find(v => v.lang === lang);
-  if (exact) return exact;
-
-  // 3. Same language prefix (e.g. 'nl' matches 'nl-BE')
-  const prefixNatural = voices.find(
-    v => v.lang.startsWith(langPrefix) && !v.localService
-  );
-  if (prefixNatural) return prefixNatural;
-
-  const prefix = voices.find(v => v.lang.startsWith(langPrefix));
-  if (prefix) return prefix;
-
-  return null;
+  return bestVoice;
 }
 
 /**
@@ -60,14 +75,17 @@ export function useTextToSpeech() {
     };
   }, []);
 
-  const speak = useCallback((text: string, lang: string = 'nl-NL') => {
+  const speak = useCallback((text: string, lang: string = 'nl-NL', callbacks?: {
+    onStart?: () => void
+    onEnd?: () => void
+  }) => {
     // Stop any current speech
     window.speechSynthesis.cancel();
 
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = lang;
-    utterance.rate = 0.85; // Slower for children
-    utterance.pitch = 1.05;
+    utterance.rate = 0.92; // Slightly slow for children, but natural enough for intonation
+    utterance.pitch = 1.1; // Slightly higher for friendly Koko voice
 
     // Try to find the best voice for this language
     const voice = findBestVoice(lang);
@@ -75,9 +93,18 @@ export function useTextToSpeech() {
       utterance.voice = voice;
     }
 
-    utterance.onstart = () => setIsSpeaking(true);
-    utterance.onend = () => setIsSpeaking(false);
-    utterance.onerror = () => setIsSpeaking(false);
+    utterance.onstart = () => {
+      setIsSpeaking(true);
+      callbacks?.onStart?.();
+    };
+    utterance.onend = () => {
+      setIsSpeaking(false);
+      callbacks?.onEnd?.();
+    };
+    utterance.onerror = () => {
+      setIsSpeaking(false);
+      callbacks?.onEnd?.();
+    };
 
     utteranceRef.current = utterance;
     window.speechSynthesis.speak(utterance);

@@ -38,3 +38,138 @@ body {
 .animate-scale-in {
   animation: scale-in 0.2s ease-out;
 }
+
+/* ===== Koko Avatar Animations ===== */
+
+/* Eye blink - periodic */
+@keyframes koko-blink {
+  0%, 94%, 100% { transform: scaleY(1); }
+  97% { transform: scaleY(0.1); }
+}
+
+.koko-avatar .koko-eye-left,
+.koko-avatar .koko-eye-right {
+  transform-origin: center;
+  animation: koko-blink 4s ease-in-out infinite;
+}
+.koko-avatar .koko-eye-right {
+  animation-delay: 0.1s;
+}
+
+/* Happy eyes - squinted */
+.koko-happy .koko-eye-left,
+.koko-happy .koko-eye-right {
+  animation: none;
+  transform: scaleY(0.6);
+}
+
+/* Listening - wide eyes */
+.koko-listening .koko-eye-left,
+.koko-listening .koko-eye-right {
+  animation: none;
+  transform: scaleY(1.15);
+}
+
+/* Thinking - eyes look up-right */
+.koko-thinking .koko-pupil-left,
+.koko-thinking .koko-pupil-right {
+  transform: translate(1px, -1.5px);
+}
+
+/* Speaking - mouth oscillates */
+@keyframes koko-speak {
+  0%, 100% { transform: scaleY(0.7); }
+  50% { transform: scaleY(1.3); }
+}
+
+.koko-mouth-speaking {
+  transform-origin: center;
+  animation: koko-speak 0.25s steps(2) infinite;
+}
+
+/* Happy - body bounce */
+@keyframes koko-bounce-happy {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.koko-happy .koko-svg {
+  animation: koko-bounce-happy 0.5s ease-in-out 3;
+}
+
+/* Thinking - gentle sway */
+@keyframes koko-sway {
+  0%, 100% { transform: rotate(0deg); }
+  33% { transform: rotate(-3deg); }
+  66% { transform: rotate(3deg); }
+}
+
+.koko-thinking .koko-head {
+  transform-origin: 50px 50px;
+  animation: koko-sway 2s ease-in-out infinite;
+}
+
+/* Thinking - thought bubble fade */
+@keyframes koko-thought-fade {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+.koko-thought circle,
+.koko-thought ellipse {
+  animation: koko-thought-fade 1.5s ease-in-out infinite;
+}
+.koko-thought circle:nth-child(2) { animation-delay: 0.3s; }
+.koko-thought ellipse { animation-delay: 0.6s; }
+
+/* Listening - ear pulse */
+@keyframes koko-ear-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+.koko-listening .koko-ear-right {
+  transform-origin: 82px 25px;
+  animation: koko-ear-pulse 1s ease-in-out infinite;
+}
+
+/* Listening - sound waves */
+@keyframes koko-wave-fade {
+  0% { opacity: 0; transform: translateX(0); }
+  50% { opacity: 0.6; }
+  100% { opacity: 0; transform: translateX(4px); }
+}
+
+.koko-wave-1 { animation: koko-wave-fade 1.2s ease-out infinite; }
+.koko-wave-2 { animation: koko-wave-fade 1.2s ease-out infinite 0.3s; }
+.koko-wave-3 { animation: koko-wave-fade 1.2s ease-out infinite 0.6s; }
+
+/* Encouraging - gentle head tilt */
+.koko-encouraging .koko-head {
+  transform-origin: 50px 50px;
+  transform: rotate(-5deg);
+}
+
+/* Encouraging - raised arm */
+.koko-encouraging .koko-arm-right {
+  transform-origin: 78px 60px;
+  transform: rotate(-15deg);
+}
+
+/* ===== Voice Waveform ===== */
+
+@keyframes waveform-bar {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+}
+
+.waveform-bar {
+  width: 4px;
+  border-radius: 2px;
+  animation: waveform-bar 0.8s ease-in-out infinite;
+}
+.waveform-bar:nth-child(1) { animation-delay: 0s; }
+.waveform-bar:nth-child(2) { animation-delay: 0.15s; }
+.waveform-bar:nth-child(3) { animation-delay: 0.3s; }
+.waveform-bar:nth-child(4) { animation-delay: 0.45s; }
+.waveform-bar:nth-child(5) { animation-delay: 0.6s; }
