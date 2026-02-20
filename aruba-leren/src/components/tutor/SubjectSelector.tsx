@@ -66,19 +66,52 @@ export default function SubjectSelector({ childId, childName, locale, progressMa
           className={`bg-gradient-to-br ${gradientFrom} ${gradientTo} rounded-2xl shadow-lg hover:shadow-2xl transition-all p-8 border-4 border-transparent ${borderHover} transform hover:scale-105 cursor-pointer text-white`}
         >
           <div className="text-center">
-            <div className="text-6xl mb-4">
-              {subject.icon}
-            </div>
-            <h3 className="text-2xl font-bold mb-2">
-              {getSubjectLabel(subject)}
-            </h3>
+            <div className="text-6xl mb-4">{subject.icon}</div>
+            <h3 className="text-2xl font-bold mb-2">{getSubjectLabel(subject)}</h3>
             <div className="bg-white/20 backdrop-blur-sm rounded-lg px-3 py-1 inline-block text-sm font-semibold mb-2">
               {categoryLabel}
             </div>
-            {/* Progress visualization — shows assessment gate or level+bar */}
             <SubjectProgress progress={progress} locale={locale} />
             <div className="flex items-center justify-center gap-2 font-semibold mt-4">
               <span>{buttonLabel}</span>
+              <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </Link>
+    );
+  };
+
+  /** Zaakvakken card — no assessment gate, links directly to tutoring. Content upload comes in Phase 6. */
+  const renderZaakCard = (
+    subject: typeof SUBJECTS[0],
+    gradientFrom: string,
+    gradientTo: string,
+    borderHover: string,
+    categoryLabel: string,
+  ) => {
+    const href = `/${locale}/tutor/${childId}/${subject.id}`;
+    return (
+      <Link key={subject.id} href={href} className="group">
+        <div
+          className={`bg-gradient-to-br ${gradientFrom} ${gradientTo} rounded-2xl shadow-lg hover:shadow-2xl transition-all p-8 border-4 border-transparent ${borderHover} transform hover:scale-105 cursor-pointer text-white`}
+        >
+          <div className="text-center">
+            <div className="text-6xl mb-4">{subject.icon}</div>
+            <h3 className="text-2xl font-bold mb-2">{getSubjectLabel(subject)}</h3>
+            <div className="bg-white/20 backdrop-blur-sm rounded-lg px-3 py-1 inline-block text-sm font-semibold mb-2">
+              {categoryLabel}
+            </div>
+            {/* No assessment badge — content upload unlocks assessment in Phase 6 */}
+            <div className="mt-3 mb-1">
+              <span className="inline-flex items-center gap-1.5 bg-white/20 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                📄 Tekstbladen uploaden voor toets
+              </span>
+            </div>
+            <div className="flex items-center justify-center gap-2 font-semibold mt-4">
+              <span>{t('startSession')}</span>
               <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
@@ -114,7 +147,7 @@ export default function SubjectSelector({ childId, childName, locale, progressMa
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {zaakSubjects.map((subject) =>
-            renderCard(subject, 'from-amber-400', 'to-amber-600', 'hover:border-amber-300', 'Zaakvak')
+            renderZaakCard(subject, 'from-amber-400', 'to-amber-600', 'hover:border-amber-300', 'Zaakvak')
           )}
         </div>
       </div>
