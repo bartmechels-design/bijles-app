@@ -15,7 +15,7 @@ const SUBJECT_LABELS: Record<string, string> = {
 export default function LeerstofUpload({ locale }: LeerstofUploadProps) {
   const [subject, setSubject] = useState('geschiedenis');
   const [title, setTitle] = useState('');
-  const [mode, setMode] = useState<'file' | 'text'>('file');
+  const [mode, setMode] = useState<'file' | 'foto' | 'text'>('text');
   const [file, setFile] = useState<File | null>(null);
   const [textContent, setTextContent] = useState('');
   const [uploading, setUploading] = useState(false);
@@ -28,7 +28,7 @@ export default function LeerstofUpload({ locale }: LeerstofUploadProps) {
       setError('Geef een titel op voor de leerstof');
       return;
     }
-    if (mode === 'file' && !file) {
+    if ((mode === 'file' || mode === 'foto') && !file) {
       setError('Selecteer een bestand om te uploaden');
       return;
     }
@@ -45,7 +45,7 @@ export default function LeerstofUpload({ locale }: LeerstofUploadProps) {
       const formData = new FormData();
       formData.append('subject', subject);
       formData.append('title', title.trim());
-      if (mode === 'file' && file) {
+      if ((mode === 'file' || mode === 'foto') && file) {
         formData.append('file', file);
       } else {
         formData.append('content', textContent.trim());
@@ -106,34 +106,39 @@ export default function LeerstofUpload({ locale }: LeerstofUploadProps) {
         {/* Mode toggle */}
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-1">Type</label>
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={() => setMode('file')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                mode === 'file'
-                  ? 'bg-green-600 text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              Upload bestand
-            </button>
-            <button
-              type="button"
-              onClick={() => setMode('text')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                mode === 'text'
-                  ? 'bg-green-600 text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              Tekst invoeren
-            </button>
+          <div className="flex gap-2 flex-wrap">
+            {(['foto', 'text', 'file'] as const).map((m) => (
+              <button
+                key={m}
+                type="button"
+                onClick={() => { setMode(m); setFile(null); }}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                  mode === m ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                {m === 'foto' ? '📷 Foto (telefoon)' : m === 'text' ? 'Tekst invoeren' : 'PDF / .txt'}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* File or text input */}
-        {mode === 'file' ? (
+        {/* Input based on mode */}
+        {mode === 'foto' && (
+          <div className="space-y-2">
+            <label className="block text-sm font-semibold text-gray-700">Foto van boekpagina</label>
+            <p className="text-xs text-gray-500">Maak een foto met je telefoon of kies een afbeelding. Koko leest de tekst er automatisch uit.</p>
+            <input
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={e => setFile(e.target.files?.[0] ?? null)}
+              className="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
+            />
+            {file && <p className="text-xs text-green-700">Geselecteerd: {file.name}</p>}
+          </div>
+        )}
+
+        {mode === 'file' && (
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-1">Bestand (PDF of .txt)</label>
             <input
@@ -143,7 +148,9 @@ export default function LeerstofUpload({ locale }: LeerstofUploadProps) {
               className="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
             />
           </div>
-        ) : (
+        )}
+
+        {mode === 'text' && (
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-1">Leerstof tekst</label>
             <textarea
@@ -175,7 +182,10 @@ export default function LeerstofUpload({ locale }: LeerstofUploadProps) {
           disabled={uploading}
           className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2.5 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {uploading ? 'Bezig met opslaan...' : 'Leerstof opslaan'}
+          {uploading
+            ? (mode === 'foto' ? 'Tekst wordt uitgelezen...' : 'Bezig met opslaan...')
+            : 'Leerstof opslaan'
+          }
         </button>
       </form>
     </div>

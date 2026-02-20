@@ -1,7 +1,9 @@
 export const runtime = 'nodejs';
 
 import { NextRequest } from 'next/server';
+import { generateText } from 'ai';
 import { createClient } from '@/lib/supabase/server';
+import { TUTOR_MODEL } from '@/lib/ai/providers/anthropic';
 
 export async function POST(request: NextRequest) {
   try {
@@ -52,8 +54,25 @@ export async function POST(request: NextRequest) {
       } else if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
         sourceType = 'text';
         content = await file.text();
+      } else if (file.type.startsWith('image/')) {
+        // Photo of book page — extract text via Claude vision
+        sourceType = 'text';
+        const arrayBuffer = await file.arrayBuffer();
+        const base64 = Buffer.from(arrayBuffer).toString('base64');
+        const { text } = await generateText({
+          model: TUTOR_MODEL,
+          messages: [{
+            role: 'user',
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            content: [
+              { type: 'image', image: base64, mimeType: file.type } as any,
+              { type: 'text', text: 'Extraheer alle tekst uit deze afbeelding van een schoolboekpagina. Geef alleen de tekst terug, behoud alinea-structuur. Geen commentaar of inleiding.' },
+            ],
+          }],
+        });
+        content = text.trim();
       } else {
-        return Response.json({ error: 'Only PDF and .txt files are supported' }, { status: 400 });
+        return Response.json({ error: 'Alleen PDF, .txt of afbeeldingen (JPEG/PNG) zijn toegestaan' }, { status: 400 });
       }
     } else {
       // Direct text input

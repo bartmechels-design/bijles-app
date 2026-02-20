@@ -471,7 +471,8 @@ export default function ChatInterface({
       )}
 
       {/* Hiaat Selector — shown before first message, hidden once session starts */}
-      {!isAssessmentMode && !sessionStarted && !existingSessionId && !huiswerkMode && (
+      {!isAssessmentMode && !sessionStarted && !existingSessionId && !huiswerkMode &&
+        !(['geschiedenis', 'aardrijkskunde', 'kennis_der_natuur'] as string[]).includes(subject) && (
         <HiatenSelector
           subject={subject}
           selected={hiatenTopicId}
