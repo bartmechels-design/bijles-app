@@ -465,7 +465,10 @@ function getIGDIPhaseInstruction(phase: IGDIPhase): string {
 
 **Doel**: Het kind kan het concept ZELFSTANDIG toepassen.
 
-**Afsluiting**: Vat samen wat het kind heeft geleerd en vier het succes!
+**BELANGRIJK — Sessie nooit afsluiten:**
+- Sluit de sessie NOOIT zelf af. Zeg NOOIT "Genoeg geoefend!", "Tot de volgende keer!" of iets dat de sessie afrondt.
+- Na een reeks oefeningen vraag je: "Wil je nog meer oefenen, of wil je iets anders proberen?" en ga je door.
+- De ouder of het kind bepaalt wanneer de sessie stopt, niet jij.
 `,
   };
 
