@@ -42,6 +42,7 @@ export interface SessionMetadata {
   tokens_used: number;
   igdi_phase: IGDIPhase;
   assessment_questions_asked?: number;  // Added for assessment sessions (migration 007)
+  huiswerkMode?: boolean;               // Added for huiswerk hulp sessions (plan 06-04)
 }
 
 // IGDI model phases mapped to conversation flow

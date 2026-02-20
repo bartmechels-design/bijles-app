@@ -105,6 +105,7 @@ export default function ChatInterface({
   const [assessmentDone, setAssessmentDone] = useState(false);
   const [hiatenTopicId, setHiatenTopicId] = useState<string | null>(initialHiaat || null);
   const [sessionStarted, setSessionStarted] = useState(false);
+  const [huiswerkMode, setHuiswerkMode] = useState(false);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -166,6 +167,16 @@ export default function ChatInterface({
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Auto-send first message when huiswerk mode activates with a pending image
+  useEffect(() => {
+    if (huiswerkMode && pendingImage && !sessionStarted && !isLoading) {
+      const timer = setTimeout(() => {
+        handleSubmit({ preventDefault: () => {} } as React.FormEvent);
+      }, 600);
+      return () => clearTimeout(timer);
+    }
+  }, [huiswerkMode, pendingImage]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const processImageFile = (file: File) => {
     if (!file.type.startsWith('image/')) {
       setError('Alleen afbeeldingen zijn toegestaan (foto, screenshot)');
@@ -181,6 +192,10 @@ export default function ChatInterface({
     reader.onload = () => {
       setPendingImage(reader.result as string);
       setError(null);
+      // Activate huiswerk mode when image attached before session starts
+      if (!sessionStarted && messages.length <= 1) {
+        setHuiswerkMode(true);
+      }
     };
     reader.readAsDataURL(file);
   };
@@ -267,6 +282,7 @@ export default function ChatInterface({
           hiatenTopic: hiatenTopicId
             ? (HIAAT_TOPICS[subject].find(t => t.id === hiatenTopicId)?.prompt ?? null)
             : null,
+          huiswerkMode: huiswerkMode || undefined,
         }),
         signal: abortControllerRef.current.signal,
       });
@@ -442,8 +458,22 @@ export default function ChatInterface({
         </div>
       )}
 
+      {/* Huiswerk Hulp Banner */}
+      {huiswerkMode && (
+        <div className="bg-blue-50 border-b border-blue-200 px-4 py-2 flex items-center gap-2">
+          <span className="text-blue-500" aria-hidden="true">
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.255 0 2.443.29 3.5.804V4.804zM10.5 4.804A7.968 7.968 0 0114.5 4c1.255 0 2.443.29 3.5.804v10a7.969 7.969 0 01-3.5-.804V4.804z" />
+            </svg>
+          </span>
+          <span className="text-sm font-medium text-blue-800">
+            Huiswerk Hulp actief — Koko analyseert jouw huiswerk
+          </span>
+        </div>
+      )}
+
       {/* Hiaat Selector — shown before first message, hidden once session starts */}
-      {!isAssessmentMode && !sessionStarted && !existingSessionId && (
+      {!isAssessmentMode && !sessionStarted && !existingSessionId && !huiswerkMode && (
         <HiatenSelector
           subject={subject}
           selected={hiatenTopicId}

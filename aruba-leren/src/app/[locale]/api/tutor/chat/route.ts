@@ -38,7 +38,7 @@ import {
 import { adjustDifficulty, recordAnswer } from '@/lib/tutoring/difficulty-adjuster';
 import { analyzeKokoResponse } from '@/lib/tutoring/response-analyzer';
 import { checkTokenBudget, recordTokenUsage } from '@/lib/ai/rate-limiter';
-import { buildSystemPrompt, buildAssessmentPrompt } from '@/lib/ai/prompts/system-prompts';
+import { buildSystemPrompt, buildAssessmentPrompt, buildHuiswerkPrompt } from '@/lib/ai/prompts/system-prompts';
 import { getActiveLeerstof, isZaakvak } from '@/lib/tutoring/leerstof-retriever';
 import { finishAssessment } from '@/lib/tutoring/assessment-manager';
 import { updateStuckFlag, recordProgressEvent } from '@/lib/tutoring/progress-tracker';
@@ -50,6 +50,7 @@ interface ChatRequestBody {
   subject: Subject;
   childId: string;
   hiatenTopic?: string;
+  huiswerkMode?: boolean;
 }
 
 export async function POST(
@@ -59,7 +60,7 @@ export async function POST(
   try {
     // Parse request body
     const body: ChatRequestBody = await request.json();
-    const { messages, sessionId, subject, childId, hiatenTopic } = body;
+    const { messages, sessionId, subject, childId, hiatenTopic, huiswerkMode } = body;
 
     // Basic validation
     if (!messages || messages.length === 0) {
@@ -159,13 +160,24 @@ export async function POST(
     // Determine session type — assessment sessions use a different system prompt
     const isAssessment = currentSession.session_type === 'assessment';
 
+    // Activate huiswerk mode in session metadata (first request only)
+    if (huiswerkMode && !currentSession.metadata.huiswerkMode) {
+      await updateSessionMetadata(currentSession.id, {
+        ...currentSession.metadata,
+        huiswerkMode: true,
+      });
+      currentSession.metadata = { ...currentSession.metadata, huiswerkMode: true };
+    }
+
+    const isHuiswerk = currentSession.metadata.huiswerkMode === true || huiswerkMode === true;
+
     // Check if difficulty adjustment is needed (tutoring sessions only)
-    // Assessment sessions manage their own difficulty internally via the prompt (CAT algorithm)
-    const difficultyAdjustment = isAssessment
+    // Assessment and huiswerk sessions manage their own difficulty internally
+    const difficultyAdjustment = (isAssessment || isHuiswerk)
       ? { reason: 'no_change' as const, newDifficulty: currentSession.difficulty_level, instruction: '' }
       : adjustDifficulty(currentSession);
     let systemPromptAddition = '';
-    if (!isAssessment && difficultyAdjustment.reason !== 'no_change') {
+    if (!isAssessment && !isHuiswerk && difficultyAdjustment.reason !== 'no_change') {
       systemPromptAddition = `\n\n⚠️ MOEILIJKHEIDSAANPASSING:\n${difficultyAdjustment.instruction}`;
 
       // Update session difficulty level
@@ -180,10 +192,18 @@ export async function POST(
       currentSession.difficulty_level = difficultyAdjustment.newDifficulty;
     }
 
-    // Build system prompt — assessment vs tutoring use different prompts
+    // Build system prompt — three modes: assessment, huiswerk, or regular tutoring
     let systemPrompt: string;
     if (isAssessment) {
       systemPrompt = buildAssessmentPrompt(
+        subject,
+        tutorLanguage,
+        child.age,
+        child.first_name,
+        child.grade
+      );
+    } else if (isHuiswerk) {
+      systemPrompt = buildHuiswerkPrompt(
         subject,
         tutorLanguage,
         child.age,
@@ -325,9 +345,9 @@ export async function POST(
             }
           }
 
-          // BLOCK 3: Level change tracking (tutoring sessions only)
+          // BLOCK 3: Level change tracking (tutoring sessions only — not assessment or huiswerk)
           // Records level_up / level_down events to the progress_events ledger
-          if (!isAssessment && difficultyAdjustment.reason !== 'no_change') {
+          if (!isAssessment && !isHuiswerk && difficultyAdjustment.reason !== 'no_change') {
             try {
               await recordProgressEvent(
                 childId,

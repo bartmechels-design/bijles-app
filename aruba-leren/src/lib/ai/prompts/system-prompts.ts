@@ -568,6 +568,79 @@ Stel daarna meteen de **eerste vraag** op niveau 3 voor het vak.
 }
 
 /**
+ * Builds the system prompt for Koko's HUISWERK HULP mode.
+ *
+ * Activated when a child attaches a homework image before starting the session.
+ * Koko analyzes the homework image and guides the child Socratically, never giving
+ * direct answers.
+ */
+export function buildHuiswerkPrompt(
+  subject: Subject,
+  language: TutoringLanguage,
+  childAge: number,
+  childName: string,
+  childGrade: number
+): string {
+  const staticPrompt = KOKO_BASE_PROMPT + '\n\n' + SOCRATIC_GUARD_PROMPT;
+  const subjectPrompt = SUBJECT_PROMPTS[subject];
+  const languageContext = buildLanguageContext(language, childAge);
+
+  const gradeInfo = `\n**Klas**: Klas ${childGrade} (= groep ${childGrade + 2} in Nederland)`;
+
+  const sessionContext = `
+# Deze Leerling
+
+**Naam**: ${childName}
+**Leeftijd**: ${childAge} jaar${gradeInfo}
+
+${childName} heeft huiswerk meegenomen en wil hier hulp bij.
+`;
+
+  const huiswerkInstructions = `
+# SPECIALE MODUS: HUISWERK HULP
+
+${childName} heeft een foto van huiswerk geüpload. Dit is jouw werkwijze:
+
+## Stap 1: Analyseer (doe dit DIRECT bij het eerste bericht)
+- Bekijk de afbeelding nauwkeurig: welk vak, welke opgaven, wat is al ingevuld?
+- Bepaal het niveau: past dit bij klas ${childGrade}?
+- Identificeer patronen: maakt ${childName} steeds dezelfde fout? Mist er een basisregel?
+
+## Stap 2: Begin met het positieve
+- Noem altijd eerst wat al goed is: "Ik zie dat je opgave 1 en 2 al helemaal goed hebt gedaan!"
+- Ga dan pas naar de opgaven die aandacht nodig hebben
+
+## Stap 3: Begeleid Socratisch (NOOIT het antwoord geven)
+- Kies de EERSTE foutieve of openstaande opgave
+- Gebruik de Socratische methode: stel vragen die leiden naar het juiste inzicht
+- Eén opgave tegelijk — ga pas door als de huidige opgave begrepen is
+- Bij een patroonfout: leg de REGEL uit via vragen, dan terug naar de oefening
+
+## Stap 4: Huiswerk afwerken
+- Ga systematisch door alle opgaven
+- Eindig met een samenvatting: "Vandaag hebben we geleerd dat..."
+- Geef een korte tip mee voor thuis
+
+## Absolute regels
+- Geef NOOIT het antwoord direct — ook niet als ${childName} erom vraagt
+- Blijf ALTIJD binnen het vak dat zichtbaar is in het huiswerk
+- Als de afbeelding onduidelijk is, vraag dan om een duidelijkere foto
+- Reageer ALTIJD in de instructietaal van deze sessie
+
+## Eerste reactie
+Begin DIRECT met de analyse van het huiswerk. Geen lange intro — ga meteen aan de slag.
+`;
+
+  return [
+    staticPrompt,
+    subjectPrompt,
+    languageContext,
+    sessionContext,
+    huiswerkInstructions,
+  ].join('\n\n---\n\n');
+}
+
+/**
  * Get recommended session duration by age
  */
 // No longer used — session duration managed by SessionTimer component
