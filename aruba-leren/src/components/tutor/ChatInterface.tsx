@@ -12,6 +12,7 @@ import WhiteboardPanel from './WhiteboardPanel';
 import KokoAvatar from './KokoAvatar';
 import VoiceWaveform from './VoiceWaveform';
 import HiatenSelector from './HiatenSelector';
+import WerkbladPrint from './WerkbladPrint';
 import { useSpeechToText, useTextToSpeech } from '@/hooks/useSpeech';
 import { useKokoState } from '@/hooks/useKokoState';
 import { useVoiceFirstMode } from '@/hooks/useVoiceFirstMode';
@@ -398,6 +399,16 @@ export default function ChatInterface({
             <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6z" />
           </svg>
         </button>
+
+        {/* Print Werkblad — shown when 3+ assistant messages present */}
+        {messages.filter(m => m.role === 'assistant').length >= 3 && (
+          <WerkbladPrint
+            messages={messages}
+            childName={childName}
+            subject={subject}
+            subjectLabel={subjectLabel}
+          />
+        )}
 
         {/* Voice-first toggle — hidden for begrijpend_lezen */}
         {subject !== 'begrijpend_lezen' && <button

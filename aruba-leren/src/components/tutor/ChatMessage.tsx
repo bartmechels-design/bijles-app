@@ -43,16 +43,21 @@ const SPREEK_REGEX = /\[SPREEK\]([\s\S]*?)\[\/SPREEK\]/g;
 /** Regex to find [BORD]...[/BORD] blocks */
 const BORD_REGEX = /\[BORD\]([\s\S]*?)\[\/BORD\]/g;
 
+/** Regex to find [OPDRACHT]...[/OPDRACHT] blocks */
+const OPDRACHT_REGEX = /\[OPDRACHT\]([\s\S]*?)\[\/OPDRACHT\]/g;
+
 /**
  * Parse message content into segments:
  * - text segments (visible)
  * - spoken segments (hidden, played via TTS)
  * - board segments (shown on whiteboard)
+ * - opdracht segments (exercise cards, collected for werkblad)
  */
 interface TextSegment { type: 'text'; content: string }
 interface SpokenSegment { type: 'spoken'; content: string; index: number }
 interface BoardSegment { type: 'board'; content: string; index: number }
-type Segment = TextSegment | SpokenSegment | BoardSegment;
+interface OpdrachtSegment { type: 'opdracht'; content: string; index: number }
+type Segment = TextSegment | SpokenSegment | BoardSegment | OpdrachtSegment;
 
 /** Check if content contains [BORD] blocks */
 export function hasBordBlocks(content: string): boolean {
@@ -67,9 +72,26 @@ export function extractBordContent(content: string): string | null {
   return match ? match[1].trim() : null;
 }
 
+/** Check if content contains [OPDRACHT] blocks */
+export function hasOpdrachtBlocks(content: string): boolean {
+  OPDRACHT_REGEX.lastIndex = 0;
+  return OPDRACHT_REGEX.test(content);
+}
+
+/** Extract all [OPDRACHT] block contents from a message */
+export function extractOpdrachtBlocks(content: string): string[] {
+  OPDRACHT_REGEX.lastIndex = 0;
+  const blocks: string[] = [];
+  let match;
+  while ((match = OPDRACHT_REGEX.exec(content)) !== null) {
+    blocks.push(match[1].trim());
+  }
+  return blocks;
+}
+
 function parseSegments(content: string): Segment[] {
-  // Combine both tag types into a unified parsing pass
-  const TAG_REGEX = /\[(SPREEK|BORD)\]([\s\S]*?)\[\/\1\]/g;
+  // Combine all tag types into a unified parsing pass
+  const TAG_REGEX = /\[(SPREEK|BORD|OPDRACHT)\]([\s\S]*?)\[\/\1\]/g;
   const segments: Segment[] = [];
   let lastIndex = 0;
   let spokenIndex = 0;
@@ -89,6 +111,8 @@ function parseSegments(content: string): Segment[] {
       segments.push({ type: 'spoken', content: match[2].trim(), index: spokenIndex++ });
     } else if (match[1] === 'BORD') {
       segments.push({ type: 'board', content: match[2].trim(), index: boardIndex++ });
+    } else if (match[1] === 'OPDRACHT') {
+      segments.push({ type: 'opdracht', content: match[2].trim(), index: boardIndex++ });
     }
 
     lastIndex = match.index + match[0].length;
@@ -262,7 +286,7 @@ export default function ChatMessage({ role, content, isStreaming = false, locale
     }
   };
 
-  const hasSpecialBlocks = !isStreaming && (hasSpeekBlocks(content) || hasBordBlocks(content));
+  const hasSpecialBlocks = !isStreaming && (hasSpeekBlocks(content) || hasBordBlocks(content) || hasOpdrachtBlocks(content));
 
   if (role === 'assistant') {
     return (
@@ -286,7 +310,7 @@ export default function ChatMessage({ role, content, isStreaming = false, locale
                     locale={locale}
                     autoPlay={segment.index === 0}
                   />
-                ) : (
+                ) : segment.type === 'board' ? (
                   <button
                     key={`board-${segment.index}`}
                     type="button"
@@ -300,7 +324,17 @@ export default function ChatMessage({ role, content, isStreaming = false, locale
                       Bekijk op schoolbord
                     </span>
                   </button>
-                )
+                ) : segment.type === 'opdracht' ? (
+                  <div key={`opdracht-${segment.index}`} className="my-3 bg-amber-50 border-2 border-amber-300 rounded-xl px-4 py-3 font-medium text-gray-800">
+                    <div className="flex items-center gap-2 mb-2 text-amber-700 font-semibold text-sm">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      Opdracht
+                    </div>
+                    <div className="whitespace-pre-wrap text-base">{segment.content}</div>
+                  </div>
+                ) : null
               )}
             </div>
           ) : (
