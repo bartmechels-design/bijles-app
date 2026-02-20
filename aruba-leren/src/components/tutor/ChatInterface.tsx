@@ -416,15 +416,13 @@ export default function ChatInterface({
           </svg>
         </button>
 
-        {/* Print Werkblad — shown when 3+ assistant messages present */}
-        {messages.filter(m => m.role === 'assistant').length >= 3 && (
-          <WerkbladPrint
-            messages={messages}
-            childName={childName}
-            subject={subject}
-            subjectLabel={subjectLabel}
-          />
-        )}
+        {/* Print Werkblad — shown as soon as any [OPDRACHT] block is present */}
+        <WerkbladPrint
+          messages={messages}
+          childName={childName}
+          subject={subject}
+          subjectLabel={subjectLabel}
+        />
 
         {/* Voice-first toggle — hidden for begrijpend_lezen */}
         {subject !== 'begrijpend_lezen' && <button
