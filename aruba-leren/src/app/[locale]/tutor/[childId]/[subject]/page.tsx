@@ -12,10 +12,12 @@ interface ChatPageProps {
     childId: string
     subject: string
   }>
+  searchParams: Promise<{ hiaat?: string }>
 }
 
-export default async function ChatPage({ params }: ChatPageProps) {
+export default async function ChatPage({ params, searchParams }: ChatPageProps) {
   const { locale, childId, subject } = await params
+  const { hiaat } = await searchParams
   const supabase = await createClient()
 
   // Check authentication
@@ -120,6 +122,7 @@ export default async function ChatPage({ params }: ChatPageProps) {
           locale={locale}
           existingSessionId={activeSession?.id || null}
           subjectLabel={getSubjectLabel()}
+          initialHiaat={hiaat}
         />
       </div>
     </div>

@@ -48,6 +48,7 @@ interface ChatRequestBody {
   sessionId?: string;
   subject: Subject;
   childId: string;
+  hiatenTopic?: string;
 }
 
 export async function POST(
@@ -57,7 +58,7 @@ export async function POST(
   try {
     // Parse request body
     const body: ChatRequestBody = await request.json();
-    const { messages, sessionId, subject, childId } = body;
+    const { messages, sessionId, subject, childId, hiatenTopic } = body;
 
     // Basic validation
     if (!messages || messages.length === 0) {
@@ -200,7 +201,8 @@ export async function POST(
           currentSession.difficulty_level,
           currentSession.metadata.igdi_phase,
           sessionHistory,
-          child.grade
+          child.grade,
+          hiatenTopic
         ) + systemPromptAddition;
     }
 

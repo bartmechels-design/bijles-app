@@ -49,6 +49,12 @@ For spelling:
    → Use questions: "Is dit één persoon of meerdere?"
 3. **Open vs closed syllables** (raam vs ram)
    → Focus on sound: "Hoor je de 'aa' lang of kort?"
+
+## Tussendoelen per Klas (Arubaanse Kerndoelen)
+
+**Klas 1-2:** Letters en klanken herkennen, CVC-woorden (kat, vis) lezen en schrijven, korte zinnen (3-5 woorden) begrijpen, alfabet kennen.
+**Klas 3-4:** Dt-regel (hij loopt/hij liep), open en gesloten lettergreep, teksten van 1-2 alinea's lezen, woordsoorten beginnen (zelfstandig naamwoord, werkwoord).
+**Klas 5-6:** Alle woordsoorten (bijvoeglijk naamwoord, bijwoord), zinsontleding (onderwerp, gezegde), formele vs informele taal, samenvatten, teksten van meerdere alinea's.
 `,
 
   rekenen: `
@@ -98,6 +104,12 @@ For estimation:
    → Use real-world sharing scenarios: "Als we 7 pastechis hebben en 3 vrienden..."
 4. **Fraction confusion** (thinking 1/3 is bigger than 1/2 because 3 > 2)
    → Use pizza/pastechi visuals: "Als je een pastechi in 2 stukken deelt vs 3 stukken..."
+
+## Tussendoelen per Klas (Arubaanse Kerndoelen)
+
+**Klas 1-2:** Tellen tot 100, optellen en aftrekken tot 20, begrip meer/minder, eenvoudige woordproblemen, klokkijken (hele en halve uren).
+**Klas 3-4:** Tafels 1 t/m 10, getallen tot 1000, breuken (½ en ¼), optellen en aftrekken tot 1000, lengte en gewicht meten (cm, m, kg).
+**Klas 5-6:** Breuken optellen en vergelijken, decimalen (kommagetallen), procenten basis, oppervlakte en inhoud berekenen, complexe woordproblemen.
 `,
 
   begrijpend_lezen: `
@@ -148,6 +160,12 @@ After reading:
    → Ask: "Staat dit in de tekst, of denk je dat zelf?"
 4. **Missing implicit information**
    → Ask: "Waarom deed hij dat? Staat het er niet? Kun je het raden uit de hints?"
+
+## Tussendoelen per Klas (Arubaanse Kerndoelen)
+
+**Klas 1-2:** Korte tekst (5-8 zinnen) begrijpen, letterlijke vragen beantwoorden (wie, wat, waar), eenvoudige woorden in context begrijpen.
+**Klas 3-4:** Kernzin van een alinea bepalen, 2-3 alinea's verbinden, impliciete informatie herkennen, hoofdgedachte formuleren.
+**Klas 5-6:** Tekststructuur analyseren (inleiding/kern/slot), inferenties maken, feit vs mening onderscheiden, tekst samenvatten in eigen woorden.
 `,
 
   geschiedenis: `
@@ -198,6 +216,12 @@ For historical context:
    → Always ask "waarom?"
 3. **Presentism** (judging past by modern standards)
    → Guide: "Toen wisten ze nog niet dat..." / "Toen was het normaal om..."
+
+## Tussendoelen per Klas (Arubaanse Kerndoelen)
+
+**Klas 1-2:** Heden, verleden en toekomst begrijpen, eigen familiegeschiedenis, tijdlijn van een dag of jaar.
+**Klas 3-4:** Caquetio-indianen en vroeg Aruba, koloniale periode, Nederlandse en Spaanse invloed, eenvoudige tijdlijn.
+**Klas 5-6:** Status Aparte 1986 en Betico Croes, tijdlijn wereldgeschiedenis, oorzaak-gevolg verbanden, WOII en VOC in mondiale context.
 `,
 
   aardrijkskunde: `
@@ -248,6 +272,12 @@ For human-environment interaction:
    → Teach map scale and comparison
 4. **Not connecting physical and human geography**
    → Ask: "Waarom wonen mensen aan de zuidkant, niet de noordkant?"
+
+## Tussendoelen per Klas (Arubaanse Kerndoelen)
+
+**Klas 1-2:** Kaart van Aruba lezen, kompasrichtingen (N/Z/O/W), eigen buurt en school lokaliseren.
+**Klas 3-4:** ABC-eilanden, klimaattypen (tropisch, woestijn, gematigd), legenda en schaal van een kaart gebruiken.
+**Klas 5-6:** Werelddelen en oceanen, menselijke geografie (bevolking, economie, handel), milieu-vraagstukken, Aruba's positie in de wereld.
 `,
 
   kennis_der_natuur: `
@@ -301,5 +331,11 @@ For scientific thinking:
    → Reframe: "Dieren met deze eigenschap overleven beter, dus..."
 5. **Coral is a plant** (actually an animal!)
    → Reveal through questions: "Wat eet koraal?"
+
+## Tussendoelen per Klas (Arubaanse Kerndoelen)
+
+**Klas 1-2:** Planten en dieren herkennen (Arubaanse soorten), levend vs niet-levend, seizoenen en weer observeren.
+**Klas 3-4:** Voedselketen (producent, consument, afbreker), habitats en aanpassingen, eenvoudige experimenten (water, lucht).
+**Klas 5-6:** Ecosystemen (koraalrif, droog bos, strand), milieuproblemen en oplossingen, menselijk lichaam (organen, zintuigen), klimaatverandering.
 `,
 };

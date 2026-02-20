@@ -250,7 +250,8 @@ export function buildSystemPrompt(
   difficultyLevel: number,
   igdiPhase: IGDIPhase,
   sessionHistory?: SessionHistoryContext | null,
-  childGrade?: number
+  childGrade?: number,
+  hiatenTopic?: string | null
 ): string {
   // STATIC PART (first part of prompt — will be cached by Claude)
   const staticPrompt = KOKO_BASE_PROMPT + '\n\n' + SOCRATIC_GUARD_PROMPT;
@@ -317,7 +318,12 @@ Dit is een **${subject}** sessie. Dit zijn de ABSOLUTE regels:
 
 Dit is NIET onderhandelbaar. Begin DIRECT met ${subject}-inhoud.`;
 
-  // Combine all parts (static first for caching, then dynamic; override LAST)
+  // Hiaat override — placed AFTER vakOverride for absolute highest priority
+  const hiatenOverride = hiatenTopic
+    ? `# HIAAT-FOCUS — ABSOLUTE PRIORITEIT\n\n${hiatenTopic}\n\nDit overschrijft alles. Werk UITSLUITEND aan dit specifieke onderwerp totdat het kind het beheerst.`
+    : '';
+
+  // Combine all parts (static first for caching, then dynamic; overrides LAST)
   return [
     staticPrompt,
     subjectPrompt,
@@ -327,6 +333,7 @@ Dit is NIET onderhandelbaar. Begin DIRECT met ${subject}-inhoud.`;
     sessionContext,
     historyContext,
     vakOverride,
+    ...(hiatenOverride ? [hiatenOverride] : []),
   ].join('\n\n---\n\n');
 }
 

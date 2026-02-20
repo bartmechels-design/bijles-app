@@ -11,9 +11,11 @@ import PhoneUploadModal from './PhoneUploadModal';
 import WhiteboardPanel from './WhiteboardPanel';
 import KokoAvatar from './KokoAvatar';
 import VoiceWaveform from './VoiceWaveform';
+import HiatenSelector from './HiatenSelector';
 import { useSpeechToText, useTextToSpeech } from '@/hooks/useSpeech';
 import { useKokoState } from '@/hooks/useKokoState';
 import { useVoiceFirstMode } from '@/hooks/useVoiceFirstMode';
+import { HIAAT_TOPICS } from '@/lib/ai/prompts/hiaten-prompts';
 
 // Message type — supports text and optional image
 interface Message {
@@ -33,6 +35,8 @@ interface ChatInterfaceProps {
   subjectLabel: string;
   /** When 'assessment', shows the beginsituatietoets banner and completion UI */
   sessionType?: 'assessment' | 'tutoring';
+  /** Pre-selected hiaat topic id from ?hiaat= URL param */
+  initialHiaat?: string;
 }
 
 function getSttLang(locale: string) {
@@ -90,6 +94,7 @@ export default function ChatInterface({
   existingSessionId,
   subjectLabel,
   sessionType = 'tutoring',
+  initialHiaat,
 }: ChatInterfaceProps) {
   const t = useTranslations('tutor');
   const router = useRouter();
@@ -97,6 +102,8 @@ export default function ChatInterface({
   const [currentSessionId, setCurrentSessionId] = useState(existingSessionId);
   const [messages, setMessages] = useState<Message[]>([]);
   const [assessmentDone, setAssessmentDone] = useState(false);
+  const [hiatenTopicId, setHiatenTopicId] = useState<string | null>(initialHiaat || null);
+  const [sessionStarted, setSessionStarted] = useState(false);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -256,6 +263,9 @@ export default function ChatInterface({
           sessionId: currentSessionId,
           subject,
           childId,
+          hiatenTopic: hiatenTopicId
+            ? (HIAAT_TOPICS[subject].find(t => t.id === hiatenTopicId)?.prompt ?? null)
+            : null,
         }),
         signal: abortControllerRef.current.signal,
       });
@@ -300,6 +310,9 @@ export default function ChatInterface({
             : m
         ));
       }
+
+      // Mark session as started (hides HiatenSelector)
+      setSessionStarted(true);
 
       // Detect assessment completion signal in the full streamed response
       if (isAssessmentMode && ASSESSMENT_DONE_REGEX.test(assistantMessage)) {
@@ -416,6 +429,15 @@ export default function ChatInterface({
             Beginsituatietoets — Koko bepaalt jouw startpunt
           </span>
         </div>
+      )}
+
+      {/* Hiaat Selector — shown before first message, hidden once session starts */}
+      {!isAssessmentMode && !sessionStarted && !existingSessionId && (
+        <HiatenSelector
+          subject={subject}
+          selected={hiatenTopicId}
+          onSelect={(topic) => setHiatenTopicId(topic?.id ?? null)}
+        />
       )}
 
       {/* Messages Area */}
