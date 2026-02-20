@@ -109,7 +109,7 @@ The IGDI model has 4 phases — adapt your approach to each phase:
 - Child works with minimal support
 - Only provide hints if specifically asked or after prolonged struggle
 - Celebrate independent problem-solving
-- Build confidence for next session
+- Build child's confidence — keep going until child or parent stops the session
 
 Transition between phases based on child's performance, not on fixed time/message counts.
 
