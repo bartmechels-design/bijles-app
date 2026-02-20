@@ -39,6 +39,7 @@ import { adjustDifficulty, recordAnswer } from '@/lib/tutoring/difficulty-adjust
 import { analyzeKokoResponse } from '@/lib/tutoring/response-analyzer';
 import { checkTokenBudget, recordTokenUsage } from '@/lib/ai/rate-limiter';
 import { buildSystemPrompt, buildAssessmentPrompt } from '@/lib/ai/prompts/system-prompts';
+import { getActiveLeerstof, isZaakvak } from '@/lib/tutoring/leerstof-retriever';
 import { finishAssessment } from '@/lib/tutoring/assessment-manager';
 import { updateStuckFlag, recordProgressEvent } from '@/lib/tutoring/progress-tracker';
 import type { Subject, TutoringLanguage, SessionMetadata } from '@/types/tutoring';
@@ -192,6 +193,13 @@ export async function POST(
     } else {
       // Get session history for continuity across sessions (tutoring only)
       const sessionHistory = await getSessionHistory(childId, subject);
+
+      // Fetch leerstof for zaakvakken (subject-specific uploaded lesson material)
+      let leerstofContext: string | null = null;
+      if (isZaakvak(subject)) {
+        leerstofContext = await getActiveLeerstof(subject);
+      }
+
       systemPrompt =
         buildSystemPrompt(
           subject,
@@ -201,6 +209,7 @@ export async function POST(
           currentSession.difficulty_level,
           currentSession.metadata.igdi_phase,
           sessionHistory,
+          leerstofContext ?? undefined,
           child.grade,
           hiatenTopic
         ) + systemPromptAddition;

@@ -287,6 +287,7 @@ export function buildSystemPrompt(
   difficultyLevel: number,
   igdiPhase: IGDIPhase,
   sessionHistory?: SessionHistoryContext | null,
+  leerstofContext?: string,
   childGrade?: number,
   hiatenTopic?: string | null
 ): string {
@@ -306,6 +307,11 @@ ${getDifficultyGuidance(difficultyLevel)}
 `;
 
   const igdiInstruction = getIGDIPhaseInstruction(igdiPhase);
+
+  // Leerstof from teacher (zaakvakken only) — injected before session context
+  const leerstofSection = leerstofContext
+    ? `# Leerstof van de Leerkracht\n\nDe leerkracht heeft de volgende lesstof aangeleverd. Gebruik UITSLUITEND deze inhoud als basis voor vragen en uitleg over het onderwerp. Koppel je vragen aan concrete onderwerpen uit deze tekst.\n\n${leerstofContext}`
+    : '';
 
   const gradeInfo = childGrade ? `\n**Klas**: Klas ${childGrade} (= groep ${childGrade + 2} in Nederland)` : '';
 
@@ -367,6 +373,7 @@ Dit is NIET onderhandelbaar. Begin DIRECT met ${subject}-inhoud.`;
     languageContext,
     difficultyInstruction,
     igdiInstruction,
+    ...(leerstofSection ? [leerstofSection] : []),
     sessionContext,
     historyContext,
     vakOverride,
