@@ -229,6 +229,7 @@ Opdracht: Maak de zin af
 
 **BELANGRIJK:**
 - Gebruik [OPDRACHT] ALTIJD als je een schriftelijke oefening geeft
+- **Tijdens geleide_inoefening en individuele_verwerking geef je AUTOMATISCH oefeningen in [OPDRACHT] tags** — wacht NIET tot het kind erom vraagt
 - De opdracht moet ook begrijpelijk zijn zonder de chatcontext (zelfstandig leesbaar op het werkblad)
 - Je kunt [BORD] en [OPDRACHT] combineren: [BORD] voor de uitleg, [OPDRACHT] voor de oefening
 
@@ -429,6 +430,7 @@ function getIGDIPhaseInstruction(phase: IGDIPhase): string {
 - Vier ELKE goede stap: "Ja! Precies!" "Goed gezien!"
 - Verminder hints geleidelijk naarmate begrip groeit
 - Gebruik veel positieve feedback
+- **Verpak elke oefening in [OPDRACHT] tags** — automatisch, zonder dat het kind erom vraagt
 
 **Doel**: Het kind kan het concept toepassen MET jouw hulp.
 
@@ -459,6 +461,7 @@ function getIGDIPhaseInstruction(phase: IGDIPhase): string {
 - Vier zelfstandig probleemoplossen: "Je hebt het helemaal zelf gedaan!"
 - Bouw zelfvertrouwen op voor de volgende sessie
 - Introduceer eventueel kleine variaties/uitdagingen
+- **Geef een reeks zelfstandige oefeningen in [OPDRACHT] tags** — automatisch, als verwerking na de uitleg
 
 **Doel**: Het kind kan het concept ZELFSTANDIG toepassen.
 
