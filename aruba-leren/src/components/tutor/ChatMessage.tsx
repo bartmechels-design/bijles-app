@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useTextToSpeech } from '@/hooks/useSpeech';
 
 interface ChatMessageProps {
@@ -9,6 +9,7 @@ interface ChatMessageProps {
   isStreaming?: boolean;
   locale?: string;
   imageUrl?: string;
+  onBoardClick?: (content: string) => void;
 }
 
 function getLang(locale?: string) {
@@ -18,7 +19,7 @@ function getLang(locale?: string) {
   return 'nl-NL';
 }
 
-/** Strip markdown formatting and special characters so TTS reads clean text */
+/** Strip markdown formatting, emojis, and special characters so TTS reads clean text */
 function cleanForSpeech(text: string): string {
   return text
     .replace(/\*{1,3}([^*]+)\*{1,3}/g, '$1')   // **bold**, *italic*, ***both***
@@ -29,8 +30,9 @@ function cleanForSpeech(text: string): string {
     .replace(/^[-*+]\s+/gm, '')                   // - bullet points
     .replace(/^\d+\.\s+/gm, '')                   // 1. numbered lists
     .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')      // [links](url)
+    .replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FE0F}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{200D}\u{20E3}\u{E0020}-\u{E007F}]/gu, '') // strip emojis
     .replace(/[*_~`^#>|]/g, '')                    // remaining special chars
-    .replace(/\n{2,}/g, '. ')                      // double newlines → pause
+    .replace(/\n{2,}/g, '. ')                      // double newlines → sentence break
     .replace(/\s{2,}/g, ' ')                       // collapse whitespace
     .trim();
 }
@@ -38,42 +40,135 @@ function cleanForSpeech(text: string): string {
 /** Regex to find [SPREEK]...[/SPREEK] blocks in Koko's messages */
 const SPREEK_REGEX = /\[SPREEK\]([\s\S]*?)\[\/SPREEK\]/g;
 
+/** Regex to find [BORD]...[/BORD] blocks */
+const BORD_REGEX = /\[BORD\]([\s\S]*?)\[\/BORD\]/g;
+
 /**
  * Parse message content into segments:
  * - text segments (visible)
  * - spoken segments (hidden, played via TTS)
+ * - board segments (shown on whiteboard)
  */
 interface TextSegment { type: 'text'; content: string }
 interface SpokenSegment { type: 'spoken'; content: string; index: number }
-type Segment = TextSegment | SpokenSegment;
+interface BoardSegment { type: 'board'; content: string; index: number }
+type Segment = TextSegment | SpokenSegment | BoardSegment;
+
+/** Check if content contains [BORD] blocks */
+export function hasBordBlocks(content: string): boolean {
+  BORD_REGEX.lastIndex = 0;
+  return BORD_REGEX.test(content);
+}
+
+/** Extract [BORD] content from a message */
+export function extractBordContent(content: string): string | null {
+  BORD_REGEX.lastIndex = 0;
+  const match = BORD_REGEX.exec(content);
+  return match ? match[1].trim() : null;
+}
 
 function parseSegments(content: string): Segment[] {
+  // Combine both tag types into a unified parsing pass
+  const TAG_REGEX = /\[(SPREEK|BORD)\]([\s\S]*?)\[\/\1\]/g;
   const segments: Segment[] = [];
   let lastIndex = 0;
   let spokenIndex = 0;
+  let boardIndex = 0;
   let match;
 
-  // Reset regex state
-  SPREEK_REGEX.lastIndex = 0;
+  TAG_REGEX.lastIndex = 0;
 
-  while ((match = SPREEK_REGEX.exec(content)) !== null) {
-    // Text before this spoken block
+  while ((match = TAG_REGEX.exec(content)) !== null) {
+    // Text before this block
     if (match.index > lastIndex) {
       const text = content.slice(lastIndex, match.index);
       if (text.trim()) segments.push({ type: 'text', content: text });
     }
-    // The spoken block itself
-    segments.push({ type: 'spoken', content: match[1].trim(), index: spokenIndex++ });
+
+    if (match[1] === 'SPREEK') {
+      segments.push({ type: 'spoken', content: match[2].trim(), index: spokenIndex++ });
+    } else if (match[1] === 'BORD') {
+      segments.push({ type: 'board', content: match[2].trim(), index: boardIndex++ });
+    }
+
     lastIndex = match.index + match[0].length;
   }
 
-  // Remaining text after last spoken block
+  // Remaining text
   if (lastIndex < content.length) {
     const text = content.slice(lastIndex);
     if (text.trim()) segments.push({ type: 'text', content: text });
   }
 
   return segments;
+}
+
+/**
+ * Render a plain text segment with basic markdown:
+ * **bold**, *italic*, numbered lists, bullet lists, line breaks.
+ */
+function renderMarkdown(text: string): React.ReactNode {
+  // Split into lines for list detection
+  const lines = text.split('\n');
+  const nodes: React.ReactNode[] = [];
+  let i = 0;
+
+  const inlineFormat = (line: string, key: string | number): React.ReactNode => {
+    // Process **bold** and *italic* inline
+    const parts = line.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g);
+    return (
+      <span key={key}>
+        {parts.map((part, pi) => {
+          if (part.startsWith('**') && part.endsWith('**')) {
+            return <strong key={pi}>{part.slice(2, -2)}</strong>;
+          }
+          if (part.startsWith('*') && part.endsWith('*') && part.length > 2) {
+            return <em key={pi}>{part.slice(1, -1)}</em>;
+          }
+          return part;
+        })}
+      </span>
+    );
+  };
+
+  while (i < lines.length) {
+    const line = lines[i];
+
+    // Ordered list
+    if (/^\d+\.\s/.test(line)) {
+      const items: React.ReactNode[] = [];
+      while (i < lines.length && /^\d+\.\s/.test(lines[i])) {
+        items.push(<li key={i}>{inlineFormat(lines[i].replace(/^\d+\.\s/, ''), i)}</li>);
+        i++;
+      }
+      nodes.push(<ol key={`ol-${i}`} className="list-decimal pl-5 space-y-1 my-1">{items}</ol>);
+      continue;
+    }
+
+    // Bullet list
+    if (/^[-*]\s/.test(line)) {
+      const items: React.ReactNode[] = [];
+      while (i < lines.length && /^[-*]\s/.test(lines[i])) {
+        items.push(<li key={i}>{inlineFormat(lines[i].replace(/^[-*]\s/, ''), i)}</li>);
+        i++;
+      }
+      nodes.push(<ul key={`ul-${i}`} className="list-disc pl-5 space-y-1 my-1">{items}</ul>);
+      continue;
+    }
+
+    // Empty line → paragraph break
+    if (line.trim() === '') {
+      nodes.push(<br key={`br-${i}`} />);
+      i++;
+      continue;
+    }
+
+    // Regular line
+    nodes.push(<span key={i}>{inlineFormat(line, i)}{i < lines.length - 1 ? <br /> : null}</span>);
+    i++;
+  }
+
+  return <>{nodes}</>;
 }
 
 /** Check if content contains any [SPREEK] blocks */
@@ -147,7 +242,7 @@ function SpokenBlock({ text, autoPlay }: { text: string; locale?: string; autoPl
   );
 }
 
-export default function ChatMessage({ role, content, isStreaming = false, locale, imageUrl }: ChatMessageProps) {
+export default function ChatMessage({ role, content, isStreaming = false, locale, imageUrl, onBoardClick }: ChatMessageProps) {
   const [shouldAnimate, setShouldAnimate] = useState(true);
   const { speak, stop, isSpeaking } = useTextToSpeech();
 
@@ -167,7 +262,7 @@ export default function ChatMessage({ role, content, isStreaming = false, locale
     }
   };
 
-  const containsSpeek = !isStreaming && hasSpeekBlocks(content);
+  const hasSpecialBlocks = !isStreaming && (hasSpeekBlocks(content) || hasBordBlocks(content));
 
   if (role === 'assistant') {
     return (
@@ -178,29 +273,47 @@ export default function ChatMessage({ role, content, isStreaming = false, locale
           <span className="text-xl">🐵</span>
         </div>
         <div className="bg-sky-100 text-sky-900 rounded-2xl rounded-tl-sm px-5 py-3 max-w-[80%] shadow-sm">
-          {/* Render with or without spoken blocks */}
-          {containsSpeek ? (
+          {/* Render with or without special blocks */}
+          {hasSpecialBlocks ? (
             <div className="text-lg">
               {parseSegments(content).map((segment, i) =>
                 segment.type === 'text' ? (
                   <span key={i} className="whitespace-pre-wrap">{segment.content}</span>
-                ) : (
+                ) : segment.type === 'spoken' ? (
                   <SpokenBlock
                     key={`spoken-${segment.index}`}
                     text={segment.content}
                     locale={locale}
                     autoPlay={segment.index === 0}
                   />
+                ) : (
+                  <button
+                    key={`board-${segment.index}`}
+                    type="button"
+                    onClick={() => onBoardClick?.(segment.content)}
+                    className="inline-flex items-center gap-1.5 my-1"
+                  >
+                    <span className="inline-flex items-center gap-1 bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded-full text-sm font-medium hover:bg-indigo-200 transition-colors cursor-pointer">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6z" />
+                      </svg>
+                      Bekijk op schoolbord
+                    </span>
+                  </button>
                 )
               )}
             </div>
           ) : (
-            <p className="text-lg whitespace-pre-wrap">
-              {content}
-              {isStreaming && (
-                <span className="inline-block w-2 h-5 bg-sky-600 ml-1 animate-pulse"></span>
+            <div className="text-lg">
+              {isStreaming ? (
+                <span className="whitespace-pre-wrap">
+                  {content}
+                  <span className="inline-block w-2 h-5 bg-sky-600 ml-1 animate-pulse"></span>
+                </span>
+              ) : (
+                renderMarkdown(content)
               )}
-            </p>
+            </div>
           )}
           {/* Speak button — only show when not streaming and content exists */}
           {!isStreaming && content && (
