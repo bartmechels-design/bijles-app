@@ -6,22 +6,22 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 
 **Core value:** Kinderen op Aruba krijgen persoonlijke bijles die zich aanpast aan hun niveau, volledig zelfstandig, in hun eigen taal en context.
 
-**Current focus:** Phase 5 — Baseline Assessment & Progress Tracking (in progress)
+**Current focus:** Phase 6 — Advanced AI Features
 
 ## Current Position
 
-Phase: 5 of 7 (Baseline Assessment & Progress Tracking) — IN PROGRESS
-Plan: 3 of 4 (05-03 complete)
-Status: Phase 5 plan 3 complete — progress visualization components, SubjectSelector assessment gate
-Last activity: 2026-02-19 — 05-03 complete, ProgressBar, LevelBadge, SubjectProgress, assessment gate in SubjectSelector
+Phase: 6 of 7 (Advanced AI Features) — READY TO START
+Plan: 0 of ? (not yet planned)
+Status: Phase 5 fully complete — all plans done, human testing passed, 7 post-test fixes committed
+Last activity: 2026-02-20 — Phase 5 complete, Koko subject-restriction fixes, all uncommitted changes committed
 
-Progress: [████████████████████████████████████████████████████████████░] 74%
+Progress: [██████████████████████████████████████████████████████████████████░] 80%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 14
-- Total execution time: ~1.9 hours
+- Total plans completed: 15
+- Total execution time: ~2.7 hours
 
 **By Phase:**
 
@@ -31,19 +31,17 @@ Progress: [███████████████████████
 | 02 - Authentication & Family Accounts | 3/3 | Complete |
 | 03 - Payment Verification System | 3/3 | Complete |
 | 04 - AI Tutor Core Foundations | 4/4 | Complete |
-| 05 - Baseline Assessment & Progress Tracking | 3/4 | In Progress |
+| 05 - Baseline Assessment & Progress Tracking | 4/4 | Complete |
+| 06 - Advanced AI Features | 0/? | Ready |
 
 **Recent Executions:**
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
-| 04 | 01 | 6 min | 2 | 6 |
-| 04 | 02 | 5 min | 2 | 4 |
-| 04 | 03 | 15 min | 2 | 12 |
-| 04 | 04 | 8 min | 2 | 4 |
 | 05 | 01 | 6 min | 2 | 5 |
 | 05 | 02 | 15 min | 2 | 5 |
 | 05 | 03 | 10 min | 2 | 5 |
+| 05 | 04 | 45 min | 2+7fixes | 13 |
 
 ## Accumulated Context
 
@@ -108,22 +106,24 @@ Recent decisions affecting current work:
 - 05-03: progressMap keyed by subject string for O(1) lookup — server component fetches, passes to client SubjectSelector
 - 05-03: SubjectProgress handles both null and assessment_completed=false with same "Toets nodig" badge — simpler API
 - 05-03: renderCard() helper in SubjectSelector deduplicates kern/zaak card rendering
+- 05-04: Level names changed to star theme (Kleine Ster → Superster) — monkey theme not appropriate
+- 05-04: Zaakvakken bypass assessment gate — direct to /tutor/ with info badge (content upload is Phase 6)
+- 05-04: Begrijpend lezen disables TTS entirely — reading aloud defeats reading comprehension purpose
+- 05-04: vakOverride placed as LAST section in buildSystemPrompt — highest Claude priority, prevents subject menus
+- 05-04: Custom renderMarkdown() in ChatMessage instead of react-markdown — no external dependency
 
 ### Pending Todos
 
-- Phase 4: ✅ DONE (04-01) — Koko hints/suggesties voor spellingcorrectie (phonetic hints in Socratic guards)
-- Phase 4: ✅ DONE (04-01) — IGDI-model geïntegreerd in prompt system
-- Phase 4: ✅ DONE (04-01) — Lesduur per leeftijd (SESSION_DURATION_BY_AGE constants)
-- Phase 5: USER ACTION REQUIRED — Run migration 007_assessment_progress_tables.sql in Supabase SQL Editor
+- None — Phase 5 complete
 
 ### Blockers/Concerns
 
-- None — Phase 5 plan 1 complete. User must run SQL migration 007 in Supabase before Phase 5 can be tested end-to-end.
+- Koko subject-restriction fix (vakOverride) needs user confirmation after dev server restart
 
 ## Session Continuity
 
-Last session: 2026-02-19
-Stopped at: Completed 05-03-PLAN.md — progress visualization components and SubjectSelector assessment gate
+Last session: 2026-02-20
+Stopped at: Phase 5 fully complete — all fixes committed, STATE.md updated
 Resume file: None
 
-**Next action:** Execute Phase 5 plan 04 with `/gsd:execute-phase 05` (checkpoint — human verification required)
+**Next action:** Start Phase 6 — Advanced AI Features with `/gsd:plan-phase 06` or `/gsd:execute-phase 06`
