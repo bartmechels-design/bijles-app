@@ -60,9 +60,9 @@ export type ProgressEventType =
  * Used by LevelBadge component and assessment completion messages.
  */
 export const LEVEL_NAMES: Record<number, { nl: string; pap: string; es: string; en: string }> = {
-  1: { nl: 'Leerling-Aap', pap: 'Mono Studiante',  es: 'Mono Estudiante', en: 'Learner Monkey' },
-  2: { nl: 'Junior-Aap',   pap: 'Mono Junior',      es: 'Mono Junior',     en: 'Junior Monkey'  },
-  3: { nl: 'Gewone-Aap',   pap: 'Mono Normal',      es: 'Mono Normal',     en: 'Regular Monkey' },
-  4: { nl: 'Senior-Aap',   pap: 'Mono Senior',      es: 'Mono Senior',     en: 'Senior Monkey'  },
-  5: { nl: 'Super-Aap',    pap: 'Super Mono',        es: 'Super Mono',      en: 'Super Monkey'   },
+  1: { nl: 'Kleine Ster',    pap: 'Strea Chikito',  es: 'Estrella Pequeña', en: 'Little Star'    },
+  2: { nl: 'Groeiende Ster', pap: 'Strea Kresiendo', es: 'Estrella Creciente', en: 'Growing Star' },
+  3: { nl: 'Heldere Ster',   pap: 'Strea Brillante', es: 'Estrella Brillante', en: 'Bright Star'  },
+  4: { nl: 'Grote Ster',     pap: 'Strea Grandi',    es: 'Estrella Grande',  en: 'Big Star'       },
+  5: { nl: 'Superster',      pap: 'Superster',        es: 'Superestrella',    en: 'Superstar'      },
 };
