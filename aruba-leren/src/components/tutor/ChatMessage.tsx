@@ -74,16 +74,15 @@ export function extractBordContent(content: string): string | null {
 
 /** Check if content contains [OPDRACHT] blocks */
 export function hasOpdrachtBlocks(content: string): boolean {
-  OPDRACHT_REGEX.lastIndex = 0;
-  return OPDRACHT_REGEX.test(content);
+  return /\[OPDRACHT\][\s\S]*?\[\/OPDRACHT\]/.test(content);
 }
 
 /** Extract all [OPDRACHT] block contents from a message */
 export function extractOpdrachtBlocks(content: string): string[] {
-  OPDRACHT_REGEX.lastIndex = 0;
+  const regex = /\[OPDRACHT\]([\s\S]*?)\[\/OPDRACHT\]/g;
   const blocks: string[] = [];
   let match;
-  while ((match = OPDRACHT_REGEX.exec(content)) !== null) {
+  while ((match = regex.exec(content)) !== null) {
     blocks.push(match[1].trim());
   }
   return blocks;
