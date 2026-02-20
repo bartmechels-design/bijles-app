@@ -117,8 +117,9 @@ export default function ChatInterface({
   // Koko avatar state
   const { emotion, deriveEmotion, setEmotion } = useKokoState();
 
-  // Voice-first mode
-  const { isVoiceFirst, setVoiceFirst } = useVoiceFirstMode();
+  // Voice-first mode — disabled for begrijpend_lezen (reading comprehension requires reading, not listening)
+  const { isVoiceFirst: isVoiceFirstRaw, setVoiceFirst } = useVoiceFirstMode();
+  const isVoiceFirst = subject === 'begrijpend_lezen' ? false : isVoiceFirstRaw;
 
   // Track last completed assistant message for auto-TTS
   const lastCompletedRef = useRef<string | null>(null);
@@ -385,10 +386,10 @@ export default function ChatInterface({
           </svg>
         </button>
 
-        {/* Voice-first toggle */}
-        <button
+        {/* Voice-first toggle — hidden for begrijpend_lezen */}
+        {subject !== 'begrijpend_lezen' && <button
           type="button"
-          onClick={() => setVoiceFirst(!isVoiceFirst)}
+          onClick={() => setVoiceFirst(!isVoiceFirstRaw)}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
             isVoiceFirst
               ? 'bg-sky-100 text-sky-700 ring-2 ring-sky-300'
@@ -399,8 +400,8 @@ export default function ChatInterface({
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z" />
           </svg>
-          {isVoiceFirst ? 'Aan' : 'Uit'}
-        </button>
+          {isVoiceFirstRaw ? 'Aan' : 'Uit'}
+        </button>}
       </div>
 
       {/* Assessment Mode Banner */}
@@ -414,32 +415,6 @@ export default function ChatInterface({
           <span className="text-sm font-medium text-amber-800">
             Beginsituatietoets — Koko bepaalt jouw startpunt
           </span>
-        </div>
-      )}
-
-      {/* Assessment Completion Banner */}
-      {isAssessmentMode && assessmentDone && (
-        <div className="bg-green-50 border-b border-green-200 px-4 py-3 flex items-center gap-3">
-          <span className="text-green-500" aria-hidden="true">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-            </svg>
-          </span>
-          <div className="flex-1">
-            <p className="text-sm font-semibold text-green-800">
-              Toets afgerond! Je niveau is bepaald.
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => router.push(`/${locale}/tutor/${childId}/${subject}`)}
-            className="inline-flex items-center gap-1.5 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold px-3 py-1.5 rounded-lg transition-colors"
-          >
-            Ga naar de les
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </button>
         </div>
       )}
 
@@ -486,6 +461,30 @@ export default function ChatInterface({
         {rateLimited && (
           <div className="bg-amber-100 border-l-4 border-amber-500 text-amber-900 p-4 rounded-lg">
             <p className="font-semibold">{t('rateLimitReached')}</p>
+          </div>
+        )}
+
+        {/* Assessment Completion Banner — inline after last message */}
+        {isAssessmentMode && assessmentDone && (
+          <div className="bg-green-50 border border-green-200 rounded-2xl px-4 py-4 flex items-center gap-3 shadow-sm">
+            <span className="text-green-500 flex-shrink-0" aria-hidden="true">
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+            </span>
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-green-800">Toets afgerond! Je niveau is bepaald.</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => router.push(`/${locale}/tutor/${childId}/${subject}`)}
+              className="inline-flex items-center gap-1.5 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold px-3 py-1.5 rounded-lg transition-colors flex-shrink-0"
+            >
+              Ga naar de les
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </button>
           </div>
         )}
 
