@@ -146,6 +146,15 @@ Plans:
 
 **Requirements Covered:** TUTOR-08, TUTOR-09, TUTOR-10, TUTOR-11, TUTOR-12, ADMIN-06
 
+**Plans:** 5 plans
+
+Plans:
+- [ ] 06-01-PLAN.md — Hiaten selection: topic chips + HIAAT_TOPICS + kerndoelen tussendoelen
+- [ ] 06-02-PLAN.md — PDF werkblad: [OPDRACHT] tag + react-to-print v3 print button
+- [ ] 06-03-PLAN.md — Leerstof upload & injection: pdf-parse + migration 008 + admin page
+- [ ] 06-04-PLAN.md — Huiswerk session mode: buildHuiswerkPrompt + auto-send on image attach
+- [ ] 06-05-PLAN.md — End-to-end build verification and human testing checkpoint
+
 **Success Criteria:**
 1. Koko generates printable PDF-werkbladen after successful practice sessions
 2. Child can use Koko to complete huiswerk via app (upload assignment, receive guided support)
@@ -185,7 +194,7 @@ Plans:
 | Phase 3: Payment Verification System | 6 | Pending | 0% |
 | Phase 4: AI Tutor - Core Foundations | 7 | In Progress | 85% |
 | Phase 5: Baseline Assessment & Progress Tracking | 6 | Planning | 0% |
-| Phase 6: Advanced Tutor Features & Content Management | 6 | Pending | 0% |
+| Phase 6: Advanced Tutor Features & Content Management | 6 | Planning | 0% |
 | Phase 7: Parent Portal & Admin Monitoring | 8 | Pending | 0% |
 
 **Total:** 45 requirement mappings (some requirements appear in multiple phases due to incremental delivery)
@@ -219,8 +228,9 @@ Research findings from ARCHITECTURE.md, FEATURES.md, PITFALLS.md, and STACK.md i
 - Adaptive difficulty based on hints, retries, time (FEATURES: Table stakes)
 
 **Phase 6 (Advanced Features):**
-- Arubaanse Kerndoelen alignment required (FEATURES: Standards-aligned curriculum)
-- RAG pattern for uploaded leerstof (ARCHITECTURE: Knowledge base pattern)
+- react-to-print v3 for PDF werkbladen (NOT @react-pdf/renderer — crashes in Next.js App Router)
+- Text injection into system prompt for leerstof (NOT RAG — simpler for MVP scale)
+- huiswerkMode as JSONB flag in session metadata (avoids DB CHECK constraint change)
 
 **Phase 7 (Parent Portal):**
 - Mobile-first dashboard (FEATURES: 73% parent access on mobile)
@@ -229,4 +239,4 @@ Research findings from ARCHITECTURE.md, FEATURES.md, PITFALLS.md, and STACK.md i
 ---
 
 *Roadmap created: 2026-02-12*
-*Last updated: 2026-02-18*
+*Last updated: 2026-02-20*
