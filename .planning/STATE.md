@@ -6,16 +6,16 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 
 **Core value:** Kinderen op Aruba krijgen persoonlijke bijles die zich aanpast aan hun niveau, volledig zelfstandig, in hun eigen taal en context.
 
-**Current focus:** Phase 6 — Advanced AI Features
+**Current focus:** Phase 7 — Parent Portal & Admin Monitoring
 
 ## Current Position
 
-Phase: 6 of 7 (Advanced AI Features) — READY TO START
-Plan: 0 of ? (not yet planned)
-Status: Phase 5 fully complete — all plans done, human testing passed, 7 post-test fixes committed
-Last activity: 2026-02-20 — Phase 5 complete, Koko subject-restriction fixes, all uncommitted changes committed
+Phase: 7 of 7 (Parent Portal & Admin Monitoring) — READY TO EXECUTE
+Plan: 0 of 4 (planned, not yet executed)
+Status: Phase 7 planned — 4 plans in 2 waves, verification passed
+Last activity: 2026-02-21 — Phase 7 planned (research + 4 plans + verification loop)
 
-Progress: [██████████████████████████████████████████████████████████████████░] 80%
+Progress: [████████████████████████████████████████████████████████████████████████████████████████░] 93%
 
 ## Performance Metrics
 
@@ -32,7 +32,7 @@ Progress: [███████████████████████
 | 03 - Payment Verification System | 3/3 | Complete |
 | 04 - AI Tutor Core Foundations | 4/4 | Complete |
 | 05 - Baseline Assessment & Progress Tracking | 4/4 | Complete |
-| 06 - Advanced AI Features | 0/? | Ready |
+| 06 - Advanced AI Features | 5/5 | Complete |
 
 **Recent Executions:**
 
@@ -114,16 +114,17 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-- None — Phase 5 complete
+- Open issue: Koko nog steeds "genoeg geoefend" in bestaande sessies — nieuwe sessies (vers vak) zijn OK, maar DB-sessies met oude context blijven het herhalen. Mogelijke fix: session reset functie of MAX_CONTEXT_MESSAGES verlagen.
+- SQL migratie 008 (leerstof_items) nog niet uitgevoerd in Supabase (voor productie)
 
 ### Blockers/Concerns
 
-- Koko subject-restriction fix (vakOverride) needs user confirmation after dev server restart
+- Geen harde blockers — alle features werken op nieuwe sessies
 
 ## Session Continuity
 
 Last session: 2026-02-20
-Stopped at: Phase 5 fully complete — all fixes committed, STATE.md updated
+Stopped at: Phase 6 complete — human testing done, 8 post-test fixes committed
 Resume file: None
 
-**Next action:** Start Phase 6 — Advanced AI Features with `/gsd:plan-phase 06` or `/gsd:execute-phase 06`
+**Next action:** Start Phase 7 — Parent Portal & Admin Monitoring met `/gsd:plan-phase 07`
