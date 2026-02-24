@@ -11,11 +11,11 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 ## Current Position
 
 Phase: 7 of 7 (Parent Portal & Admin Monitoring) — IN PROGRESS
-Plan: 1 of 4 (07-01 complete)
-Status: 07-01 complete — parent dashboard progress visualization done
-Last activity: 2026-02-24 — 07-01 complete (ProgressSummaryCard + per-child detail page + dashboard enhancement)
+Plan: 2 of 4 (07-02 complete)
+Status: 07-02 complete — vacation calendar system (migration + parent view + admin CRUD)
+Last activity: 2026-02-24 — 07-02 complete (school_vacations table, /vakanties, /admin/vakanties, VacationManager, VacationForm)
 
-Progress: [█████████████████████████████████████████████████████████████████████████████████████████░] 94%
+Progress: [██████████████████████████████████████████████████████████████████████████████████████████░] 95%
 
 ## Performance Metrics
 
@@ -43,6 +43,7 @@ Progress: [███████████████████████
 | 05 | 03 | 10 min | 2 | 5 |
 | 05 | 04 | 45 min | 2+7fixes | 13 |
 | 07 | 01 | 5 min | 2 | 3 |
+| 07 | 02 | 4 min | 2 | 8 |
 
 ## Accumulated Context
 
@@ -116,11 +117,15 @@ Recent decisions affecting current work:
 - 05-04: Custom renderMarkdown() in ChatMessage instead of react-markdown — no external dependency
 - [Phase 07]: ProgressSummaryCard renders all 6 subjects always — SubjectProgress handles null/no-assessment state
 - [Phase 07]: 07-01: Vakantierooster link placed in dashboard header action buttons for persistent visibility
+- [Phase 07]: 07-02: SchoolVacation type and getCurrentSchoolYear() in utils.ts (client-safe) — queries.ts re-exports, client components import from utils.ts to avoid next/headers bundler leak
+- [Phase 07]: 07-02: Admin vakanties page is pure Server Component — VacationManager client wrapper owns showForm/selectedVacation state
+- [Phase 07]: 07-02: revalidatePath('/', 'layout') covers all locale routes in one call after vacation mutations
 
 ### Pending Todos
 
 - Open issue: Koko nog steeds "genoeg geoefend" in bestaande sessies — nieuwe sessies (vers vak) zijn OK, maar DB-sessies met oude context blijven het herhalen. Mogelijke fix: session reset functie of MAX_CONTEXT_MESSAGES verlagen.
 - SQL migratie 008 (leerstof_items) nog niet uitgevoerd in Supabase (voor productie)
+- SQL migratie 009 (school_vacations) nog niet uitgevoerd in Supabase — run handmatig in SQL Editor
 
 ### Blockers/Concerns
 
@@ -129,7 +134,7 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-24
-Stopped at: Completed 07-01-PLAN.md — parent dashboard progress visualization done
+Stopped at: Completed 07-02-PLAN.md — vacation calendar system (migration + parent view + admin CRUD)
 Resume file: None
 
 **Next action:** Execute Phase 7 Plan 02 — vacation schedule feature (07-02-PLAN.md)
