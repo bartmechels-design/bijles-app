@@ -3,8 +3,10 @@ import { redirect } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import AddChildForm from '@/components/AddChildForm'
 import ChildList from '@/components/ChildList'
+import ProgressSummaryCard from '@/components/progress/ProgressSummaryCard'
 import { signOut } from '@/lib/auth/actions'
 import Link from 'next/link'
+import type { ChildSubjectProgress } from '@/types/progress'
 
 interface DashboardPageProps {
   params: Promise<{
@@ -84,6 +86,24 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
     console.error('Children fetch error:', childrenError)
   }
 
+  // Batch-fetch progress for all children (no N+1)
+  const childIds = (children || []).map((c) => c.id)
+  let progressByChild: Record<string, Record<string, ChildSubjectProgress>> = {}
+
+  if (childIds.length > 0) {
+    const { data: progressRows } = await supabase
+      .from('child_subject_progress')
+      .select('child_id, subject, current_level, assessment_completed, is_stuck, stuck_since, last_session_at, total_sessions, total_correct, total_incorrect, total_hints_received')
+      .in('child_id', childIds)
+
+    for (const row of progressRows ?? []) {
+      if (!progressByChild[row.child_id]) {
+        progressByChild[row.child_id] = {}
+      }
+      progressByChild[row.child_id][row.subject] = row as ChildSubjectProgress
+    }
+  }
+
   const t = await getTranslations({ locale })
 
   return (
@@ -102,12 +122,18 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-3">
+            <div className="flex gap-3 flex-wrap">
               <Link
                 href={`/${locale}/subscription/status`}
                 className="bg-amber-500 text-white font-bold py-3 px-6 rounded-xl hover:bg-amber-600 focus:outline-none focus:ring-4 focus:ring-amber-300/50 shadow-md transition-all"
               >
                 Abonnement
+              </Link>
+              <Link
+                href={`/${locale}/vakanties`}
+                className="bg-sky-500 text-white font-bold py-3 px-6 rounded-xl hover:bg-sky-600 focus:outline-none focus:ring-4 focus:ring-sky-300/50 shadow-md transition-all"
+              >
+                Vakantierooster
               </Link>
               <form action={signOut}>
                 <button
@@ -150,6 +176,23 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
                     </div>
                   </div>
                 </Link>
+              </div>
+            )}
+
+            {/* Progress Cards per Child */}
+            {children && children.length > 0 && (
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">Voortgang</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {children.map((child) => (
+                    <ProgressSummaryCard
+                      key={child.id}
+                      child={child}
+                      progress={progressByChild[child.id] ?? {}}
+                      locale={locale}
+                    />
+                  ))}
+                </div>
               </div>
             )}
 
