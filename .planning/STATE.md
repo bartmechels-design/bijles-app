@@ -10,12 +10,12 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 
 ## Current Position
 
-Phase: 7 of 7 (Parent Portal & Admin Monitoring) — READY TO EXECUTE
-Plan: 0 of 4 (planned, not yet executed)
-Status: Phase 7 planned — 4 plans in 2 waves, verification passed
-Last activity: 2026-02-21 — Phase 7 planned (research + 4 plans + verification loop)
+Phase: 7 of 7 (Parent Portal & Admin Monitoring) — IN PROGRESS
+Plan: 1 of 4 (07-01 complete)
+Status: 07-01 complete — parent dashboard progress visualization done
+Last activity: 2026-02-24 — 07-01 complete (ProgressSummaryCard + per-child detail page + dashboard enhancement)
 
-Progress: [████████████████████████████████████████████████████████████████████████████████████████░] 93%
+Progress: [█████████████████████████████████████████████████████████████████████████████████████████░] 94%
 
 ## Performance Metrics
 
@@ -42,6 +42,7 @@ Progress: [███████████████████████
 | 05 | 02 | 15 min | 2 | 5 |
 | 05 | 03 | 10 min | 2 | 5 |
 | 05 | 04 | 45 min | 2+7fixes | 13 |
+| 07 | 01 | 5 min | 2 | 3 |
 
 ## Accumulated Context
 
@@ -78,7 +79,9 @@ Recent decisions affecting current work:
 - 03-03: Payment proof images use signed URLs with 1-hour expiry for security
 - 03-03: Approve action upserts subscription (handles both new and renewal cases)
 - 03-03: Admin panel uses dark header (bg-gray-900) for visual distinction from parent UI
-- 04-01: Claude Sonnet 4.5 as primary tutor model (cost-effective at $3/MTok input, $15/MTok output)
+- 04-01: Claude Sonnet 4.5 as primary tutor model (cost-effective at $3/MTok input, ### Decisions
+
+5/MTok output)
 - 04-01: Prompt caching architecture (static base + guards first, dynamic parts after) reduces costs by ~90%
 - 04-01: 7 Socratic guard scenarios with few-shot examples prevent direct answer giving
 - 04-01: IGDI model phases integrated (instructie → geleide inoefening → diagnostische toets → individuele verwerking)
@@ -111,6 +114,8 @@ Recent decisions affecting current work:
 - 05-04: Begrijpend lezen disables TTS entirely — reading aloud defeats reading comprehension purpose
 - 05-04: vakOverride placed as LAST section in buildSystemPrompt — highest Claude priority, prevents subject menus
 - 05-04: Custom renderMarkdown() in ChatMessage instead of react-markdown — no external dependency
+- [Phase 07]: ProgressSummaryCard renders all 6 subjects always — SubjectProgress handles null/no-assessment state
+- [Phase 07]: 07-01: Vakantierooster link placed in dashboard header action buttons for persistent visibility
 
 ### Pending Todos
 
@@ -123,8 +128,8 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-02-20
-Stopped at: Phase 6 complete — human testing done, 8 post-test fixes committed
+Last session: 2026-02-24
+Stopped at: Completed 07-01-PLAN.md — parent dashboard progress visualization done
 Resume file: None
 
-**Next action:** Start Phase 7 — Parent Portal & Admin Monitoring met `/gsd:plan-phase 07`
+**Next action:** Execute Phase 7 Plan 02 — vacation schedule feature (07-02-PLAN.md)
