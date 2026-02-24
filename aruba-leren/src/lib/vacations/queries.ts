@@ -1,33 +1,12 @@
 import { createClient } from '@/lib/supabase/server';
 
-export interface SchoolVacation {
-  id: string;
-  name: string;
-  start_date: string;
-  end_date: string;
-  school_year: string;
-  is_public_holiday: boolean;
-  created_at: string;
-  updated_at: string;
-}
+// Re-export shared types and pure helpers from utils.ts.
+// queries.ts is server-only (it imports next/headers via createClient).
+// For client components, import directly from '@/lib/vacations/utils'.
+export type { SchoolVacation } from './utils';
+export { getCurrentSchoolYear } from './utils';
 
-/**
- * Returns the current Aruba school year string.
- * Aruba school year starts in August (month index 7).
- * If month >= 7 (August): "${currentYear}-${currentYear+1}"
- * Otherwise: "${currentYear-1}-${currentYear}"
- */
-export function getCurrentSchoolYear(): string {
-  const now = new Date();
-  const month = now.getMonth(); // 0-indexed, 7 = August
-  const year = now.getFullYear();
-
-  if (month >= 7) {
-    return `${year}-${year + 1}`;
-  } else {
-    return `${year - 1}-${year}`;
-  }
-}
+import type { SchoolVacation } from './utils';
 
 /**
  * Fetch school vacations filtered by school year, ordered by start_date ascending.
