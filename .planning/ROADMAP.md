@@ -176,10 +176,10 @@ Plans:
 **Plans:** 4 plans
 
 Plans:
-- [ ] 07-01-PLAN.md — Parent dashboard with progress cards and per-child detail page (OUDER-01, OUDER-02, OUDER-03)
-- [ ] 07-02-PLAN.md — Vacation calendar: migration + parent view + admin CRUD (OUDER-05, ADMIN-05)
-- [ ] 07-03-PLAN.md — Admin families overview with stuck alerts + admin landing links (ADMIN-03, ADMIN-04)
-- [ ] 07-04-PLAN.md — Weekly progress email via Supabase Edge Function + Resend + pg_cron (OUDER-04)
+- [x] 07-01-PLAN.md — Parent dashboard with progress cards and per-child detail page (OUDER-01, OUDER-02, OUDER-03)
+- [x] 07-02-PLAN.md — Vacation calendar: migration + parent view + admin CRUD (OUDER-05, ADMIN-05)
+- [x] 07-03-PLAN.md — Admin families overview with stuck alerts + admin landing links (ADMIN-03, ADMIN-04)
+- [x] 07-04-PLAN.md — Weekly progress email via Supabase Edge Function + Resend + pg_cron (OUDER-04)
 
 **Success Criteria:**
 1. Parent views dashboard showing voortgang per kind, per vak with visual charts
@@ -193,6 +193,107 @@ Plans:
 
 ---
 
+---
+
+### Phase 8: UI/UX Polish — Koko Avatar & Time Timer
+
+**Goal:** Koko krijgt een visueel aantrekkelijke 3D-stijl avatar met expressies en animaties, en de afteltimer wordt vervangen door een visuele Time Timer.
+
+**Dependencies:** Phase 4 (requires AI tutor core)
+
+**Requirements Covered:** UX-01, UX-02
+
+**Plans:** TBD
+
+Plans:
+- [ ] 08-01-PLAN.md — Koko 3D-stijl avatar: CSS 3D transforms, Arubaans kleurenpalet, 5 expressies (blij, aanmoedigend, denkend, verrast, neutraal), animaties (knipoog, knikken, schudden)
+- [ ] 08-02-PLAN.md — Time Timer component: SVG-cirkel met stroke-dashoffset animatie, rood segment krimpt, optioneel tikgeluid + belgeluid, `<TimeTimer duration={600} />`
+
+**Success Criteria:**
+1. Koko-avatar toont minimaal 5 verschillende expressies, passend bij sessie-uitkomsten
+2. Animaties zijn soepel en niet schokkerig (60fps op low-end Android)
+3. Time Timer werkt als herbruikbaar component met configureerbare duur
+4. Geen cijfers verplicht op Time Timer (optioneel als instelling)
+5. Beide componenten werken op mobiel (primair device)
+
+---
+
+### Phase 9: Visuele Leerondersteuning
+
+**Goal:** Het whiteboard animeert vloeiend, wiskundige notaties worden correct weergegeven (KaTeX), zinsontleding is interactief met kleurcodering, en leerlingen hebben een digitaal kladblaadje bij rekenopgaven.
+
+**Dependencies:** Phase 4 (requires AI tutor core), Phase 6 (requires whiteboard)
+
+**Requirements Covered:** VIS-01, VIS-02, VIS-03, VIS-04
+
+**Plans:** TBD
+
+Plans:
+- [ ] 09-01-PLAN.md — Whiteboard animaties: vloeiend schrijfeffect (SVG path animatie), SVG-iconen naast tekst, kleur + lijn voor structuur
+- [ ] 09-02-PLAN.md — KaTeX integratie: wiskundige notaties (breuken als teller/noemer, ×, geen `/`), KaTeX of MathJax renderer
+- [ ] 09-03-PLAN.md — Interactieve zinsontleding: PV rood, gezegde oranje, onderwerp blauw, LV groen, MWV paars; klikbare woorden, animatie bij juist antwoord
+- [ ] 09-04-PLAN.md — Kladblaadje bij rekenen: canvas-element (stylus/vinger/muis), prominente herinnering per opgave, bewaar inhoud voor ouder/tutor
+
+**Success Criteria:**
+1. Whiteboard toont tekst met vloeiend schrijfeffect (geen instant verschijnen)
+2. Breuken worden NOOIT als `1/4` weergegeven — altijd als echte breuk (KaTeX of Unicode)
+3. Leerling kan woorden in zin aanklikken en kleur toewijzen bij zinsontleding
+4. Kladblaadje is aanwezig bij elke rekenopgave met niet-wegklikbare herinnering
+5. Kladblaadje-inhoud is bewaard en zichtbaar voor ouder/tutor
+
+---
+
+### Phase 10: Neural TTS & Uitspraak
+
+**Goal:** Browser TTS wordt vervangen door hoogwaardige Neural TTS (OpenAI TTS), met correcte pauzes, en Papiamento valt terug naar "Alleen lezen"-modus als geen goede stem beschikbaar is.
+
+**Dependencies:** Phase 4 (requires AI tutor with TTS)
+
+**Requirements Covered:** TTS-01, TTS-02, TTS-03
+
+**Plans:** TBD
+
+Plans:
+- [ ] 10-01-PLAN.md — OpenAI TTS integratie: API-route voor TTS (server-side), `onyx` of `nova` stem voor Nederlands, streaming audio playback in browser
+- [ ] 10-02-PLAN.md — Uitspraakregie: correcte pauzes (punt=600ms, komma=300ms), zinnen als geheel niet woord-voor-woord, spaties niet uitgesproken
+- [ ] 10-03-PLAN.md — Papiamento uitspraakmodus: auto-detectie of native stem beschikbaar is, fallback naar "Alleen lezen" met melding + optionele tutor-microfoonfunctie
+- [ ] 10-04-PLAN.md — Arubaanse context uitspraakvereisten: eigennamen/plaatsnamen testen, fallback naar neutrale voorbeelden of "Alleen lezen" bij slechte uitspraak
+
+**Success Criteria:**
+1. Nederlandse TTS klinkt natuurlijk en aangenaam bij 5 minuten aaneengesloten luisteren
+2. Pauze na punt is ~600ms, na komma ~300ms (gemeten in test-suite)
+3. Papiamento-content toont "Alleen lezen"-modus met duidelijke melding als geen native stem beschikbaar
+4. Arubaanse eigennamen worden correct uitgesproken of vallen terug op neutrale variant
+5. Geen robotisch of vermoeiend stemgeluid (getest op low-end Android)
+
+---
+
+### Phase 11: Rapportages & PDF-Deling
+
+**Goal:** Ouders ontvangen rijke voortgangsrapporten (startmeting, groei, foutanalyse, studieplan) als online bekijkbare en deelbare PDF, met WhatsApp-deelknop, in Papiamento én Nederlands.
+
+**Dependencies:** Phase 5 (requires progress tracking), Phase 7 (requires parent portal)
+
+**Requirements Covered:** RAPPORT-01, RAPPORT-02, RAPPORT-03, RAPPORT-04
+
+**Plans:** TBD
+
+Plans:
+- [ ] 11-01-PLAN.md — Rapportgenerator: startmeting (nulmeting per vak), voortgangsgrafieken (lijngrafieken), terugkerende moeilijkheden, effectieve leertijd (excl. idle), foutanalyse per categorie
+- [ ] 11-02-PLAN.md — Studieplan in rapport: voorgesteld weekplan, ouder kan bevestigen of aanpassen, voortgangscontrole
+- [ ] 11-03-PLAN.md — Online PDF-viewer: unieke deelbare link (vervaldatum 30 dagen), browser-weergave zonder download, kopieer-knop, inlogcode-beveiliging
+- [ ] 11-04-PLAN.md — WhatsApp-deelknop + tweetalig rapport (Papiamento Arubano + Nederlands)
+
+**Success Criteria:**
+1. Rapport bevat startmeting, voortgangsgrafieken, terugkerende moeilijkheden, effectieve leertijd, foutanalyse
+2. Studieplan is aanpasbaar door ouder en toont voortgangscontrole
+3. Rapport is online bekijkbaar via unieke link zonder verplichte download
+4. Deelbare link heeft vervaldatum van 30 dagen en vereist inlogcode
+5. WhatsApp-deelknop werkt met vooraf ingevulde tekst inclusief naam en link
+6. Rapport is beschikbaar in zowel Papiamento Arubano als Nederlands
+
+---
+
 ## Progress Tracking
 
 | Phase | Requirements | Status | Progress |
@@ -203,9 +304,13 @@ Plans:
 | Phase 4: AI Tutor - Core Foundations | 7 | In Progress | 85% |
 | Phase 5: Baseline Assessment & Progress Tracking | 6 | Planning | 0% |
 | Phase 6: Advanced Tutor Features & Content Management | 5 | Complete | 100% |
-| Phase 7: Parent Portal & Admin Monitoring | 8 | Planning | 0% |
+| Phase 7: Parent Portal & Admin Monitoring | 8 | Complete | 100% |
+| Phase 8: UI/UX Polish — Koko Avatar & Time Timer | 2 | Backlog | 0% |
+| Phase 9: Visuele Leerondersteuning | 4 | Backlog | 0% |
+| Phase 10: Neural TTS & Uitspraak | 3 | Backlog | 0% |
+| Phase 11: Rapportages & PDF-Deling | 4 | Backlog | 0% |
 
-**Total:** 45 requirement mappings (some requirements appear in multiple phases due to incremental delivery)
+**Total:** 58 requirement mappings (some requirements appear in multiple phases due to incremental delivery)
 
 **Note:** Requirements TUTOR-01 through TUTOR-07 deliver core tutoring in Phase 4; TUTOR-08 through TUTOR-12 add advanced features in Phase 6. This phased approach enables early testing of core AI tutor while deferring complex features.
 
@@ -215,7 +320,7 @@ Plans:
 **Requirements mapped:** 37
 **Unmapped requirements:** 0
 
-All requirements covered across 7 phases.
+All v1.0 requirements covered across 7 phases. Phases 8-11 are improvement phases (v1.1+).
 
 ## Research Integration
 
@@ -250,4 +355,4 @@ Research findings from ARCHITECTURE.md, FEATURES.md, PITFALLS.md, and STACK.md i
 ---
 
 *Roadmap created: 2026-02-12*
-*Last updated: 2026-02-21*
+*Last updated: 2026-02-21 — Phases 8-11 added (verbeteringen v1.1+)*
