@@ -203,11 +203,11 @@ Plans:
 
 **Requirements Covered:** UX-01, UX-02
 
-**Plans:** TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 08-01-PLAN.md — Koko 3D-stijl avatar: CSS 3D transforms, Arubaans kleurenpalet, 5 expressies (blij, aanmoedigend, denkend, verrast, neutraal), animaties (knipoog, knikken, schudden)
-- [ ] 08-02-PLAN.md — Time Timer component: SVG-cirkel met stroke-dashoffset animatie, rood segment krimpt, optioneel tikgeluid + belgeluid, `<TimeTimer duration={600} />`
+- [ ] 08-01-PLAN.md — Koko 3D-stijl avatar upgrade: SVG radialGradients, surprised emotion (7e expressie), prefers-reduced-motion guard
+- [ ] 08-02-PLAN.md — Time Timer component: SVG stroke-dashoffset shrinking red arc, Web Audio bell, embedded in SessionTimer
 
 **Success Criteria:**
 1. Koko-avatar toont minimaal 5 verschillende expressies, passend bij sessie-uitkomsten
@@ -305,7 +305,7 @@ Plans:
 | Phase 5: Baseline Assessment & Progress Tracking | 6 | Planning | 0% |
 | Phase 6: Advanced Tutor Features & Content Management | 5 | Complete | 100% |
 | Phase 7: Parent Portal & Admin Monitoring | 8 | Complete | 100% |
-| Phase 8: UI/UX Polish — Koko Avatar & Time Timer | 2 | Backlog | 0% |
+| Phase 8: UI/UX Polish — Koko Avatar & Time Timer | 2 | Planning | 0% |
 | Phase 9: Visuele Leerondersteuning | 4 | Backlog | 0% |
 | Phase 10: Neural TTS & Uitspraak | 3 | Backlog | 0% |
 | Phase 11: Rapportages & PDF-Deling | 4 | Backlog | 0% |
@@ -355,4 +355,4 @@ Research findings from ARCHITECTURE.md, FEATURES.md, PITFALLS.md, and STACK.md i
 ---
 
 *Roadmap created: 2026-02-12*
-*Last updated: 2026-02-21 — Phases 8-11 added (verbeteringen v1.1+)*
+*Last updated: 2026-02-25 — Phase 8 plans finalized (2 plans, Wave 1 parallel)*
