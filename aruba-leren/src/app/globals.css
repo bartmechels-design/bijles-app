@@ -156,6 +156,66 @@ body {
   transform: rotate(-15deg);
 }
 
+/* ===== Surprised emotion ===== */
+
+/* Surprised - very wide eyes */
+.koko-surprised .koko-eye-left,
+.koko-surprised .koko-eye-right {
+  animation: none;
+  transform: scaleY(1.3);
+}
+
+/* Surprised - pupils raised (eyebrows up effect) */
+.koko-surprised .koko-pupil-left,
+.koko-surprised .koko-pupil-right {
+  transform: translateY(-2px);
+}
+
+/* Surprised - star sparkle twinkle */
+@keyframes koko-star-twinkle {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+.koko-surprised-stars text {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.koko-star-1 { animation: koko-star-twinkle 0.8s ease-in-out infinite; }
+.koko-star-2 { animation: koko-star-twinkle 0.8s ease-in-out infinite 0.3s; }
+.koko-star-3 { animation: koko-star-twinkle 0.8s ease-in-out infinite 0.6s; }
+
+/* Surprised - slight jump animation */
+@keyframes koko-jump {
+  0%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-6px); }
+  60% { transform: translateY(-2px); }
+}
+
+.koko-surprised .koko-svg {
+  animation: koko-jump 0.5s ease-out 1;
+}
+
+/* ===== prefers-reduced-motion guard ===== */
+
+@media (prefers-reduced-motion: reduce) {
+  .koko-avatar .koko-eye-left,
+  .koko-avatar .koko-eye-right,
+  .koko-mouth-speaking,
+  .koko-happy .koko-svg,
+  .koko-thinking .koko-head,
+  .koko-thought circle,
+  .koko-thought ellipse,
+  .koko-listening .koko-ear-right,
+  .koko-wave-1, .koko-wave-2, .koko-wave-3,
+  .koko-surprised .koko-svg,
+  .koko-star-1, .koko-star-2, .koko-star-3,
+  .waveform-bar {
+    animation: none !important;
+  }
+}
+
 /* ===== Voice Waveform ===== */
 
 @keyframes waveform-bar {
