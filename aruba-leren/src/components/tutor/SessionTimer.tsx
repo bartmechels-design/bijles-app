@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { SESSION_DURATION_BY_AGE } from '@/types/tutoring';
 import { useRouter } from 'next/navigation';
+import TimeTimer from './TimeTimer';
 
 interface SessionTimerProps {
   childAge: number;
@@ -15,6 +16,7 @@ export default function SessionTimer({ childAge }: SessionTimerProps) {
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [showWarning, setShowWarning] = useState(false);
   const [extraMinutes, setExtraMinutes] = useState(0);
+  const startTimeRef = useRef(Date.now());
 
   // Get age-appropriate session duration limit (in minutes)
   const getSessionLimit = (age: number): number => {
@@ -25,29 +27,17 @@ export default function SessionTimer({ childAge }: SessionTimerProps) {
   };
 
   const sessionLimitMinutes = getSessionLimit(childAge) + extraMinutes;
+  const totalDurationSeconds = sessionLimitMinutes * 60;
 
+  // Wall-clock based timer — no drift
   useEffect(() => {
     const interval = setInterval(() => {
-      setElapsedSeconds(prev => prev + 1);
-    }, 1000);
+      const elapsed = Math.floor((Date.now() - startTimeRef.current) / 1000);
+      setElapsedSeconds(elapsed);
+    }, 500); // Check twice per second for responsiveness
 
     return () => clearInterval(interval);
   }, []);
-
-  useEffect(() => {
-    const elapsedMinutes = Math.floor(elapsedSeconds / 60);
-
-    // Show warning when limit is reached
-    if (elapsedMinutes >= sessionLimitMinutes && !showWarning) {
-      setShowWarning(true);
-    }
-  }, [elapsedSeconds, sessionLimitMinutes, showWarning]);
-
-  const formatTime = (seconds: number): string => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
 
   const handleContinue = () => {
     setExtraMinutes(prev => prev + 5);
@@ -62,16 +52,16 @@ export default function SessionTimer({ childAge }: SessionTimerProps) {
   return (
     <>
       {/* Timer Display */}
-      <div className="flex items-center gap-2 text-sm">
-        <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <span className="text-gray-700 font-semibold">
-          {t('sessionTimer')}: {formatTime(elapsedSeconds)}
-        </span>
+      <div className="flex items-center gap-2">
+        <TimeTimer
+          duration={totalDurationSeconds}
+          elapsed={elapsedSeconds}
+          size={40}
+          onComplete={() => setShowWarning(true)}
+        />
         {Math.floor(elapsedSeconds / 60) >= sessionLimitMinutes - 2 && (
           <span className="text-amber-600 text-xs font-semibold animate-pulse">
-            ({sessionLimitMinutes} min limiet)
+            ({sessionLimitMinutes} min)
           </span>
         )}
       </div>
