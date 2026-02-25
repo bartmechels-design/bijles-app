@@ -10,10 +10,10 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 
 ## Current Position
 
-Phase: 7 of 11 COMPLETE — Parent Portal & Admin Monitoring ✅
-Plan: 4/4 complete — verification passed (13/13 must-haves)
-Status: Phase 7 complete — all parent portal + admin monitoring features delivered
-Last activity: 2026-02-24 — Phase 7 complete (07-01 through 07-04, all verified)
+Phase: 8 of 11 IN PROGRESS — UI/UX Polish (Koko Avatar & Time Timer)
+Plan: 2/2 complete (so far) — 08-01 KokoAvatar + 08-02 TimeTimer delivered
+Status: Phase 8 in progress — TimeTimer visual countdown complete
+Last activity: 2026-02-25 — 08-02 complete (TimeTimer SVG + SessionTimer wall-clock fix)
 
 Progress: [████████████████████████████████████████████████████████████████████████████████████████████] 97%
 
@@ -44,6 +44,8 @@ Progress: [███████████████████████
 | 05 | 04 | 45 min | 2+7fixes | 13 |
 | 07 | 01 | 5 min | 2 | 3 |
 | 07 | 02 | 4 min | 2 | 8 |
+| Phase 08 P02 | 15 | 2 tasks | 2 files |
+| Phase 08 P01 | 6 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -120,6 +122,9 @@ Recent decisions affecting current work:
 - [Phase 07]: 07-02: SchoolVacation type and getCurrentSchoolYear() in utils.ts (client-safe) — queries.ts re-exports, client components import from utils.ts to avoid next/headers bundler leak
 - [Phase 07]: 07-02: Admin vakanties page is pure Server Component — VacationManager client wrapper owns showForm/selectedVacation state
 - [Phase 07]: 07-02: revalidatePath('/', 'layout') covers all locale routes in one call after vacation mutations
+- [Phase 08]: TimeTimer is a controlled/pure component: elapsed prop from parent, no internal interval
+- [Phase 08]: 08-02: Wall-clock timer in SessionTimer: Date.now() - startTimeRef prevents drift
+- [Phase 08]: 08-02: onComplete fires once via bellPlayedRef guard in TimeTimer
 
 ### Pending Todos
 
@@ -133,8 +138,8 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-02-24
-Stopped at: Completed 07-02-PLAN.md — vacation calendar system (migration + parent view + admin CRUD)
+Last session: 2026-02-25
+Stopped at: Completed 08-02-PLAN.md — TimeTimer SVG component + SessionTimer visual timer integration
 Resume file: None
 
-**Next action:** Execute Phase 7 Plan 02 — vacation schedule feature (07-02-PLAN.md)
+**Next action:** Execute Phase 8 Plan 03 (if exists) or check remaining plans in 08-ui-ux-polish-koko-avatar-time-timer
