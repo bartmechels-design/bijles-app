@@ -122,6 +122,9 @@ Recent decisions affecting current work:
 - [Phase 07]: 07-02: SchoolVacation type and getCurrentSchoolYear() in utils.ts (client-safe) — queries.ts re-exports, client components import from utils.ts to avoid next/headers bundler leak
 - [Phase 07]: 07-02: Admin vakanties page is pure Server Component — VacationManager client wrapper owns showForm/selectedVacation state
 - [Phase 07]: 07-02: revalidatePath('/', 'layout') covers all locale routes in one call after vacation mutations
+- [Phase 08]: 08-01: Koko avatar uses radialGradient for 3D depth — no SVG filters (performance on low-end Android)
+- [Phase 08]: 08-01: Surprised emotion detection priority: happy > surprised > encouraging in detectEmotionFromText
+- [Phase 08]: 08-01: tsconfig.json excludes supabase/functions to prevent Deno URL imports from failing Next.js build
 - [Phase 08]: TimeTimer is a controlled/pure component: elapsed prop from parent, no internal interval
 - [Phase 08]: 08-02: Wall-clock timer in SessionTimer: Date.now() - startTimeRef prevents drift
 - [Phase 08]: 08-02: onComplete fires once via bellPlayedRef guard in TimeTimer
