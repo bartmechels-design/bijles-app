@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { Geist, Geist_Mono } from "next/font/google";
 import Header from "@/components/Header";
+import 'katex/dist/katex.min.css';
 import "../globals.css";
 
 const geistSans = Geist({

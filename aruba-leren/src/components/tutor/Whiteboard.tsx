@@ -1,6 +1,7 @@
 'use client'
 
-import { useRef, useEffect, useState, useCallback } from 'react'
+import React, { useRef, useEffect, useState, useCallback } from 'react'
+import katex from 'katex'
 import type { Subject } from '@/types/tutoring'
 
 interface WhiteboardProps {
@@ -100,6 +101,41 @@ function maxDigitWidth(block: SumBlock): number {
     }
   }
   return max
+}
+
+// --- KaTeX math rendering ---
+
+/** Detecteer of een string LaTeX-tokens bevat */
+function containsMath(text: string): boolean {
+  return /\\frac|\\times|\\div|\\sqrt|\\cdot|\^{|_{/.test(text)
+}
+
+/**
+ * Render een tekstregel met KaTeX als die LaTeX-tokens bevat.
+ * Geeft een React element terug met dangerouslySetInnerHTML voor KaTeX HTML.
+ * Veilig: throwOnError: false + try/catch vangt alle parse-fouten op.
+ */
+function renderMathLine(text: string, className?: string): React.ReactElement {
+  if (!containsMath(text)) {
+    return <span className={className}>{text}</span>
+  }
+  try {
+    const html = katex.renderToString(text, {
+      throwOnError: false,
+      displayMode: false,
+      output: 'html',
+      trust: false,
+    })
+    return (
+      <span
+        className={className}
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+    )
+  } catch {
+    // Fallback: toon plain text als KaTeX toch faalt
+    return <span className={className}>{text}</span>
+  }
 }
 
 // --- Component ---
@@ -383,21 +419,16 @@ export default function Whiteboard({ boardContent, subject, drawingEnabled = fal
                   return (
                     <div key={blockIdx} className="whiteboard-line" style={{ animationDelay: animDelay }}>
                       {block.prefix === 'UITLEG' ? (
-                        <p className="text-base text-slate-600 italic pl-1">{block.text}</p>
+                        <p className="text-base text-slate-600 italic pl-1">{renderMathLine(block.text, 'italic text-slate-600 text-sm')}</p>
                       ) : block.prefix === 'ANTWOORD' ? (
                         <div className="flex items-center gap-2 mt-1">
                           <span className="text-base font-bold text-green-700">{displayPrefix}</span>
-                          <span
-                            className="text-xl font-bold text-green-700 tracking-[0.15em]"
-                            style={{ fontFamily: '"Courier New", Courier, monospace' }}
-                          >
-                            {block.text}
-                          </span>
+                          {renderMathLine(block.text, 'text-xl font-bold text-green-700 tracking-[0.15em]')}
                         </div>
                       ) : (
                         <div className="flex items-baseline gap-2">
                           <span className="text-sm font-bold text-indigo-600 shrink-0">{displayPrefix}</span>
-                          <span className="text-base text-slate-800">{block.text}</span>
+                          {renderMathLine(block.text, 'text-base text-slate-800')}
                         </div>
                       )}
                     </div>
@@ -411,7 +442,7 @@ export default function Whiteboard({ boardContent, subject, drawingEnabled = fal
                     className="text-base text-slate-800 whiteboard-line"
                     style={{ animationDelay: `${range.start * 100}ms` }}
                   >
-                    {block.text}
+                    {renderMathLine(block.text)}
                   </p>
                 )
               })}
