@@ -10,6 +10,7 @@ interface ChatMessageProps {
   locale?: string;
   imageUrl?: string;
   onBoardClick?: (content: string) => void;
+  onZinsontledingClick?: (content: string) => void;
 }
 
 function getLang(locale?: string) {
@@ -57,7 +58,8 @@ interface TextSegment { type: 'text'; content: string }
 interface SpokenSegment { type: 'spoken'; content: string; index: number }
 interface BoardSegment { type: 'board'; content: string; index: number }
 interface OpdrachtSegment { type: 'opdracht'; content: string; index: number }
-type Segment = TextSegment | SpokenSegment | BoardSegment | OpdrachtSegment;
+interface ZinsontledingSegment { type: 'zinsontleding'; content: string; index: number }
+type Segment = TextSegment | SpokenSegment | BoardSegment | OpdrachtSegment | ZinsontledingSegment;
 
 /** Check if content contains [BORD] blocks */
 export function hasBordBlocks(content: string): boolean {
@@ -77,6 +79,17 @@ export function hasOpdrachtBlocks(content: string): boolean {
   return /\[OPDRACHT\][\s\S]*?\[\/OPDRACHT\]/.test(content);
 }
 
+/** Check if content contains [ZINSONTLEDING] blocks */
+export function hasZinsontledingBlocks(content: string): boolean {
+  return /\[ZINSONTLEDING\][\s\S]*?\[\/ZINSONTLEDING\]/.test(content);
+}
+
+/** Extract [ZINSONTLEDING] content from a message */
+export function extractZinsontledingContent(content: string): string | null {
+  const match = /\[ZINSONTLEDING\]([\s\S]*?)\[\/ZINSONTLEDING\]/.exec(content);
+  return match ? match[1].trim() : null;
+}
+
 /** Extract all [OPDRACHT] block contents from a message */
 export function extractOpdrachtBlocks(content: string): string[] {
   const regex = /\[OPDRACHT\]([\s\S]*?)\[\/OPDRACHT\]/g;
@@ -90,7 +103,7 @@ export function extractOpdrachtBlocks(content: string): string[] {
 
 function parseSegments(content: string): Segment[] {
   // Combine all tag types into a unified parsing pass
-  const TAG_REGEX = /\[(SPREEK|BORD|OPDRACHT)\]([\s\S]*?)\[\/\1\]/g;
+  const TAG_REGEX = /\[(SPREEK|BORD|OPDRACHT|ZINSONTLEDING)\]([\s\S]*?)\[\/\1\]/g;
   const segments: Segment[] = [];
   let lastIndex = 0;
   let spokenIndex = 0;
@@ -112,6 +125,8 @@ function parseSegments(content: string): Segment[] {
       segments.push({ type: 'board', content: match[2].trim(), index: boardIndex++ });
     } else if (match[1] === 'OPDRACHT') {
       segments.push({ type: 'opdracht', content: match[2].trim(), index: boardIndex++ });
+    } else if (match[1] === 'ZINSONTLEDING') {
+      segments.push({ type: 'zinsontleding', content: match[2].trim(), index: boardIndex++ });
     }
 
     lastIndex = match.index + match[0].length;
@@ -265,7 +280,7 @@ function SpokenBlock({ text, autoPlay }: { text: string; locale?: string; autoPl
   );
 }
 
-export default function ChatMessage({ role, content, isStreaming = false, locale, imageUrl, onBoardClick }: ChatMessageProps) {
+export default function ChatMessage({ role, content, isStreaming = false, locale, imageUrl, onBoardClick, onZinsontledingClick }: ChatMessageProps) {
   const [shouldAnimate, setShouldAnimate] = useState(true);
   const { speak, stop, isSpeaking } = useTextToSpeech();
 
@@ -285,7 +300,12 @@ export default function ChatMessage({ role, content, isStreaming = false, locale
     }
   };
 
-  const hasSpecialBlocks = !isStreaming && (hasSpeekBlocks(content) || hasBordBlocks(content) || hasOpdrachtBlocks(content));
+  const hasSpecialBlocks = !isStreaming && (
+    hasSpeekBlocks(content) ||
+    hasBordBlocks(content) ||
+    hasOpdrachtBlocks(content) ||
+    hasZinsontledingBlocks(content)
+  );
 
   if (role === 'assistant') {
     return (
@@ -333,6 +353,20 @@ export default function ChatMessage({ role, content, isStreaming = false, locale
                     </div>
                     <div className="whitespace-pre-wrap text-base">{segment.content}</div>
                   </div>
+                ) : segment.type === 'zinsontleding' ? (
+                  <button
+                    key={`zinsontleding-${segment.index}`}
+                    type="button"
+                    onClick={() => onZinsontledingClick?.(segment.content)}
+                    className="inline-flex items-center gap-1.5 my-1"
+                  >
+                    <span className="inline-flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1.5 rounded-full text-sm font-medium hover:bg-green-200 transition-colors cursor-pointer">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.143 2.94 2.736 3.15a48.054 48.054 0 00.784.057A3.375 3.375 0 006.375 18H5.25A2.25 2.25 0 013 15.75V8.25A2.25 2.25 0 015.25 6H18A2.25 2.25 0 0120.25 8.25v7.5A2.25 2.25 0 0118 18h-1.125a3.375 3.375 0 01-.784-.057 48.054 48.054 0 00-.784-.057A3.375 3.375 0 0113.5 18h-1.125c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125h2.25c.621 0 1.125-.504 1.125-1.125V18" />
+                      </svg>
+                      Zinsontleding bekijken
+                    </span>
+                  </button>
                 ) : null
               )}
             </div>

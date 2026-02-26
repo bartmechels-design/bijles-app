@@ -5,7 +5,9 @@ import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { Subject } from '@/types/tutoring';
 import ChatMessage from './ChatMessage';
-import { hasBordBlocks, extractBordContent } from './ChatMessage';
+import { hasBordBlocks, extractBordContent, hasZinsontledingBlocks, extractZinsontledingContent } from './ChatMessage';
+import ZinsontledingPanel from './ZinsontledingPanel';
+import type { ZinsontledingData } from './ZinsontledingPanel';
 import SessionTimer from './SessionTimer';
 import PhoneUploadModal from './PhoneUploadModal';
 import WhiteboardPanel from './WhiteboardPanel';
@@ -114,6 +116,8 @@ export default function ChatInterface({
   const [showPhoneUpload, setShowPhoneUpload] = useState(false);
   const [showWhiteboard, setShowWhiteboard] = useState(false);
   const [boardContent, setBoardContent] = useState<string | undefined>(undefined);
+  const [showZinsontleding, setShowZinsontleding] = useState(false);
+  const [zinsontledingData, setZinsontledingData] = useState<ZinsontledingData | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -356,6 +360,20 @@ export default function ChatInterface({
             setShowWhiteboard(true);
           }
         }
+
+        // Auto-open zinsontleding panel als [ZINSONTLEDING] gedetecteerd
+        if (hasZinsontledingBlocks(assistantMessage)) {
+          const content = extractZinsontledingContent(assistantMessage);
+          if (content) {
+            try {
+              const parsed: ZinsontledingData = JSON.parse(content);
+              setZinsontledingData(parsed);
+              setShowZinsontleding(true);
+            } catch {
+              // Stil negeren — JSON parse-fout in AI response
+            }
+          }
+        }
       }
 
     } catch (err) {
@@ -391,6 +409,16 @@ export default function ChatInterface({
       stopSpeaking();
     };
   }, []);
+
+  const handleZinsontledingClick = (content: string) => {
+    try {
+      const parsed: ZinsontledingData = JSON.parse(content);
+      setZinsontledingData(parsed);
+      setShowZinsontleding(true);
+    } catch {
+      // Stil negeren
+    }
+  };
 
   return (
     <div className="flex flex-col h-full max-w-4xl mx-auto w-full">
@@ -494,6 +522,7 @@ export default function ChatInterface({
               setBoardContent(boardText);
               setShowWhiteboard(true);
             }}
+            onZinsontledingClick={handleZinsontledingClick}
           />
         ))}
 
@@ -703,6 +732,15 @@ export default function ChatInterface({
         drawingEnabled={false}
         childAge={childAge}
       />
+
+      {/* Zinsontleding Panel */}
+      {zinsontledingData && (
+        <ZinsontledingPanel
+          data={zinsontledingData}
+          isOpen={showZinsontleding}
+          onClose={() => setShowZinsontleding(false)}
+        />
+      )}
 
       {/* Phone Upload Modal (QR code for phone-to-PC transfer) */}
       {showPhoneUpload && (

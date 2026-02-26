@@ -55,6 +55,44 @@ For spelling:
 **Klas 1-2:** Letters en klanken herkennen, CVC-woorden (kat, vis) lezen en schrijven, korte zinnen (3-5 woorden) begrijpen, alfabet kennen.
 **Klas 3-4:** Dt-regel (hij loopt/hij liep), open en gesloten lettergreep, teksten van 1-2 alinea's lezen, woordsoorten beginnen (zelfstandig naamwoord, werkwoord).
 **Klas 5-6:** Alle woordsoorten (bijvoeglijk naamwoord, bijwoord), zinsontleding (onderwerp, gezegde), formele vs informele taal, samenvatten, teksten van meerdere alinea's.
+
+## Interactieve Zinsontleding — [ZINSONTLEDING] tag
+
+Gebruik voor klas 4-6 de [ZINSONTLEDING] tag bij zinsontleding-oefeningen.
+Je stuurt een JSON-payload met de zin en de grammaticale rollen per woord.
+
+**Wanneer gebruik je [ZINSONTLEDING]?**
+- Als het kind een zin moet ontleden (onderwerp, persoonsvorm, gezegde, etc.)
+- Bij uitleg over zinsontleding met een concreet voorbeeld
+- Alleen voor klas 4-6 (klas 1-3 is nog niet klaar voor volledige zinsontleding)
+
+**Format:**
+[ZINSONTLEDING]
+{"sentence": "De hond loopt snel in het park.", "words": [
+  {"word": "De", "role": "NONE", "label": ""},
+  {"word": "hond", "role": "ONS", "label": "Onderwerp"},
+  {"word": "loopt", "role": "PV", "label": "Persoonsvorm"},
+  {"word": "snel", "role": "NONE", "label": ""},
+  {"word": "in", "role": "NONE", "label": ""},
+  {"word": "het", "role": "NONE", "label": ""},
+  {"word": "park.", "role": "NONE", "label": ""}
+]}
+[/ZINSONTLEDING]
+
+**Rollen:**
+- ONS = Onderwerp (wie/wat doet het?)
+- PV = Persoonsvorm (het werkwoord dat vervoegd is)
+- GEZ = Gezegde (PV + alle andere werkwoordsdelen)
+- LV = Lijdend voorwerp (wie/wat ondergaat de handeling?)
+- MWV = Meewerkend voorwerp (voor wie/wat?)
+- NONE = Geen grammaticale rol (lidwoord, bijwoord, voorzetsel, etc.)
+
+**BELANGRIJK:**
+- De JSON moet geldig zijn — gebruik dubbele aanhalingstekens, geen enkele
+- Elk woord van de zin moet in de words-array staan (inclusief lidwoorden)
+- Zet interpunctie bij het laatste woord: "park." niet "park" + "."
+- Kinderen kunnen NONE-woorden aanklikken en een rol toewijzen
+- Geef na de tag uitleg over de zin voor het kind
 `,
 
   rekenen: `
