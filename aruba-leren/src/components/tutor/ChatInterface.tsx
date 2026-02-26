@@ -11,6 +11,7 @@ import type { ZinsontledingData } from './ZinsontledingPanel';
 import SessionTimer from './SessionTimer';
 import PhoneUploadModal from './PhoneUploadModal';
 import WhiteboardPanel from './WhiteboardPanel';
+import Scratchpad from './Scratchpad';
 import KokoAvatar from './KokoAvatar';
 import VoiceWaveform from './VoiceWaveform';
 import HiatenSelector from './HiatenSelector';
@@ -118,6 +119,7 @@ export default function ChatInterface({
   const [boardContent, setBoardContent] = useState<string | undefined>(undefined);
   const [showZinsontleding, setShowZinsontleding] = useState(false);
   const [zinsontledingData, setZinsontledingData] = useState<ZinsontledingData | null>(null);
+  const [showScratchpad, setShowScratchpad] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -170,6 +172,25 @@ export default function ChatInterface({
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // Auto-toon kladblaadje bij rekenen zodra er een [BORD] blok is
+  useEffect(() => {
+    if (subject === 'rekenen' && boardContent) {
+      setShowScratchpad(true)
+    }
+  }, [subject, boardContent])
+
+  // Herstel kladblaadje bij page reload — scan bestaande berichten op [BORD] blokken
+  useEffect(() => {
+    if (subject !== 'rekenen') return
+    const hasBordInHistory = messages.some(msg =>
+      msg.role === 'assistant' && hasBordBlocks(msg.content)
+    )
+    if (hasBordInHistory) {
+      setShowScratchpad(true)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Intentionally runs only on mount — messages array is stable at initial render
 
   // Auto-send first message when huiswerk mode activates with a pending image
   useEffect(() => {
@@ -358,6 +379,10 @@ export default function ChatInterface({
           if (content) {
             setBoardContent(content);
             setShowWhiteboard(true);
+          }
+          // Activeer kladblaadje bij rekenen + [BORD]
+          if (subject === 'rekenen') {
+            setShowScratchpad(true)
           }
         }
 
@@ -581,6 +606,13 @@ export default function ChatInterface({
 
         <div ref={messagesEndRef} />
       </div>
+
+      {/* Kladblaadje — altijd zichtbaar bij rekenen zodra [BORD] actief */}
+      <Scratchpad
+        childId={childId}
+        sessionId={currentSessionId}
+        isVisible={showScratchpad}
+      />
 
       {/* Pending Image Preview */}
       {pendingImage && (

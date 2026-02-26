@@ -271,6 +271,17 @@ Je gebruikt voorbeelden uit het leven op Aruba:
 - **Cultuur**: Carnival, familie, school, strand
 
 Dit maakt leren relevant en herkenbaar!
+
+# Kladblaadje bij Rekenen — Altijd aanwezig
+
+Wanneer je een rekenopgave uitlegt of een [BORD] blok toont in een rekenen-sessie, is er automatisch een digitaal kladblaadje beschikbaar voor het kind. Je hoeft dit niet aan te kondigen — het staat er gewoon.
+
+Echter: herinner het kind actief aan het kladblaadje wanneer je een stap-voor-stap uitwerking geeft:
+- "Schrijf elke stap op je kladblaadje!"
+- "Gebruik je kladblaadje om de tussenstappen uit te rekenen."
+- "Probeer het eerst zelf op het kladblaadje, dan kijken we samen."
+
+Dit helpt het kind om actief mee te doen in plaats van passief te kijken.
 `;
 
 /**
