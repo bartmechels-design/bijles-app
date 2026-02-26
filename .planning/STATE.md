@@ -10,10 +10,10 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 
 ## Current Position
 
-Phase: 9 of 11 IN PROGRESS — Visuele Leerondersteuning
-Plan: 4/4 complete — 09-01 schrijfanimatie + 09-02 KaTeX wiskundige notatie + 09-03 Zinsontleding delivered (09-04 pending)
-Status: Phase 9 in progress — KaTeX rendering live (09-04 pending)
-Last activity: 2026-02-26 — 09-02 complete (KaTeX math rendering in Whiteboard + ChatMessage + system prompt)
+Phase: 9 of 11 COMPLETE — Visuele Leerondersteuning
+Plan: 4/4 complete — 09-01 schrijfanimatie + 09-02 KaTeX wiskundige notatie + 09-03 Zinsontleding + 09-04 Digitaal Kladblaadje
+Status: Phase 9 COMPLETE — all 4 plans delivered
+Last activity: 2026-02-26 — 09-04 complete (Scratchpad canvas + Supabase storage + ChatInterface auto-show)
 
 Progress: [████████████████████████████████████████████████████████████████████████████████████████████] 97%
 
@@ -49,6 +49,7 @@ Progress: [███████████████████████
 | Phase 09 P01 | 3 | 2 tasks | 2 files |
 | Phase 09 P03 | 9 | 2 tasks | 4 files |
 | Phase 09 P02 | 8 | 2 tasks | 5 files |
+| Phase 09 P04 | 3 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -140,12 +141,16 @@ Recent decisions affecting current work:
 - [Phase 09-02]: throwOnError: false mandatory — KaTeX parse failures silently degrade to plain text, never crash the UI
 - [Phase 09-02]: containsMath() guard before renderToString() — avoids KaTeX overhead on plain-text lines (majority of content)
 - [Phase 09-02]: MATH_FORMAT_RULES injected only for rekenen subject — other subjects don't need LaTeX notation rules
+- [Phase 09]: Migration numbered 011 (not 010) — 010_weekly_email_cron.sql already exists in migrations directory
+- [Phase 09]: [Phase 09-04]: showScratchpad has no dismiss path — non-dismissible by design, parent-controlled isVisible
+- [Phase 09]: [Phase 09-04]: Mount-time useEffect with [] scans initial messages for page-reload restore of kladblaadje
 
 ### Pending Todos
 
 - Open issue: Koko nog steeds "genoeg geoefend" in bestaande sessies — nieuwe sessies (vers vak) zijn OK, maar DB-sessies met oude context blijven het herhalen. Mogelijke fix: session reset functie of MAX_CONTEXT_MESSAGES verlagen.
 - SQL migratie 008 (leerstof_items) nog niet uitgevoerd in Supabase (voor productie)
 - SQL migratie 009 (school_vacations) nog niet uitgevoerd in Supabase — run handmatig in SQL Editor
+- SQL migratie 011 (scratchpads storage bucket + RLS) nog niet uitgevoerd in Supabase — run handmatig in SQL Editor
 
 ### Blockers/Concerns
 
@@ -154,7 +159,7 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-26
-Stopped at: Completed 09-02-PLAN.md — KaTeX wiskundige notatie: renderMathLine() in Whiteboard + ChatMessage + MATH_FORMAT_RULES systeem prompt
+Stopped at: Completed 09-04-PLAN.md — Digitaal kladblaadje: Scratchpad.tsx canvas component + ChatInterface auto-show + Supabase storage 011_scratchpads.sql
 Resume file: None
 
-**Next action:** Execute Phase 9 Plan 04 (09-04-PLAN.md)
+**Next action:** Execute Phase 10 (next phase)
