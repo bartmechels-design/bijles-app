@@ -6,14 +6,14 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 
 **Core value:** Kinderen op Aruba krijgen persoonlijke bijles die zich aanpast aan hun niveau, volledig zelfstandig, in hun eigen taal en context.
 
-**Current focus:** Phase 8 — UI/UX Polish (Koko Avatar & Time Timer)
+**Current focus:** Phase 9 — Visuele Leerondersteuning
 
 ## Current Position
 
 Phase: 9 of 11 IN PROGRESS — Visuele Leerondersteuning
-Plan: 1/4 complete — 09-01 Whiteboard schrijfanimatie (clip-path reveal) delivered
-Status: Phase 9 in progress — whiteboard animation live
-Last activity: 2026-02-26 — 09-01 complete (clip-path reveal-line animation + prefers-reduced-motion)
+Plan: 3/4 complete — 09-01 Whiteboard schrijfanimatie + 09-03 Interactieve Zinsontleding delivered
+Status: Phase 9 in progress — zinsontleding panel live (09-02 + 09-04 pending)
+Last activity: 2026-02-26 — 09-03 complete (ZinsontledingPanel + [ZINSONTLEDING] tag wiring)
 
 Progress: [████████████████████████████████████████████████████████████████████████████████████████████] 97%
 
@@ -47,6 +47,7 @@ Progress: [███████████████████████
 | Phase 08 P02 | 15 | 2 tasks | 2 files |
 | Phase 08 P01 | 6 | 2 tasks | 5 files |
 | Phase 09 P01 | 3 | 2 tasks | 2 files |
+| Phase 09 P03 | 9 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -131,6 +132,9 @@ Recent decisions affecting current work:
 - [Phase 08]: 08-02: onComplete fires once via bellPlayedRef guard in TimeTimer
 - [Phase 09]: 09-01: clip-path inset() for whiteboard reveal — compositor-threaded on Android (not SVG stroke-dashoffset)
 - [Phase 09]: 09-01: Animation stagger: sum-block items at (range.start + li) * 80ms, label/text blocks at range.start * 100ms
+- [Phase 09-03]: hasSpecialBlocks guard must include hasZinsontledingBlocks() — without it segments never render even if parsed
+- [Phase 09-03]: JSON.parse wrapped in try/catch in both ChatInterface locations to silently swallow malformed AI JSON
+- [Phase 09-03]: ZinsontledingPanel: NONE words are interactive (role picker), words with known roles are display-only colored chips
 
 ### Pending Todos
 
@@ -145,7 +149,7 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-26
-Stopped at: Completed 09-01-PLAN.md — Whiteboard clip-path schrijfanimatie
+Stopped at: Completed 09-03-PLAN.md — Interactieve zinsontleding: ZinsontledingPanel + [ZINSONTLEDING] tag wiring
 Resume file: None
 
-**Next action:** Execute Phase 9 Plan 02 (09-02-PLAN.md)
+**Next action:** Execute Phase 9 Plan 02 (09-02-PLAN.md) or Plan 04 (09-04-PLAN.md)
