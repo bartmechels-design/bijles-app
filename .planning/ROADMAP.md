@@ -226,13 +226,13 @@ Plans:
 
 **Requirements Covered:** VIS-01, VIS-02, VIS-03, VIS-04
 
-**Plans:** TBD
+**Plans:** 4 plans
 
 Plans:
-- [ ] 09-01-PLAN.md — Whiteboard animaties: vloeiend schrijfeffect (SVG path animatie), SVG-iconen naast tekst, kleur + lijn voor structuur
-- [ ] 09-02-PLAN.md — KaTeX integratie: wiskundige notaties (breuken als teller/noemer, ×, geen `/`), KaTeX of MathJax renderer
-- [ ] 09-03-PLAN.md — Interactieve zinsontleding: PV rood, gezegde oranje, onderwerp blauw, LV groen, MWV paars; klikbare woorden, animatie bij juist antwoord
-- [ ] 09-04-PLAN.md — Kladblaadje bij rekenen: canvas-element (stylus/vinger/muis), prominente herinnering per opgave, bewaar inhoud voor ouder/tutor
+- [ ] 09-01-PLAN.md — Whiteboard schrijfanimatie: CSS clip-path reveal per lijn (GPU-versneld), prefers-reduced-motion guard, stagger-delay per blok
+- [ ] 09-02-PLAN.md — KaTeX integratie: renderMathLine() helper, \frac{}{} in Whiteboard + ChatMessage, MATH_FORMAT_RULES in systeem prompt
+- [ ] 09-03-PLAN.md — Interactieve zinsontleding: ZinsontledingPanel met gekleurde woordchips, [ZINSONTLEDING] JSON tag, klikbaar voor rolkeuze
+- [ ] 09-04-PLAN.md — Kladblaadje bij rekenen: Scratchpad.tsx canvas, auto-show bij rekenen + [BORD], Supabase storage upload (migratie 010)
 
 **Success Criteria:**
 1. Whiteboard toont tekst met vloeiend schrijfeffect (geen instant verschijnen)
@@ -306,7 +306,7 @@ Plans:
 | Phase 6: Advanced Tutor Features & Content Management | 5 | Complete | 100% |
 | Phase 7: Parent Portal & Admin Monitoring | 8 | Complete | 100% |
 | Phase 8: UI/UX Polish — Koko Avatar & Time Timer | 2 | Planning | 0% |
-| Phase 9: Visuele Leerondersteuning | 4 | Backlog | 0% |
+| Phase 9: Visuele Leerondersteuning | 4 | Planning | 0% |
 | Phase 10: Neural TTS & Uitspraak | 3 | Backlog | 0% |
 | Phase 11: Rapportages & PDF-Deling | 4 | Backlog | 0% |
 
@@ -352,7 +352,13 @@ Research findings from ARCHITECTURE.md, FEATURES.md, PITFALLS.md, and STACK.md i
 - pg_cron for weekly scheduling (free, survives deploys)
 - Pure Tailwind for progress visualization (no Recharts needed)
 
+**Phase 9 (Visuele Leerondersteuning):**
+- CSS clip-path animation (NOT SVG stroke-dashoffset — Android performance issues)
+- katex direct import (NOT react-katex — synchronous, no wrapper overhead)
+- Raw Canvas API for scratchpad (NOT react-sketch-canvas — React 19 peer dep conflict)
+- [ZINSONTLEDING] JSON tag (NOT NLP library — no server-side NLP needed for MVP)
+
 ---
 
 *Roadmap created: 2026-02-12*
-*Last updated: 2026-02-25 — Phase 8 plans finalized (2 plans, Wave 1 parallel)*
+*Last updated: 2026-02-26 — Phase 9 plans finalized (4 plans, Wave 1+2 structure)*
