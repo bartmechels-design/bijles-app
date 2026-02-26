@@ -56,8 +56,9 @@ export default function ZinsontledingPanel({ data, isOpen, onClose }: Zinsontled
 
   const handleWordClick = (idx: number) => {
     const word = data.words[idx];
-    // Only NONE words (or words without known role) are clickable for assignment
-    if (word.role !== 'NONE') return;
+    // Only words WITH a grammatical role are interactive (student must discover them)
+    // NONE words (lidwoorden, voorzetsels) are display-only
+    if (word.role === 'NONE') return;
     setSelectedWordIdx(selectedWordIdx === idx ? null : idx);
   };
 
@@ -65,9 +66,9 @@ export default function ZinsontledingPanel({ data, isOpen, onClose }: Zinsontled
     setAssignments(prev => ({ ...prev, [idx]: role }));
     setSelectedWordIdx(null);
 
-    // Check correctness — NONE words with correct role
+    // Check correctness against the AI-provided role
     const word = data.words[idx];
-    if (word.role !== 'NONE' && role === word.role) {
+    if (role === word.role) {
       // Correct! Trigger animation
       setCorrectFeedback(prev => [...prev, idx]);
       setTimeout(() => {
@@ -78,7 +79,7 @@ export default function ZinsontledingPanel({ data, isOpen, onClose }: Zinsontled
 
   const correctCount = Object.entries(assignments).filter(([idxStr, assignedRole]) => {
     const idx = parseInt(idxStr);
-    return data.words[idx]?.role !== 'NONE' && assignedRole === data.words[idx]?.role;
+    return assignedRole === data.words[idx]?.role;
   }).length;
 
   const totalInteractiveWords = data.words.filter(w => w.role !== 'NONE').length;
@@ -165,9 +166,10 @@ export default function ZinsontledingPanel({ data, isOpen, onClose }: Zinsontled
             <div className="flex flex-wrap gap-2">
               {data.words.map((word, idx) => {
                 const assignedRole = assignments[idx];
-                const effectiveRole = word.role !== 'NONE' ? word.role : (assignedRole || 'NONE');
+                // Hide AI role until student assigns — gray until discovered
+                const effectiveRole = word.role !== 'NONE' ? (assignedRole || 'NONE') : 'NONE';
                 const colors = ROLE_COLORS[effectiveRole] || ROLE_COLORS.NONE;
-                const isClickable = word.role === 'NONE';
+                const isClickable = word.role !== 'NONE';
                 const isSelected = selectedWordIdx === idx;
                 const isCelebrating = correctFeedback.includes(idx);
 
@@ -177,7 +179,7 @@ export default function ZinsontledingPanel({ data, isOpen, onClose }: Zinsontled
                       type="button"
                       onClick={() => isClickable ? handleWordClick(idx) : undefined}
                       disabled={!isClickable}
-                      title={word.role !== 'NONE' ? word.label : (assignedRole ? ROLE_LABELS[assignedRole] : 'Klik om een rol toe te wijzen')}
+                      title={word.role === 'NONE' ? '' : (assignedRole ? ROLE_LABELS[assignedRole] : 'Klik om een rol toe te wijzen')}
                       className={`
                         inline-flex flex-col items-center px-3 py-2 rounded-xl border-2 text-sm font-semibold transition-all
                         ${colors.bg} ${colors.text} ${colors.border}
@@ -187,13 +189,11 @@ export default function ZinsontledingPanel({ data, isOpen, onClose }: Zinsontled
                       `}
                     >
                       <span>{word.word}</span>
-                      {word.role !== 'NONE' ? (
-                        <span className="text-[10px] font-bold opacity-70 mt-0.5">{word.role}</span>
-                      ) : assignedRole ? (
+                      {assignedRole ? (
                         <span className="text-[10px] font-bold opacity-70 mt-0.5">{assignedRole}</span>
-                      ) : (
+                      ) : word.role !== 'NONE' ? (
                         <span className="text-[10px] opacity-50 mt-0.5">?</span>
-                      )}
+                      ) : null}
                     </button>
 
                     {/* Correct indicator */}
