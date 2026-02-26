@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useCallback, useRef } from 'react';
+import katex from 'katex';
 import { useTextToSpeech } from '@/hooks/useSpeech';
 
 interface ChatMessageProps {
@@ -99,6 +100,40 @@ export function extractOpdrachtBlocks(content: string): string[] {
     blocks.push(match[1].trim());
   }
   return blocks;
+}
+
+// --- KaTeX math rendering ---
+
+/** Detecteer of een string LaTeX-tokens bevat */
+function containsMath(text: string): boolean {
+  return /\\frac|\\times|\\div|\\sqrt|\\cdot|\^{|_{/.test(text)
+}
+
+/**
+ * Render een tekstregel met KaTeX als die LaTeX-tokens bevat.
+ * Veilig: throwOnError: false + try/catch vangt alle parse-fouten op.
+ */
+function renderMathLine(text: string, className?: string): React.ReactElement {
+  if (!containsMath(text)) {
+    return <span className={className}>{text}</span>
+  }
+  try {
+    const html = katex.renderToString(text, {
+      throwOnError: false,
+      displayMode: false,
+      output: 'html',
+      trust: false,
+    })
+    return (
+      <span
+        className={className}
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+    )
+  } catch {
+    // Fallback: toon plain text als KaTeX toch faalt
+    return <span className={className}>{text}</span>
+  }
 }
 
 function parseSegments(content: string): Segment[] {
@@ -351,7 +386,13 @@ export default function ChatMessage({ role, content, isStreaming = false, locale
                       </svg>
                       Opdracht
                     </div>
-                    <div className="whitespace-pre-wrap text-base">{segment.content}</div>
+                    <div className="text-base">
+                      {segment.content.split('\n').map((line, li) => (
+                        <div key={li}>
+                          {renderMathLine(line, 'whitespace-pre-wrap')}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 ) : segment.type === 'zinsontleding' ? (
                   <button

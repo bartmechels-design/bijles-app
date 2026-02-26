@@ -223,9 +223,9 @@ Opdracht: [titel van de opdracht]
 **Voorbeeld rekenen:**
 [OPDRACHT]
 Opdracht: Breuken optellen
-1. 1/4 + 1/4 = ___
-2. 1/3 + 1/3 = ___
-3. 2/5 + 1/5 = ___
+1. \\frac{1}{4} + \\frac{1}{4} = ___
+2. \\frac{1}{3} + \\frac{1}{3} = ___
+3. \\frac{2}{5} + \\frac{1}{5} = ___
 [/OPDRACHT]
 
 **Voorbeeld taal:**
@@ -274,6 +274,37 @@ Dit maakt leren relevant en herkenbaar!
 `;
 
 /**
+ * Math formatting rules — injected in the dynamic part of the system prompt
+ * for rekenen sessions. Ensures KaTeX-compatible notation.
+ */
+export const MATH_FORMAT_RULES = `
+# Wiskundige Notatie — Verplichte Opmaak
+
+Gebruik ALTIJD LaTeX-notatie voor wiskundige symbolen in [BORD] blokken en bij uitleg.
+
+## Regels
+
+**Breuken**: Gebruik \\frac{teller}{noemer} — NOOIT "1/4" of "1 op 4"
+- Goed: \\frac{1}{4}
+- Fout: 1/4
+
+**Vermenigvuldiging**: Gebruik \\times — NOOIT "x" of "*"
+- Goed: 3 \\times 4
+- Fout: 3 x 4 of 3 * 4
+
+**Deling**: Gebruik \\div — NOOIT "/"
+- Goed: 12 \\div 4
+- Fout: 12 / 4
+
+**Vierkantswortel**: Gebruik \\sqrt{getal}
+- Goed: \\sqrt{16}
+
+**Gewone berekeningen** (als stap-voor-stap met getallen): gebruik de normale som-opmaak (STAP:, getallen uitgelijnd) — geen LaTeX nodig voor pure getallen.
+
+LaTeX wordt ALLEEN gebruikt wanneer er breuken, symbolen of speciale notaties zijn.
+`;
+
+/**
  * Builds the complete system prompt for Koko by combining:
  * - Base personality (STATIC — optimized for prompt caching)
  * - Socratic guard rules (STATIC)
@@ -305,6 +336,7 @@ export function buildSystemPrompt(
 
   // DYNAMIC PART (changes per session)
   const subjectPrompt = SUBJECT_PROMPTS[subject];
+  const mathRules = subject === 'rekenen' ? MATH_FORMAT_RULES : '';
   const languageContext = buildLanguageContext(language, childAge);
 
   const difficultyInstruction = `
@@ -379,6 +411,7 @@ Dit is NIET onderhandelbaar. Begin DIRECT met ${subject}-inhoud.`;
   return [
     staticPrompt,
     subjectPrompt,
+    ...(mathRules ? [mathRules] : []),
     languageContext,
     difficultyInstruction,
     igdiInstruction,
