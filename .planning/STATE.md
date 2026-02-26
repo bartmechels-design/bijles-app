@@ -10,10 +10,10 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 
 ## Current Position
 
-Phase: 8 of 11 IN PROGRESS — UI/UX Polish (Koko Avatar & Time Timer)
-Plan: 2/2 complete (so far) — 08-01 KokoAvatar + 08-02 TimeTimer delivered
-Status: Phase 8 in progress — TimeTimer visual countdown complete
-Last activity: 2026-02-25 — 08-02 complete (TimeTimer SVG + SessionTimer wall-clock fix)
+Phase: 9 of 11 IN PROGRESS — Visuele Leerondersteuning
+Plan: 1/4 complete — 09-01 Whiteboard schrijfanimatie (clip-path reveal) delivered
+Status: Phase 9 in progress — whiteboard animation live
+Last activity: 2026-02-26 — 09-01 complete (clip-path reveal-line animation + prefers-reduced-motion)
 
 Progress: [████████████████████████████████████████████████████████████████████████████████████████████] 97%
 
@@ -46,6 +46,7 @@ Progress: [███████████████████████
 | 07 | 02 | 4 min | 2 | 8 |
 | Phase 08 P02 | 15 | 2 tasks | 2 files |
 | Phase 08 P01 | 6 | 2 tasks | 5 files |
+| Phase 09 P01 | 3 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -128,6 +129,8 @@ Recent decisions affecting current work:
 - [Phase 08]: TimeTimer is a controlled/pure component: elapsed prop from parent, no internal interval
 - [Phase 08]: 08-02: Wall-clock timer in SessionTimer: Date.now() - startTimeRef prevents drift
 - [Phase 08]: 08-02: onComplete fires once via bellPlayedRef guard in TimeTimer
+- [Phase 09]: 09-01: clip-path inset() for whiteboard reveal — compositor-threaded on Android (not SVG stroke-dashoffset)
+- [Phase 09]: 09-01: Animation stagger: sum-block items at (range.start + li) * 80ms, label/text blocks at range.start * 100ms
 
 ### Pending Todos
 
@@ -141,8 +144,8 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-02-25
-Stopped at: Completed 08-02-PLAN.md — TimeTimer SVG component + SessionTimer visual timer integration
+Last session: 2026-02-26
+Stopped at: Completed 09-01-PLAN.md — Whiteboard clip-path schrijfanimatie
 Resume file: None
 
-**Next action:** Execute Phase 8 Plan 03 (if exists) or check remaining plans in 08-ui-ux-polish-koko-avatar-time-timer
+**Next action:** Execute Phase 9 Plan 02 (09-02-PLAN.md)
