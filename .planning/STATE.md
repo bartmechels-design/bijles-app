@@ -11,9 +11,9 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 ## Current Position
 
 Phase: 9 of 11 IN PROGRESS — Visuele Leerondersteuning
-Plan: 3/4 complete — 09-01 Whiteboard schrijfanimatie + 09-03 Interactieve Zinsontleding delivered
-Status: Phase 9 in progress — zinsontleding panel live (09-02 + 09-04 pending)
-Last activity: 2026-02-26 — 09-03 complete (ZinsontledingPanel + [ZINSONTLEDING] tag wiring)
+Plan: 4/4 complete — 09-01 schrijfanimatie + 09-02 KaTeX wiskundige notatie + 09-03 Zinsontleding delivered (09-04 pending)
+Status: Phase 9 in progress — KaTeX rendering live (09-04 pending)
+Last activity: 2026-02-26 — 09-02 complete (KaTeX math rendering in Whiteboard + ChatMessage + system prompt)
 
 Progress: [████████████████████████████████████████████████████████████████████████████████████████████] 97%
 
@@ -48,6 +48,7 @@ Progress: [███████████████████████
 | Phase 08 P01 | 6 | 2 tasks | 5 files |
 | Phase 09 P01 | 3 | 2 tasks | 2 files |
 | Phase 09 P03 | 9 | 2 tasks | 4 files |
+| Phase 09 P02 | 8 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -135,6 +136,10 @@ Recent decisions affecting current work:
 - [Phase 09-03]: hasSpecialBlocks guard must include hasZinsontledingBlocks() — without it segments never render even if parsed
 - [Phase 09-03]: JSON.parse wrapped in try/catch in both ChatInterface locations to silently swallow malformed AI JSON
 - [Phase 09-03]: ZinsontledingPanel: NONE words are interactive (role picker), words with known roles are display-only colored chips
+- [Phase 09-02]: KaTeX CSS loaded in layout.tsx (Server Component) — 'use client' components cannot import external CSS without Next.js bundler issues
+- [Phase 09-02]: throwOnError: false mandatory — KaTeX parse failures silently degrade to plain text, never crash the UI
+- [Phase 09-02]: containsMath() guard before renderToString() — avoids KaTeX overhead on plain-text lines (majority of content)
+- [Phase 09-02]: MATH_FORMAT_RULES injected only for rekenen subject — other subjects don't need LaTeX notation rules
 
 ### Pending Todos
 
@@ -149,7 +154,7 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-26
-Stopped at: Completed 09-03-PLAN.md — Interactieve zinsontleding: ZinsontledingPanel + [ZINSONTLEDING] tag wiring
+Stopped at: Completed 09-02-PLAN.md — KaTeX wiskundige notatie: renderMathLine() in Whiteboard + ChatMessage + MATH_FORMAT_RULES systeem prompt
 Resume file: None
 
-**Next action:** Execute Phase 9 Plan 02 (09-02-PLAN.md) or Plan 04 (09-04-PLAN.md)
+**Next action:** Execute Phase 9 Plan 04 (09-04-PLAN.md)
