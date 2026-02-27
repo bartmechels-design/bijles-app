@@ -6,16 +6,16 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 
 **Core value:** Kinderen op Aruba krijgen persoonlijke bijles die zich aanpast aan hun niveau, volledig zelfstandig, in hun eigen taal en context.
 
-**Current focus:** Phase 10 — Neural TTS Uitspraak
+**Current focus:** Phase 10 — Neural TTS Uitspraak COMPLETE
 
 ## Current Position
 
-Phase: 10 of 11 IN PROGRESS — Neural TTS Uitspraak
-Plan: 3/4 complete — 10-03 Papiamento uitspraakmodus + Alleen lezen badge
-Status: Phase 10 Plan 3 COMPLETE — Papiamento TTS blocking + UI badge delivered
-Last activity: 2026-02-27 — 10-03 complete (isPapiamento guard in autoSpeak + Alleen lezen badge in ChatInterface header)
+Phase: 10 of 11 COMPLETE — Neural TTS Uitspraak
+Plan: 4/4 complete — 10-04 Arubaanse eigennamen substitutie voor TTS
+Status: Phase 10 COMPLETE — alle 4 plannen uitgevoerd
+Last activity: 2026-02-27 — 10-04 complete (fonetische substitutie-map + cleanForTts() integratie + ChatInterface wiring)
 
-Progress: [█████████████████████████████████████████████████████████████████████████████████████████████] 98%
+Progress: [████████████████████████████████████████████████████████████████████████████████████████████████] 100%
 
 ## Performance Metrics
 
@@ -53,6 +53,7 @@ Progress: [███████████████████████
 | Phase 10 P01 | 12 | 3 tasks | 4 files |
 | Phase 10 P03 | 2 | 1 task | 1 file |
 | Phase 10 P02 | 4 | 2 tasks | 2 files |
+| Phase 10 P04 | 8 | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -156,6 +157,10 @@ Recent decisions affecting current work:
 - [Phase 10]: 10-03: Alleen lezen amber badge with book icon replaces voice toggle for pap locale
 - [Phase 10]: Text-splitting ipv SSML/AudioContext-concatenatie: simpeler, geen browser-API-complexiteit
 - [Phase 10]: isCancelledRef mechanisme: stop() zet vlag zodat async for-loop direct stopt na huidig segment
+- [Phase 10]: 10-04: applyTtsSubstitutions() als aparte module — makkelijk uitbreidbaar zonder tts-utils aan te raken
+- [Phase 10]: 10-04: Substitutie als laatste stap na markdown cleaning — werkt op schone tekst, geen interferentie
+- [Phase 10]: 10-04: Lookahead/lookbehind (?<![\\wÀ-ÿ]) i.p.v. \\b voor Unicode-safe word boundary (Arubaanse namen)
+- [Phase 10]: 10-04: cleanForAutoTts() in ChatInterface verwijderd — single source of truth via tts-utils.ts
 
 ### Pending Todos
 
@@ -171,7 +176,7 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-27
-Stopped at: Completed 10-03-PLAN.md — Papiamento TTS-blokkering + Alleen lezen badge in ChatInterface
+Stopped at: Completed 10-04-PLAN.md — Arubaanse eigennamen substitutie voor TTS
 Resume file: None
 
-**Next action:** Execute Phase 10 Plan 04 (10-04)
+**Next action:** Phase 10 COMPLETE — start Phase 11 (run /gsd:plan-phase 11)
