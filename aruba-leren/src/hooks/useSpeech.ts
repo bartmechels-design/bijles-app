@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { splitIntoSegments } from '@/lib/ai/tts-utils';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -9,11 +10,15 @@ import { useState, useCallback, useRef, useEffect } from 'react';
  * Drop-in replacement for the old useTextToSpeech() that used window.speechSynthesis.
  *
  * Interface identical to old hook: speak(text, lang, { onStart, onEnd }), stop(), isSpeaking
+ *
+ * Text is split into segments (sentence/clause boundaries) and played sequentially
+ * with appropriate pauses (600ms after . ! ?, 300ms after , ; :) for natural prosody.
  */
 export function useTextToSpeech() {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const blobUrlRef = useRef<string | null>(null);
+  const isCancelledRef = useRef(false);
 
   const speak = useCallback(async (
     text: string,
@@ -33,51 +38,73 @@ export function useTextToSpeech() {
       blobUrlRef.current = null;
     }
 
+    // Reset cancellation flag for this new speak call
+    isCancelledRef.current = false;
+
     if (!text.trim()) return;
+
+    // Split into segments with pause timings
+    const segments = splitIntoSegments(text);
+    if (segments.length === 0) return;
 
     try {
       setIsSpeaking(true);
       callbacks?.onStart?.();
 
-      // Fetch MP3 from server-side TTS route
-      // URL uses relative path — works regardless of locale in URL
-      const response = await fetch('/nl/api/tutor/tts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, lang }),
-      });
+      // Play segments sequentially with pauses between them
+      for (let i = 0; i < segments.length; i++) {
+        if (isCancelledRef.current) break;
 
-      if (!response.ok) {
-        console.error('TTS API error:', response.status);
-        setIsSpeaking(false);
-        callbacks?.onEnd?.();
-        return;
+        const segment = segments[i];
+
+        // Fetch MP3 for this segment
+        const response = await fetch('/nl/api/tutor/tts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: segment.text, lang }),
+        });
+
+        if (!response.ok) {
+          console.error('TTS segment error:', response.status, 'for segment:', segment.text);
+          continue; // Skip failed segment, continue with next
+        }
+
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        blobUrlRef.current = blobUrl;
+
+        // Play this segment and wait for it to finish
+        await new Promise<void>((resolve, reject) => {
+          const audio = new Audio(blobUrl);
+          audioRef.current = audio;
+
+          audio.onended = () => {
+            URL.revokeObjectURL(blobUrl);
+            blobUrlRef.current = null;
+            audioRef.current = null;
+            resolve();
+          };
+
+          audio.onerror = () => {
+            URL.revokeObjectURL(blobUrl);
+            blobUrlRef.current = null;
+            audioRef.current = null;
+            reject(new Error('Audio playback error'));
+          };
+
+          audio.play().catch(reject);
+        });
+
+        // Pause between segments (not after the last one)
+        if (segment.pauseAfter > 0) {
+          await new Promise<void>(resolve => setTimeout(resolve, segment.pauseAfter));
+        }
+
+        if (isCancelledRef.current) break;
       }
 
-      const blob = await response.blob();
-      const blobUrl = URL.createObjectURL(blob);
-      blobUrlRef.current = blobUrl;
-
-      const audio = new Audio(blobUrl);
-      audioRef.current = audio;
-
-      audio.onended = () => {
-        setIsSpeaking(false);
-        callbacks?.onEnd?.();
-        URL.revokeObjectURL(blobUrl);
-        blobUrlRef.current = null;
-        audioRef.current = null;
-      };
-
-      audio.onerror = () => {
-        setIsSpeaking(false);
-        callbacks?.onEnd?.();
-        URL.revokeObjectURL(blobUrl);
-        blobUrlRef.current = null;
-        audioRef.current = null;
-      };
-
-      await audio.play();
+      setIsSpeaking(false);
+      callbacks?.onEnd?.();
     } catch (error) {
       console.error('TTS playback error:', error);
       setIsSpeaking(false);
@@ -86,6 +113,7 @@ export function useTextToSpeech() {
   }, []);
 
   const stop = useCallback(() => {
+    isCancelledRef.current = true;
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current = null;
