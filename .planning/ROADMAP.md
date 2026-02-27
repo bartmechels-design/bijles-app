@@ -251,13 +251,13 @@ Plans:
 
 **Requirements Covered:** TTS-01, TTS-02, TTS-03
 
-**Plans:** TBD
+**Plans:** 4 plans
 
 Plans:
-- [ ] 10-01-PLAN.md — OpenAI TTS integratie: API-route voor TTS (server-side), `onyx` of `nova` stem voor Nederlands, streaming audio playback in browser
-- [ ] 10-02-PLAN.md — Uitspraakregie: correcte pauzes (punt=600ms, komma=300ms), zinnen als geheel niet woord-voor-woord, spaties niet uitgesproken
-- [ ] 10-03-PLAN.md — Papiamento uitspraakmodus: auto-detectie of native stem beschikbaar is, fallback naar "Alleen lezen" met melding + optionele tutor-microfoonfunctie
-- [ ] 10-04-PLAN.md — Arubaanse context uitspraakvereisten: eigennamen/plaatsnamen testen, fallback naar neutrale voorbeelden of "Alleen lezen" bij slechte uitspraak
+- [x] 10-01-PLAN.md — OpenAI TTS integratie: API-route voor TTS (server-side), `nova` stem voor Nederlands, streaming audio playback in browser
+- [x] 10-02-PLAN.md — Uitspraakregie: correcte pauzes (punt=600ms, komma=300ms), zinnen als geheel niet woord-voor-woord, spaties niet uitgesproken
+- [x] 10-03-PLAN.md — Papiamento uitspraakmodus: locale=pap → "Alleen lezen" badge + auto-speak uitgeschakeld
+- [x] 10-04-PLAN.md — Arubaanse context uitspraakvereisten: eigennamen/plaatsnamen substitutie-map + wiring in ChatInterface
 
 **Success Criteria:**
 1. Nederlandse TTS klinkt natuurlijk en aangenaam bij 5 minuten aaneengesloten luisteren
@@ -307,7 +307,7 @@ Plans:
 | Phase 7: Parent Portal & Admin Monitoring | 8 | Complete | 100% |
 | Phase 8: UI/UX Polish — Koko Avatar & Time Timer | 2 | Planning | 0% |
 | Phase 9: Visuele Leerondersteuning | 4 | Planning | 0% |
-| Phase 10: Neural TTS & Uitspraak | 3 | Backlog | 0% |
+| Phase 10: Neural TTS & Uitspraak | 3 | Complete | 100% |
 | Phase 11: Rapportages & PDF-Deling | 4 | Backlog | 0% |
 
 **Total:** 58 requirement mappings (some requirements appear in multiple phases due to incremental delivery)
@@ -361,4 +361,4 @@ Research findings from ARCHITECTURE.md, FEATURES.md, PITFALLS.md, and STACK.md i
 ---
 
 *Roadmap created: 2026-02-12*
-*Last updated: 2026-02-26 — Phase 9 plans finalized (4 plans, Wave 1+2 structure)*
+*Last updated: 2026-02-27 — Phase 10 complete (4 plans, Wave 1+2+3 structure, OpenAI TTS)*
