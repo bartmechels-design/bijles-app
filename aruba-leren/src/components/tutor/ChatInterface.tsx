@@ -135,6 +135,8 @@ export default function ChatInterface({
   // Voice-first mode — disabled for begrijpend_lezen (reading comprehension requires reading, not listening)
   const { isVoiceFirst: isVoiceFirstRaw, setVoiceFirst } = useVoiceFirstMode();
   const isVoiceFirst = subject === 'begrijpend_lezen' ? false : isVoiceFirstRaw;
+  // Papiamento heeft geen OpenAI-stem — TTS is altijd uitgeschakeld
+  const isPapiamento = locale === 'pap';
 
   // Track last completed assistant message for auto-TTS
   const lastCompletedRef = useRef<string | null>(null);
@@ -250,6 +252,7 @@ export default function ChatInterface({
   // Auto-TTS: speak completed assistant messages in voice-first mode
   const autoSpeak = useCallback((text: string) => {
     if (!isVoiceFirst) return;
+    if (isPapiamento) return; // Geen OpenAI-stem voor Papiamento
     if (hasSpeekBlocks(text)) return; // [SPREEK] blocks handle their own TTS
     const cleaned = cleanForAutoTts(text);
     if (!cleaned) return;
@@ -258,7 +261,7 @@ export default function ChatInterface({
       onStart: () => setEmotion('speaking'),
       onEnd: () => setEmotion('idle'),
     });
-  }, [isVoiceFirst, locale, speak, setEmotion]);
+  }, [isVoiceFirst, isPapiamento, locale, speak, setEmotion]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -477,22 +480,37 @@ export default function ChatInterface({
           subjectLabel={subjectLabel}
         />
 
-        {/* Voice-first toggle — hidden for begrijpend_lezen */}
-        {subject !== 'begrijpend_lezen' && <button
-          type="button"
-          onClick={() => setVoiceFirst(!isVoiceFirstRaw)}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
-            isVoiceFirst
-              ? 'bg-sky-100 text-sky-700 ring-2 ring-sky-300'
-              : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
-          }`}
-          title={isVoiceFirst ? 'Spraak-modus aan' : 'Spraak-modus uit'}
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z" />
-          </svg>
-          {isVoiceFirstRaw ? 'Aan' : 'Uit'}
-        </button>}
+        {/* Voice-first toggle — verborgen voor begrijpend_lezen en Papiamento */}
+        {subject !== 'begrijpend_lezen' && !isPapiamento && (
+          <button
+            type="button"
+            onClick={() => setVoiceFirst(!isVoiceFirstRaw)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
+              isVoiceFirst
+                ? 'bg-sky-100 text-sky-700 ring-2 ring-sky-300'
+                : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+            }`}
+            title={isVoiceFirst ? 'Spraak-modus aan' : 'Spraak-modus uit'}
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z" />
+            </svg>
+            {isVoiceFirstRaw ? 'Aan' : 'Uit'}
+          </button>
+        )}
+
+        {/* Papiamento: geen spraak beschikbaar — toon "Alleen lezen" badge */}
+        {isPapiamento && subject !== 'begrijpend_lezen' && (
+          <div
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-amber-50 text-amber-700 border border-amber-200"
+            title="Papiamento heeft geen spraakondersteuning"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+            </svg>
+            Alleen lezen
+          </div>
+        )}
       </div>
 
       {/* Assessment Mode Banner */}
