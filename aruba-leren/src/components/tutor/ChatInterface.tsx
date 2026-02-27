@@ -20,6 +20,7 @@ import { useSpeechToText, useTextToSpeech } from '@/hooks/useSpeech';
 import { useKokoState } from '@/hooks/useKokoState';
 import { useVoiceFirstMode } from '@/hooks/useVoiceFirstMode';
 import { HIAAT_TOPICS } from '@/lib/ai/prompts/hiaten-prompts';
+import { cleanForTts } from '@/lib/ai/tts-utils';
 
 // Message type — supports text and optional image
 interface Message {
@@ -59,23 +60,6 @@ function getTtsLang(locale: string) {
 
 function hasSpeekBlocks(text: string) {
   return /\[SPREEK\]/.test(text);
-}
-
-function cleanForAutoTts(text: string) {
-  return text
-    .replace(/\[BORD\][\s\S]*?\[\/BORD\]/g, '') // strip board content
-    .replace(/\[SPREEK\][\s\S]*?\[\/SPREEK\]/g, '') // strip spreek blocks
-    .replace(/\*{1,3}([^*]+)\*{1,3}/g, '$1') // bold/italic
-    .replace(/_{1,3}([^_]+)_{1,3}/g, '$1') // underline bold/italic
-    .replace(/`([^`]+)`/g, '$1') // code
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // links
-    .replace(/^#{1,6}\s+/gm, '') // headings
-    .replace(/^[-*+]\s+/gm, '') // bullet points
-    .replace(/^\d+\.\s+/gm, '') // numbered lists
-    .replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FE0F}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{200D}\u{20E3}\u{E0020}-\u{E007F}]/gu, '') // strip emojis
-    .replace(/[*_~`^#>|]/g, '') // remaining markdown chars
-    .replace(/\s{2,}/g, ' ') // collapse whitespace
-    .trim();
 }
 
 // Max file size: 4MB (Claude vision limit is ~5MB)
@@ -254,7 +238,7 @@ export default function ChatInterface({
     if (!isVoiceFirst) return;
     if (isPapiamento) return; // Geen OpenAI-stem voor Papiamento
     if (hasSpeekBlocks(text)) return; // [SPREEK] blocks handle their own TTS
-    const cleaned = cleanForAutoTts(text);
+    const cleaned = cleanForTts(text);
     if (!cleaned) return;
 
     speak(cleaned, getTtsLang(locale), {
