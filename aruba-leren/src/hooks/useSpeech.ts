@@ -5,120 +5,107 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 /**
- * Score a voice for quality. Higher = better.
- * Prioritizes Microsoft Natural/Neural voices on Windows 11.
- */
-function scoreVoice(v: SpeechSynthesisVoice, lang: string): number {
-  let score = 0;
-  const name = v.name.toLowerCase();
-
-  // Exact language match is essential
-  if (v.lang === lang) score += 100;
-  else if (v.lang.startsWith(lang.split('-')[0])) score += 50;
-  else return 0; // wrong language
-
-  // "Natural" voices (Windows 11) sound much more human
-  if (name.includes('natural')) score += 40;
-  // "Neural" / "Online" voices are also high quality
-  if (name.includes('neural') || name.includes('online')) score += 30;
-  // Non-local (cloud/network) voices are usually better
-  if (!v.localService) score += 10;
-  // Google voices are decent
-  if (name.includes('google')) score += 15;
-
-  return score;
-}
-
-/**
- * Find the best available voice for a given language.
- * Prioritizes natural/neural voices for the most human-like sound.
- */
-function findBestVoice(lang: string): SpeechSynthesisVoice | null {
-  const voices = window.speechSynthesis.getVoices();
-  if (voices.length === 0) return null;
-
-  let bestVoice: SpeechSynthesisVoice | null = null;
-  let bestScore = 0;
-
-  for (const v of voices) {
-    const s = scoreVoice(v, lang);
-    if (s > bestScore) {
-      bestScore = s;
-      bestVoice = v;
-    }
-  }
-
-  return bestVoice;
-}
-
-/**
- * Text-to-Speech hook — reads text aloud using browser Speech Synthesis API.
- * Automatically selects the best available voice for the language.
+ * Text-to-Speech hook — reads text aloud using OpenAI TTS API (server-side).
+ * Drop-in replacement for the old useTextToSpeech() that used window.speechSynthesis.
+ *
+ * Interface identical to old hook: speak(text, lang, { onStart, onEnd }), stop(), isSpeaking
  */
 export function useTextToSpeech() {
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [voicesLoaded, setVoicesLoaded] = useState(false);
-  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const blobUrlRef = useRef<string | null>(null);
 
-  // Voices load asynchronously in some browsers
-  useEffect(() => {
-    const loadVoices = () => {
-      if (window.speechSynthesis.getVoices().length > 0) {
-        setVoicesLoaded(true);
-      }
-    };
-
-    loadVoices();
-    window.speechSynthesis.addEventListener('voiceschanged', loadVoices);
-    return () => {
-      window.speechSynthesis.removeEventListener('voiceschanged', loadVoices);
-    };
-  }, []);
-
-  const speak = useCallback((text: string, lang: string = 'nl-NL', callbacks?: {
-    onStart?: () => void
-    onEnd?: () => void
-  }) => {
-    // Stop any current speech
-    window.speechSynthesis.cancel();
-
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = lang;
-    utterance.rate = 0.92; // Slightly slow for children, but natural enough for intonation
-    utterance.pitch = 1.1; // Slightly higher for friendly Koko voice
-
-    // Try to find the best voice for this language
-    const voice = findBestVoice(lang);
-    if (voice) {
-      utterance.voice = voice;
+  const speak = useCallback(async (
+    text: string,
+    lang: string = 'nl-NL',
+    callbacks?: {
+      onStart?: () => void;
+      onEnd?: () => void;
+    }
+  ) => {
+    // Stop any currently playing audio
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+    if (blobUrlRef.current) {
+      URL.revokeObjectURL(blobUrlRef.current);
+      blobUrlRef.current = null;
     }
 
-    utterance.onstart = () => {
+    if (!text.trim()) return;
+
+    try {
       setIsSpeaking(true);
       callbacks?.onStart?.();
-    };
-    utterance.onend = () => {
-      setIsSpeaking(false);
-      callbacks?.onEnd?.();
-    };
-    utterance.onerror = () => {
-      setIsSpeaking(false);
-      callbacks?.onEnd?.();
-    };
 
-    utteranceRef.current = utterance;
-    window.speechSynthesis.speak(utterance);
-  }, [voicesLoaded]); // Re-create when voices load
+      // Fetch MP3 from server-side TTS route
+      // URL uses relative path — works regardless of locale in URL
+      const response = await fetch('/nl/api/tutor/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, lang }),
+      });
+
+      if (!response.ok) {
+        console.error('TTS API error:', response.status);
+        setIsSpeaking(false);
+        callbacks?.onEnd?.();
+        return;
+      }
+
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      blobUrlRef.current = blobUrl;
+
+      const audio = new Audio(blobUrl);
+      audioRef.current = audio;
+
+      audio.onended = () => {
+        setIsSpeaking(false);
+        callbacks?.onEnd?.();
+        URL.revokeObjectURL(blobUrl);
+        blobUrlRef.current = null;
+        audioRef.current = null;
+      };
+
+      audio.onerror = () => {
+        setIsSpeaking(false);
+        callbacks?.onEnd?.();
+        URL.revokeObjectURL(blobUrl);
+        blobUrlRef.current = null;
+        audioRef.current = null;
+      };
+
+      await audio.play();
+    } catch (error) {
+      console.error('TTS playback error:', error);
+      setIsSpeaking(false);
+      callbacks?.onEnd?.();
+    }
+  }, []);
 
   const stop = useCallback(() => {
-    window.speechSynthesis.cancel();
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+    if (blobUrlRef.current) {
+      URL.revokeObjectURL(blobUrlRef.current);
+      blobUrlRef.current = null;
+    }
     setIsSpeaking(false);
   }, []);
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      window.speechSynthesis.cancel();
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+      if (blobUrlRef.current) {
+        URL.revokeObjectURL(blobUrlRef.current);
+      }
     };
   }, []);
 
@@ -126,7 +113,8 @@ export function useTextToSpeech() {
 }
 
 /**
- * Speech-to-Text hook — converts voice input to text using browser SpeechRecognition API
+ * Speech-to-Text hook — converts voice input to text using browser SpeechRecognition API.
+ * Unchanged from Phase 9.
  */
 export function useSpeechToText(lang: string = 'nl-NL') {
   const [isListening, setIsListening] = useState(false);
