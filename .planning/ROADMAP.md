@@ -276,13 +276,13 @@ Plans:
 
 **Requirements Covered:** RAPPORT-01, RAPPORT-02, RAPPORT-03, RAPPORT-04
 
-**Plans:** TBD
+**Plans:** 4 plans
 
 Plans:
-- [ ] 11-01-PLAN.md — Rapportgenerator: startmeting (nulmeting per vak), voortgangsgrafieken (lijngrafieken), terugkerende moeilijkheden, effectieve leertijd (excl. idle), foutanalyse per categorie
-- [ ] 11-02-PLAN.md — Studieplan in rapport: voorgesteld weekplan, ouder kan bevestigen of aanpassen, voortgangscontrole
-- [ ] 11-03-PLAN.md — Online PDF-viewer: unieke deelbare link (vervaldatum 30 dagen), browser-weergave zonder download, kopieer-knop, inlogcode-beveiliging
-- [ ] 11-04-PLAN.md — WhatsApp-deelknop + tweetalig rapport (Papiamento Arubano + Nederlands)
+- [ ] 11-01-PLAN.md — SQL migratie 012, buildRapportData() aggregatie, ProgressLineChart (Recharts), RapportView, geauthenticeerde rapportpagina
+- [ ] 11-02-PLAN.md — study-plan-generator (rule-based), StudyPlanEditor weekraster (bewerkbaar), PUT API-route, koppeling aan rapportpagina
+- [ ] 11-03-PLAN.md — report-token lib, generate POST API-route, ShareLinkPanel (kopieer-knop), publieke /rapport/[token] route met PIN-gate
+- [ ] 11-04-PLAN.md — rapport-namespace in nl.json + pap.json, RapportView i18n, WhatsApp wa.me-knop, RapportPrintWrapper (react-to-print), human-verify checkpoint
 
 **Success Criteria:**
 1. Rapport bevat startmeting, voortgangsgrafieken, terugkerende moeilijkheden, effectieve leertijd, foutanalyse
@@ -308,7 +308,7 @@ Plans:
 | Phase 8: UI/UX Polish — Koko Avatar & Time Timer | 2 | Planning | 0% |
 | Phase 9: Visuele Leerondersteuning | 4 | Planning | 0% |
 | Phase 10: Neural TTS & Uitspraak | 3 | Complete | 100% |
-| Phase 11: Rapportages & PDF-Deling | 4 | Backlog | 0% |
+| Phase 11: Rapportages & PDF-Deling | 4 | Planning | 0% |
 
 **Total:** 58 requirement mappings (some requirements appear in multiple phases due to incremental delivery)
 
@@ -358,7 +358,14 @@ Research findings from ARCHITECTURE.md, FEATURES.md, PITFALLS.md, and STACK.md i
 - Raw Canvas API for scratchpad (NOT react-sketch-canvas — React 19 peer dep conflict)
 - [ZINSONTLEDING] JSON tag (NOT NLP library — no server-side NLP needed for MVP)
 
+**Phase 11 (Rapportages):**
+- recharts@^3.7.0 for level-over-time line chart (React 19 compatible; shadcn/ui pattern)
+- report_tokens DB table for shareable links (NOT Supabase Storage signed URLs — no PIN support)
+- createAdminClient() in public share route (NOT createClient() — no session available)
+- Rule-based study plan generator (NOT Claude API call — deterministic, no cost/latency)
+- react-to-print v3 for Save as PDF (NOT @react-pdf/renderer — React 19 crash)
+
 ---
 
 *Roadmap created: 2026-02-12*
-*Last updated: 2026-02-27 — Phase 10 complete (4 plans, Wave 1+2+3 structure, OpenAI TTS)*
+*Last updated: 2026-02-27 — Phase 10 complete; Phase 11 planned (4 plans, Wave 1+2+3 structure, recharts + react-to-print + WhatsApp sharing)*
