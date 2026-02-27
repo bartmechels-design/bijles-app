@@ -52,6 +52,7 @@ Progress: [███████████████████████
 | Phase 09 P04 | 3 | 2 tasks | 4 files |
 | Phase 10 P01 | 12 | 3 tasks | 4 files |
 | Phase 10 P03 | 2 | 1 task | 1 file |
+| Phase 10 P02 | 4 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -153,6 +154,8 @@ Recent decisions affecting current work:
 - [Phase 10]: 10-03: isPapiamento derived from locale prop in ChatInterface (not in TTS hook) — UI layer owns locale-gating
 - [Phase 10]: 10-03: Voice toggle fully hidden (not disabled) for Papiamento — no confusing inactive button
 - [Phase 10]: 10-03: Alleen lezen amber badge with book icon replaces voice toggle for pap locale
+- [Phase 10]: Text-splitting ipv SSML/AudioContext-concatenatie: simpeler, geen browser-API-complexiteit
+- [Phase 10]: isCancelledRef mechanisme: stop() zet vlag zodat async for-loop direct stopt na huidig segment
 
 ### Pending Todos
 
