@@ -5,6 +5,8 @@
  * Applied before sending text to OpenAI TTS API.
  */
 
+import { applyTtsSubstitutions } from './tts-substitutions';
+
 export interface TtsSegment {
   text: string;
   /** Pause in milliseconds AFTER this segment plays */
@@ -108,7 +110,7 @@ export function splitIntoSegments(text: string): TtsSegment[] {
  * Extracted from ChatInterface.tsx cleanForAutoTts() for reuse across hooks.
  */
 export function cleanForTts(text: string): string {
-  return text
+  const cleaned = text
     .replace(/\[BORD\][\s\S]*?\[\/BORD\]/g, '')           // strip board content
     .replace(/\[SPREEK\][\s\S]*?\[\/SPREEK\]/g, '')        // strip spreek blocks
     .replace(/\[ZINSONTLEDING\][\s\S]*?\[\/ZINSONTLEDING\]/g, '') // strip zinsontleding JSON
@@ -124,4 +126,7 @@ export function cleanForTts(text: string): string {
     .replace(/[*_~`^#>|]/g, '')                            // remaining markdown chars
     .replace(/\s{2,}/g, ' ')                               // collapse whitespace
     .trim();
+
+  // Apply Arubaanse name substitutions after markdown cleaning
+  return applyTtsSubstitutions(cleaned);
 }
