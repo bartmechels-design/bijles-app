@@ -279,10 +279,10 @@ Plans:
 **Plans:** 4 plans
 
 Plans:
-- [ ] 11-01-PLAN.md — SQL migratie 012, buildRapportData() aggregatie, ProgressLineChart (Recharts), RapportView, geauthenticeerde rapportpagina
-- [ ] 11-02-PLAN.md — study-plan-generator (rule-based), StudyPlanEditor weekraster (bewerkbaar), PUT API-route, koppeling aan rapportpagina
-- [ ] 11-03-PLAN.md — report-token lib, generate POST API-route, ShareLinkPanel (kopieer-knop), publieke /rapport/[token] route met PIN-gate
-- [ ] 11-04-PLAN.md — rapport-namespace in nl.json + pap.json, RapportView i18n, WhatsApp wa.me-knop, RapportPrintWrapper (react-to-print), human-verify checkpoint
+- [x] 11-01-PLAN.md — SQL migratie 012, buildRapportData() aggregatie, ProgressLineChart (Recharts), RapportView, geauthenticeerde rapportpagina
+- [x] 11-02-PLAN.md — study-plan-generator (rule-based), StudyPlanEditor weekraster (bewerkbaar), PUT API-route, koppeling aan rapportpagina
+- [x] 11-03-PLAN.md — report-token lib, generate POST API-route, ShareLinkPanel (kopieer-knop), publieke /rapport/[token] route met PIN-gate
+- [x] 11-04-PLAN.md — rapport-namespace in nl.json + pap.json, RapportView i18n, WhatsApp wa.me-knop, RapportPrintWrapper (react-to-print), human-verify checkpoint
 
 **Success Criteria:**
 1. Rapport bevat startmeting, voortgangsgrafieken, terugkerende moeilijkheden, effectieve leertijd, foutanalyse
@@ -308,7 +308,7 @@ Plans:
 | Phase 8: UI/UX Polish — Koko Avatar & Time Timer | 2 | Planning | 0% |
 | Phase 9: Visuele Leerondersteuning | 4 | Planning | 0% |
 | Phase 10: Neural TTS & Uitspraak | 3 | Complete | 100% |
-| Phase 11: Rapportages & PDF-Deling | 4 | Planning | 0% |
+| Phase 11: Rapportages & PDF-Deling | 4 | Complete | 100% |
 
 **Total:** 58 requirement mappings (some requirements appear in multiple phases due to incremental delivery)
 
