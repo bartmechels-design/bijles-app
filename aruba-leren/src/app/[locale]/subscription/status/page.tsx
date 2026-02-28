@@ -76,6 +76,12 @@ export default async function SubscriptionStatusPage() {
     <div className="min-h-screen bg-gradient-to-b from-sky-100 to-white">
       <div className="max-w-4xl mx-auto px-4 py-12">
         <div className="mb-8">
+          <Link
+            href="/nl/dashboard"
+            className="inline-flex items-center gap-2 text-sky-600 hover:text-sky-800 font-semibold mb-4"
+          >
+            ← Terug naar dashboard
+          </Link>
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
             {t('statusTitle')}
           </h1>
