@@ -6,14 +6,14 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 
 **Core value:** Kinderen op Aruba krijgen persoonlijke bijles die zich aanpast aan hun niveau, volledig zelfstandig, in hun eigen taal en context.
 
-**Current focus:** Phase 10 — Neural TTS Uitspraak COMPLETE
+**Current focus:** Phase 11 — Rapportages & PDF Deling (plan 1/4 complete)
 
 ## Current Position
 
-Phase: 10 of 11 COMPLETE — Neural TTS Uitspraak
-Plan: 4/4 complete — 10-04 Arubaanse eigennamen substitutie voor TTS
-Status: Phase 10 COMPLETE — alle 4 plannen uitgevoerd
-Last activity: 2026-02-27 — 10-04 complete (fonetische substitutie-map + cleanForTts() integratie + ChatInterface wiring)
+Phase: 11 of 11 — Rapportages & PDF Deling
+Plan: 1/4 complete — 11-01 Rapport generator (SQL migratie + data-aggregatie + Recharts pagina)
+Status: Plan 11-01 COMPLETE — rapport route live, 3 plannen resterend
+Last activity: 2026-02-28 — 11-01 complete (012 migratie + buildRapportData() + RapportView + rapport pagina)
 
 Progress: [████████████████████████████████████████████████████████████████████████████████████████████████] 100%
 
@@ -54,6 +54,7 @@ Progress: [███████████████████████
 | Phase 10 P03 | 2 | 1 task | 1 file |
 | Phase 10 P02 | 4 | 2 tasks | 2 files |
 | Phase 10 P04 | 8 | 3 tasks | 3 files |
+| Phase 11 P01 | 27 | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -161,6 +162,9 @@ Recent decisions affecting current work:
 - [Phase 10]: 10-04: Substitutie als laatste stap na markdown cleaning — werkt op schone tekst, geen interferentie
 - [Phase 10]: 10-04: Lookahead/lookbehind (?<![\\wÀ-ÿ]) i.p.v. \\b voor Unicode-safe word boundary (Arubaanse namen)
 - [Phase 10]: 10-04: cleanForAutoTts() in ChatInterface verwijderd — single source of truth via tts-utils.ts
+- [Phase 11]: 11-01: dynamic() ssr:false vereist aparte 'use client' wrapper (ProgressLineChartWrapper) in Next.js App Router — direct gebruik in Server Component geeft Turbopack bouwfout
+- [Phase 11]: 11-01: buildRapportData() accepteert SupabaseClient als parameter — maakt hergebruik mogelijk voor public share route (plan 11-03 met admin client)
+- [Phase 11]: 11-01: RapportView heeft readOnly prop — wordt true voor publieke deellink (plan 11-03)
 
 ### Pending Todos
 
@@ -168,6 +172,7 @@ Recent decisions affecting current work:
 - SQL migratie 008 (leerstof_items) nog niet uitgevoerd in Supabase (voor productie)
 - SQL migratie 009 (school_vacations) nog niet uitgevoerd in Supabase — run handmatig in SQL Editor
 - SQL migratie 011 (scratchpads storage bucket + RLS) nog niet uitgevoerd in Supabase — run handmatig in SQL Editor
+- SQL migratie 012 (report_tokens + study_plans) nog niet uitgevoerd in Supabase — run handmatig in SQL Editor
 
 ### Blockers/Concerns
 
@@ -175,8 +180,8 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-02-27
-Stopped at: Completed 10-04-PLAN.md — Arubaanse eigennamen substitutie voor TTS
+Last session: 2026-02-28
+Stopped at: Completed 11-01-PLAN.md — Rapport generator (SQL migratie + data-aggregatie + Recharts pagina)
 Resume file: None
 
-**Next action:** Phase 10 COMPLETE — start Phase 11 (run /gsd:plan-phase 11)
+**Next action:** Continue Phase 11 — execute plan 11-02 (AI studieplan generator)
