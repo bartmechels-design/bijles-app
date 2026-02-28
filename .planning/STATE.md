@@ -6,14 +6,14 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 
 **Core value:** Kinderen op Aruba krijgen persoonlijke bijles die zich aanpast aan hun niveau, volledig zelfstandig, in hun eigen taal en context.
 
-**Current focus:** Phase 11 — Rapportages & PDF Deling (plan 3/4 complete)
+**Current focus:** Phase 11 — Rapportages & PDF Deling (plan 4/4 — checkpoint wacht op verificatie)
 
 ## Current Position
 
 Phase: 11 of 11 — Rapportages & PDF Deling
-Plan: 3/4 complete — 11-03 Deelbare link systeem (token-aanmaak + publieke route + PIN-gate)
-Status: Plan 11-03 COMPLETE — deelbare rapport-link live, 1 plan resterend
-Last activity: 2026-02-28 — 11-03 complete (report-token.ts + generate API + ShareLinkPanel + publieke /rapport/[token] route)
+Plan: 4/4 — 11-04 Tweetaligheid + WhatsApp + PDF export (auto-taken klaar, checkpoint wacht op verificatie)
+Status: Plan 11-04 auto-taken COMPLETE — wacht op menselijke verificatie checkpoint
+Last activity: 2026-02-28 — 11-04 auto-taken: rapport-namespace nl+pap, RapportView i18n, RapportPrintWrapper, WhatsApp-knop
 
 Progress: [████████████████████████████████████████████████████████████████████████████████████████████████] 100%
 
@@ -57,6 +57,7 @@ Progress: [███████████████████████
 | Phase 11 P01 | 27 | 2 tasks | 8 files |
 | Phase 11 P02 | 3 | 2 tasks | 4 files |
 | Phase 11 P03 | 5 | 2 tasks | 6 files |
+| Phase 11 P04 | 18 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -175,6 +176,10 @@ Recent decisions affecting current work:
 - [Phase 11]: 11-03: PinGateForm als aparte 'use client' component — 'use client' mag niet inline in Server Component bestand
 - [Phase 11]: 11-03: one-token-per-child strategie — DELETE voor INSERT, ouder ziet altijd actuele link
 - [Phase 11]: 11-03: PIN-gate via GET-parameter (form method=GET) — werkt zonder JavaScript
+- [Phase 11]: 11-04: RapportView omgezet naar async Server Component — getTranslations vereist async context
+- [Phase 11]: 11-04: nl-AW als date locale fallback voor Papiamento — Aruba heeft geen eigen BCP-47 locale code
+- [Phase 11]: 11-04: SUBJECT_TRANSLATION_KEYS record i.p.v. t.has() — type-veilig zonder runtime API afhankelijkheid
+- [Phase 11]: 11-04: WhatsApp bericht hardgecodeerd in ShareLinkPanel — client component kan getTranslations niet aanroepen
 
 ### Pending Todos
 
@@ -191,7 +196,7 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-28
-Stopped at: Completed 11-03-PLAN.md — Deelbare rapport-link (report-token.ts + generate API + ShareLinkPanel + publieke route)
+Stopped at: 11-04 checkpoint — auto-taken klaar, wacht op menselijke verificatie van volledig rapport systeem
 Resume file: None
 
-**Next action:** Continue Phase 11 — execute plan 11-04 (WhatsApp-knop + PDF export)
+**Next action:** Verifieer rapport systeem (zie checkpoint instructies in 11-04-PLAN.md) en bevestig met "goedgekeurd"
