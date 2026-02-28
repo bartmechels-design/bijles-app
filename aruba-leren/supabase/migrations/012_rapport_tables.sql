@@ -34,7 +34,7 @@ CREATE POLICY "Parents can view report tokens" ON report_tokens FOR SELECT
 -- 2. study_plans tabel (voor AI-gegenereerd studieplan — plan 11-02)
 CREATE TABLE IF NOT EXISTS study_plans (
   id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  child_id    UUID NOT NULL REFERENCES children(id) ON DELETE CASCADE,
+  child_id    UUID NOT NULL UNIQUE REFERENCES children(id) ON DELETE CASCADE,
   plan_data   JSONB NOT NULL DEFAULT '[]'::jsonb,
   created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()

@@ -115,8 +115,19 @@ export default async function ChildDetailPage({ params }: ChildDetailPageProps) 
 
         {/* Child header */}
         <div className="bg-gradient-to-r from-sky-400 to-sky-600 rounded-2xl shadow-xl p-6 mb-8 text-white">
-          <h1 className="text-3xl font-bold">{child.first_name}</h1>
-          <p className="text-sky-100 mt-1">Klas {child.grade}</p>
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-bold">{child.first_name}</h1>
+              <p className="text-sky-100 mt-1">Klas {child.grade}</p>
+            </div>
+            <Link
+              href={`/${locale}/dashboard/kind/${childId}/rapport`}
+              className="shrink-0 inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white font-semibold px-4 py-2 rounded-xl transition-colors"
+            >
+              <span>📊</span>
+              <span>Rapport bekijken</span>
+            </Link>
+          </div>
         </div>
 
         {/* Subject progress grid */}
