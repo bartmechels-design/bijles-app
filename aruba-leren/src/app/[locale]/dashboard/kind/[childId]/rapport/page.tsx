@@ -13,6 +13,7 @@ import { buildRapportData } from '@/lib/rapport/rapport-data';
 import { generateStudyPlan } from '@/lib/rapport/study-plan-generator';
 import { RapportView } from '@/components/rapport/RapportView';
 import { StudyPlanEditor } from '@/components/rapport/StudyPlanEditor';
+import { ShareLinkPanel } from '@/components/rapport/ShareLinkPanel';
 import type { StudyPlanEntry } from '@/lib/rapport/study-plan-generator';
 
 // ============================================
@@ -78,6 +79,22 @@ export default async function RapportPage({ params }: RapportPageProps) {
     redirect(`/${locale}/dashboard`);
   }
 
+  // Fetch bestaand token voor dit kind (als dat er is en nog niet verlopen)
+  const now = new Date().toISOString();
+  const { data: existingTokenRow } = await supabase
+    .from('report_tokens')
+    .select('token, expires_at')
+    .eq('child_id', childId)
+    .gt('expires_at', now)
+    .maybeSingle();
+
+  const existingToken = existingTokenRow
+    ? {
+        token: existingTokenRow.token as string,
+        expiresAt: existingTokenRow.expires_at as string,
+      }
+    : null;
+
   // Bepaal initPlan: gebruik opgeslagen plan als dat bestaat, anders genereer op basis van voortgang
   const initPlan: StudyPlanEntry[] =
     rapportData.studyPlan && rapportData.studyPlan.length > 0
@@ -110,20 +127,14 @@ export default async function RapportPage({ params }: RapportPageProps) {
           />
         </section>
 
-        {/* Placeholder: rapport delen / link genereren (wordt gevuld in plan 11-03 en 11-04) */}
+        {/* Rapport delen via deelbare link */}
         <section className="mt-4">
-          <div className="bg-white rounded-2xl border-2 border-dashed border-sky-200 p-6">
-            <div className="flex items-center gap-3 mb-2">
-              <span className="text-2xl">🔗</span>
-              <h2 className="text-xl font-bold text-gray-700">Rapport delen</h2>
-              <span className="text-xs bg-sky-100 text-sky-700 border border-sky-300 rounded-full px-2 py-0.5 font-semibold">
-                Binnenkort
-              </span>
-            </div>
-            <p className="text-sm text-gray-400 italic">
-              Genereer een deelbare link of PDF na plan 11-03 en 11-04.
-            </p>
-          </div>
+          <ShareLinkPanel
+            childId={childId}
+            childName={rapportData.child.first_name}
+            locale={locale}
+            existingToken={existingToken}
+          />
         </section>
       </div>
     </div>
