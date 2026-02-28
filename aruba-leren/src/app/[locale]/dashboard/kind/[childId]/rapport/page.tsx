@@ -14,6 +14,7 @@ import { generateStudyPlan } from '@/lib/rapport/study-plan-generator';
 import { RapportView } from '@/components/rapport/RapportView';
 import { StudyPlanEditor } from '@/components/rapport/StudyPlanEditor';
 import { ShareLinkPanel } from '@/components/rapport/ShareLinkPanel';
+import RapportPrintWrapper from '@/components/rapport/RapportPrintWrapper';
 import type { StudyPlanEntry } from '@/lib/rapport/study-plan-generator';
 
 // ============================================
@@ -115,8 +116,12 @@ export default async function RapportPage({ params }: RapportPageProps) {
           </Link>
         </div>
 
-        {/* Rapport inhoud */}
-        <RapportView data={rapportData} locale={locale} />
+        {/* Rapport inhoud + PDF-knop */}
+        <RapportPrintWrapper
+          label={locale === 'pap' ? 'Gradé komo PDF' : 'Opslaan als PDF'}
+        >
+          <RapportView data={rapportData} locale={locale} />
+        </RapportPrintWrapper>
 
         {/* Studieplan — bewerkbaar weekraster */}
         <section className="mt-8">
