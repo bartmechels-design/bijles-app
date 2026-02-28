@@ -6,14 +6,14 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 
 **Core value:** Kinderen op Aruba krijgen persoonlijke bijles die zich aanpast aan hun niveau, volledig zelfstandig, in hun eigen taal en context.
 
-**Current focus:** Phase 11 — Rapportages & PDF Deling (plan 2/4 complete)
+**Current focus:** Phase 11 — Rapportages & PDF Deling (plan 3/4 complete)
 
 ## Current Position
 
 Phase: 11 of 11 — Rapportages & PDF Deling
-Plan: 2/4 complete — 11-02 Studieplan generator (rule-based weekplan + bewerkbare UI + opslaan API)
-Status: Plan 11-02 COMPLETE — studieplan live in rapport pagina, 2 plannen resterend
-Last activity: 2026-02-28 — 11-02 complete (generateStudyPlan() + StudyPlanEditor + PUT /api/rapport/study-plan)
+Plan: 3/4 complete — 11-03 Deelbare link systeem (token-aanmaak + publieke route + PIN-gate)
+Status: Plan 11-03 COMPLETE — deelbare rapport-link live, 1 plan resterend
+Last activity: 2026-02-28 — 11-03 complete (report-token.ts + generate API + ShareLinkPanel + publieke /rapport/[token] route)
 
 Progress: [████████████████████████████████████████████████████████████████████████████████████████████████] 100%
 
@@ -56,6 +56,7 @@ Progress: [███████████████████████
 | Phase 10 P04 | 8 | 3 tasks | 3 files |
 | Phase 11 P01 | 27 | 2 tasks | 8 files |
 | Phase 11 P02 | 3 | 2 tasks | 4 files |
+| Phase 11 P03 | 5 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -170,6 +171,10 @@ Recent decisions affecting current work:
 - [Phase 11]: 11-02: Server Component bepaalt initPlan (opgeslagen of gegenereerd), geeft als prop aan StudyPlanEditor
 - [Phase 11]: 11-02: upsert op child_id (onConflict) voor idempotente opslag — geen dubbele rijen per kind
 - [Phase 11]: 11-02: StudyPlanEditor gebruikt useParams() voor locale in fetch-pad — geen prop-drilling nodig
+- [Phase 11]: 11-03: createAdminClient() vereist voor publieke rapport-route — RLS blokkeert gewone client zonder sessie
+- [Phase 11]: 11-03: PinGateForm als aparte 'use client' component — 'use client' mag niet inline in Server Component bestand
+- [Phase 11]: 11-03: one-token-per-child strategie — DELETE voor INSERT, ouder ziet altijd actuele link
+- [Phase 11]: 11-03: PIN-gate via GET-parameter (form method=GET) — werkt zonder JavaScript
 
 ### Pending Todos
 
@@ -186,7 +191,7 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-28
-Stopped at: Completed 11-02-PLAN.md — Studieplan generator (rule-based weekplan + StudyPlanEditor + PUT API)
+Stopped at: Completed 11-03-PLAN.md — Deelbare rapport-link (report-token.ts + generate API + ShareLinkPanel + publieke route)
 Resume file: None
 
-**Next action:** Continue Phase 11 — execute plan 11-03 (deelbare rapport-link)
+**Next action:** Continue Phase 11 — execute plan 11-04 (WhatsApp-knop + PDF export)
