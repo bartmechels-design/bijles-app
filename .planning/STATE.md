@@ -6,14 +6,14 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 
 **Core value:** Kinderen op Aruba krijgen persoonlijke bijles die zich aanpast aan hun niveau, volledig zelfstandig, in hun eigen taal en context.
 
-**Current focus:** Phase 11 — Rapportages & PDF Deling (plan 1/4 complete)
+**Current focus:** Phase 11 — Rapportages & PDF Deling (plan 2/4 complete)
 
 ## Current Position
 
 Phase: 11 of 11 — Rapportages & PDF Deling
-Plan: 1/4 complete — 11-01 Rapport generator (SQL migratie + data-aggregatie + Recharts pagina)
-Status: Plan 11-01 COMPLETE — rapport route live, 3 plannen resterend
-Last activity: 2026-02-28 — 11-01 complete (012 migratie + buildRapportData() + RapportView + rapport pagina)
+Plan: 2/4 complete — 11-02 Studieplan generator (rule-based weekplan + bewerkbare UI + opslaan API)
+Status: Plan 11-02 COMPLETE — studieplan live in rapport pagina, 2 plannen resterend
+Last activity: 2026-02-28 — 11-02 complete (generateStudyPlan() + StudyPlanEditor + PUT /api/rapport/study-plan)
 
 Progress: [████████████████████████████████████████████████████████████████████████████████████████████████] 100%
 
@@ -55,6 +55,7 @@ Progress: [███████████████████████
 | Phase 10 P02 | 4 | 2 tasks | 2 files |
 | Phase 10 P04 | 8 | 3 tasks | 3 files |
 | Phase 11 P01 | 27 | 2 tasks | 8 files |
+| Phase 11 P02 | 3 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -165,6 +166,10 @@ Recent decisions affecting current work:
 - [Phase 11]: 11-01: dynamic() ssr:false vereist aparte 'use client' wrapper (ProgressLineChartWrapper) in Next.js App Router — direct gebruik in Server Component geeft Turbopack bouwfout
 - [Phase 11]: 11-01: buildRapportData() accepteert SupabaseClient als parameter — maakt hergebruik mogelijk voor public share route (plan 11-03 met admin client)
 - [Phase 11]: 11-01: RapportView heeft readOnly prop — wordt true voor publieke deellink (plan 11-03)
+- [Phase 11]: 11-02: generateStudyPlan() als pure functie: stuck>=2 = 3 sessies, assessed = 2, niet-geassessed = 1 (geen AI nodig)
+- [Phase 11]: 11-02: Server Component bepaalt initPlan (opgeslagen of gegenereerd), geeft als prop aan StudyPlanEditor
+- [Phase 11]: 11-02: upsert op child_id (onConflict) voor idempotente opslag — geen dubbele rijen per kind
+- [Phase 11]: 11-02: StudyPlanEditor gebruikt useParams() voor locale in fetch-pad — geen prop-drilling nodig
 
 ### Pending Todos
 
@@ -181,7 +186,7 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-28
-Stopped at: Completed 11-01-PLAN.md — Rapport generator (SQL migratie + data-aggregatie + Recharts pagina)
+Stopped at: Completed 11-02-PLAN.md — Studieplan generator (rule-based weekplan + StudyPlanEditor + PUT API)
 Resume file: None
 
-**Next action:** Continue Phase 11 — execute plan 11-02 (AI studieplan generator)
+**Next action:** Continue Phase 11 — execute plan 11-03 (deelbare rapport-link)
