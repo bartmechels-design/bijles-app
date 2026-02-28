@@ -10,7 +10,23 @@ import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { buildRapportData } from '@/lib/rapport/rapport-data';
+import { generateStudyPlan } from '@/lib/rapport/study-plan-generator';
 import { RapportView } from '@/components/rapport/RapportView';
+import { StudyPlanEditor } from '@/components/rapport/StudyPlanEditor';
+import type { StudyPlanEntry } from '@/lib/rapport/study-plan-generator';
+
+// ============================================
+// Vak-labels in het Nederlands
+// ============================================
+
+const SUBJECT_LABELS: Record<string, string> = {
+  taal: 'Taal',
+  rekenen: 'Rekenen',
+  begrijpend_lezen: 'Begrijpend lezen',
+  geschiedenis: 'Geschiedenis',
+  aardrijkskunde: 'Aardrijkskunde',
+  kennis_der_natuur: 'Kennis der natuur',
+};
 
 interface RapportPageProps {
   params: Promise<{
@@ -62,6 +78,12 @@ export default async function RapportPage({ params }: RapportPageProps) {
     redirect(`/${locale}/dashboard`);
   }
 
+  // Bepaal initPlan: gebruik opgeslagen plan als dat bestaat, anders genereer op basis van voortgang
+  const initPlan: StudyPlanEntry[] =
+    rapportData.studyPlan && rapportData.studyPlan.length > 0
+      ? (rapportData.studyPlan as StudyPlanEntry[])
+      : generateStudyPlan(rapportData.subjects);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-50 via-white to-sky-100">
       <div className="max-w-4xl mx-auto px-4 py-8">
@@ -79,20 +101,13 @@ export default async function RapportPage({ params }: RapportPageProps) {
         {/* Rapport inhoud */}
         <RapportView data={rapportData} locale={locale} />
 
-        {/* Placeholder: studieplan (wordt gevuld in plan 11-02) */}
+        {/* Studieplan — bewerkbaar weekraster */}
         <section className="mt-8">
-          <div className="bg-white rounded-2xl border-2 border-dashed border-amber-200 p-6">
-            <div className="flex items-center gap-3 mb-2">
-              <span className="text-2xl">📋</span>
-              <h2 className="text-xl font-bold text-gray-700">Studieplan</h2>
-              <span className="text-xs bg-amber-100 text-amber-700 border border-amber-300 rounded-full px-2 py-0.5 font-semibold">
-                Binnenkort
-              </span>
-            </div>
-            <p className="text-sm text-gray-400 italic">
-              Het AI-gegenereerde studieplan verschijnt hier na plan 11-02.
-            </p>
-          </div>
+          <StudyPlanEditor
+            childId={childId}
+            initPlan={initPlan}
+            subjectLabels={SUBJECT_LABELS}
+          />
         </section>
 
         {/* Placeholder: rapport delen / link genereren (wordt gevuld in plan 11-03 en 11-04) */}
