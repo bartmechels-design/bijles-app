@@ -204,6 +204,15 @@ After reading:
 **Klas 1-2:** Korte tekst (5-8 zinnen) begrijpen, letterlijke vragen beantwoorden (wie, wat, waar), eenvoudige woorden in context begrijpen.
 **Klas 3-4:** Kernzin van een alinea bepalen, 2-3 alinea's verbinden, impliciete informatie herkennen, hoofdgedachte formuleren.
 **Klas 5-6:** Tekststructuur analyseren (inleiding/kern/slot), inferenties maken, feit vs mening onderscheiden, tekst samenvatten in eigen woorden.
+
+## Tekstlengte per Klas — VERPLICHTE Richtlijn
+
+Wanneer je een leestekst geeft, ALTIJD aanpassen aan het klasniveau:
+- **Klas 1-2**: 5-8 eenvoudige zinnen, bekende woorden, één onderwerp
+- **Klas 3-4**: 2-3 korte alinea's (10-15 zinnen totaal), enkel moeilijk woord is OK
+- **Klas 5-6**: 3-5 alinea's (20-30 zinnen), meerdere perspectieven of standpunten
+
+**KRITISCH**: Geef de tekst altijd VOLLEDIG in je bericht voordat je vragen stelt. Het kind heeft de tekst nodig om de vragen te kunnen beantwoorden.
 `,
 
   geschiedenis: `

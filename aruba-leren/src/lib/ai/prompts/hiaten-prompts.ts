@@ -48,6 +48,24 @@ export const HIAAT_TOPICS: Record<Subject, HiaatTopic[]> = {
       prompt:
         'Focus UITSLUITEND op dictee-oefening. Gebruik [SPREEK]woord[/SPREEK] tags voor elk woord dat het kind moet opschrijven. Begin met eenvoudige woorden passend bij het niveau van het kind.',
     },
+    {
+      id: 'lidwoorden',
+      label: 'Lidwoorden (de/het)',
+      prompt:
+        'Focus UITSLUITEND op het correcte gebruik van de lidwoorden "de" en "het". Arubaanse kinderen met Papiamento als moedertaal maken hier vaak fouten, omdat Papiamento geen lidwoordsonderscheid heeft. Oefen met zelfstandige naamwoorden uit de Arubaanse context: "de boom", "het strand", "de school". Geef spelletjes: "Is het de kip of het kip?" Geef niet direct het antwoord — laat het kind nadenken of een ezelsbruggetje ontdekken.',
+    },
+    {
+      id: 'meervoud',
+      label: 'Meervoud',
+      prompt:
+        'Focus UITSLUITEND op het vormen van meervouden in het Nederlands: -en (boom→bomen), -s (auto→auto\'s), onregelmatig (bad→banden, schip→schepen). Arubaanse kinderen maken hier fouten door transfer vanuit Papiamento. Gebruik Arubaanse woorden en context. Stel ALLEEN vragen over meervoud.',
+    },
+    {
+      id: 'werkwoordsspelling',
+      label: 'Werkwoordsspelling (stam)',
+      prompt:
+        'Focus UITSLUITEND op werkwoordsspelling via de stam-regel: de stam bepalen, -t toevoegen voor derde persoon enkelvoud, en het verschil met de infinitief. Oefen met zinnen als "hij werkt", "zij speelt", "de vogel vliegt". Gebruik Arubaanse context in de voorbeeldzinnen.',
+    },
   ],
   rekenen: [
     {
@@ -97,6 +115,18 @@ export const HIAAT_TOPICS: Record<Subject, HiaatTopic[]> = {
       label: 'Klokkijken',
       prompt:
         'Focus UITSLUITEND op klokkijken (analoge en digitale tijd). Stel ALLEEN tijdsvragen: "Hoe laat is het?", "Hoeveel minuten tot...?". Gebruik dagelijkse situaties op Aruba als context.',
+    },
+    {
+      id: 'procenten',
+      label: 'Procenten',
+      prompt:
+        'Focus UITSLUITEND op procenten (klas 5-6). Oefen ALLEEN het begrijpen en berekenen van procenten: wat is 50% van 20, hoeveel procent is 3 van 12, kortingen berekenen. Gebruik Arubaanse context: kortingen bij de winkel in Oranjestad, belastingpercentages, sport-statistieken.',
+    },
+    {
+      id: 'meetkunde',
+      label: 'Meetkunde (oppervlakte & omtrek)',
+      prompt:
+        'Focus UITSLUITEND op meetkunde: omtrek en oppervlakte berekenen van rechthoeken en vierkanten (klas 5-6). Stel ALLEEN vragen hierover. Gebruik Arubaanse context: oppervlakte van een zwembad, omtrek van een stuk strand, afmetingen van een huis.',
     },
   ],
   begrijpend_lezen: [
@@ -160,7 +190,7 @@ export const HIAAT_TOPICS: Record<Subject, HiaatTopic[]> = {
       id: 'koloniale_periode',
       label: 'Koloniale periode',
       prompt:
-        'Focus UITSLUITEND op de koloniale periode van Aruba: Nederlandse en Spaanse invloed, slavernij, plantages. Stel vragen over dit onderwerp op een leeftijdsgeschikt niveau.',
+        'Focus UITSLUITEND op de koloniale periode van Aruba: de Spaanse periode (1499-1636), deportatie van de Caquetio naar Hispaniola (1515), overname door de Nederlanders in 1636, beperkte slavernij op Aruba (veeteelt en goudpogingen, geen plantage-economie zoals op Curaçao). Stel vragen over dit onderwerp op een leeftijdsgeschikt niveau.',
     },
     {
       id: 'aruba_1986_status_aparte',
@@ -198,7 +228,7 @@ export const HIAAT_TOPICS: Record<Subject, HiaatTopic[]> = {
       id: 'klimaat_weeraruba',
       label: 'Klimaat & weer',
       prompt:
-        'Focus UITSLUITEND op klimaat en weer op Aruba: droog klimaat, passaatwinden, weinig regen, Curaçaose golf. Stel vragen en vergelijk met andere klimaattypen.',
+        'Focus UITSLUITEND op klimaat en weer op Aruba: droog klimaat, passaatwinden (handelswind vanuit het oosten/noordoosten), weinig regen, en de ligging buiten de hurikanriem (~12°N breedtegraad). Vergelijk het Arubaanse klimaat met andere klimaattypen. Stel vragen op het niveau van het kind.',
     },
     {
       id: 'abc_eilanden',
