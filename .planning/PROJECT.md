@@ -8,6 +8,18 @@ Een autonoom AI-bijlesplatform voor basisschoolleerlingen (6-12 jaar, klas 1-6) 
 
 Kinderen op Aruba krijgen persoonlijke bijles die zich aanpast aan hun niveau, zonder dat een ouder of leerkracht erbij hoeft te zitten — volledig zelfstandig, in hun eigen taal en context.
 
+## Current Milestone: v1.1 — Production Launch
+
+**Goal:** Platform deployen naar Vercel, alle pending SQL migrations uitvoeren, en een systematische QA-ronde doen om alles te verifiëren en bugs op te lossen vóór go-live.
+
+**Target features:**
+- Vercel deployment (repo importeren, env vars, OAuth callbacks voor productie-URL)
+- Alle 4 pending SQL migrations uitvoeren (008, 009, 011, 012)
+- Volledige QA van alle flows (auth, betaling, tutor, TTS, whiteboard, ouderportaal, admin)
+- Alle kritieke bugs oplossen (inclusief "genoeg geoefend")
+
+---
+
 ## Current State (v1.0 Shipped 2026-03-01)
 
 **Shipped v1.0** — alle 11 fases compleet. Platform is volledig functioneel en klaar voor productie-deployment.
@@ -57,7 +69,20 @@ Kinderen op Aruba krijgen persoonlijke bijles die zich aanpast aan hun niveau, z
 - ✓ RLS op alle database tabellen — v1.0
 - ✓ Privacy policy pagina — v1.0
 
-### Active (v2.0)
+### Active (v1.1 — Production Launch)
+
+- [ ] Vercel deployment met alle env vars en OAuth callback URLs geconfigureerd — v1.1
+- [ ] SQL migrations 008, 009, 011, 012 uitvoeren in Supabase productie — v1.1
+- [ ] Alle auth flows (email, Google, Facebook) werken in productie — v1.1
+- [ ] Betaling → activering → tutor flow werkt end-to-end — v1.1
+- [ ] AI tutor (Koko) + TTS werkt in productie — v1.1
+- [ ] Whiteboard, KaTeX, kladblaadje werken op mobiel in productie — v1.1
+- [ ] Ouderportaal + deelbare rapporten werken correct — v1.1
+- [ ] Admin panel functioneel — v1.1
+- [ ] "Genoeg geoefend" bug opgelost — v1.1
+- [ ] Alle kritieke QA-bevindingen opgelost — v1.1
+
+### Deferred (v2.0)
 
 - [ ] Offline oefenmodus — lessen downloaden voor offline gebruik
 - [ ] Geavanceerde leeranalytics met voorspellende inzichten
@@ -116,4 +141,4 @@ Kinderen op Aruba krijgen persoonlijke bijles die zich aanpast aan hun niveau, z
 | Zaakvakken bypass assessment gate | Content upload is toekomstige fase; direct naar tutoring | ✓ Good — gebruiksvriendelijker voor MVP |
 
 ---
-*Last updated: 2026-03-01 after v1.0 milestone*
+*Last updated: 2026-03-01 — v1.1 Production Launch milestone started*
