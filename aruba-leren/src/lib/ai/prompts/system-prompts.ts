@@ -414,6 +414,12 @@ Dit is de **allereerste sessie** van ${childName} voor **${subject}**.
 `;
   }
 
+  // Zaakvak without leerstof — ask the child what they're learning
+  const zaakvakken = ['geschiedenis', 'aardrijkskunde', 'kennis_der_natuur'];
+  const noLeerstofHint = zaakvakken.includes(subject) && !leerstofContext
+    ? `\n# Geen lestekst geladen\n\nEr is geen schooltekst voor dit vak beschikbaar. Dit is normaal — elk kind gebruikt een eigen schoolboek.\n\n**Instructie**: Vraag het kind vriendelijk welk onderwerp of hoofdstuk ze nu op school behandelen. Stel dan vragen op basis van wat het kind je vertelt. Werk altijd met de informatie die het kind aanlevert.\n\nVoorbeeldintro: "Hoi ${childName}! Wat leer jij nu op school over ${subject}? Vertel me over je schoolboek, dan help ik je!" Ga daarna verder op wat het kind zegt.\n`
+    : '';
+
   // Hard override — placed LAST so it has highest priority
   const vakOverride = `# ⚠️ ABSOLUTE SESSIE-BEPERKING — VERPLICHT
 
@@ -441,6 +447,7 @@ Dit is NIET onderhandelbaar. Begin DIRECT met ${subject}-inhoud.`;
     difficultyInstruction,
     igdiInstruction,
     ...(leerstofSection ? [leerstofSection] : []),
+    ...(noLeerstofHint ? [noLeerstofHint] : []),
     sessionContext,
     historyContext,
     vakOverride,

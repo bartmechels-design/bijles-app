@@ -104,10 +104,9 @@ export default function SubjectSelector({ childId, childName, locale, progressMa
             <div className="bg-white/20 backdrop-blur-sm rounded-lg px-3 py-1 inline-block text-sm font-semibold mb-2">
               {categoryLabel}
             </div>
-            {/* No assessment badge — content upload unlocks assessment in Phase 6 */}
             <div className="mt-3 mb-1">
               <span className="inline-flex items-center gap-1.5 bg-white/20 text-white text-xs font-semibold px-3 py-1 rounded-full">
-                📄 {t('uploadTextsForAssessment')}
+                {t('zaakVakHint')}
               </span>
             </div>
             <div className="flex items-center justify-center gap-2 font-semibold mt-4">
@@ -145,6 +144,25 @@ export default function SubjectSelector({ childId, childName, locale, progressMa
             {t('zaakVakken')}
           </span>
         </h2>
+
+        {/* NotebookLM uitleg voor het kind */}
+        <div className="bg-amber-50 border-2 border-amber-200 rounded-2xl p-4 mb-5 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+          <span className="text-3xl flex-shrink-0">📚</span>
+          <p className="text-amber-900 text-sm flex-1">{t('zaakVakBannerText')}</p>
+          <a
+            href="https://notebooklm.google.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-shrink-0 inline-flex items-center gap-1.5 bg-amber-500 hover:bg-amber-600 text-white font-semibold text-sm px-4 py-2 rounded-xl transition-colors"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {t('notebooklmButton')}
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </a>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {zaakSubjects.map((subject) =>
             renderZaakCard(subject, 'from-amber-400', 'to-amber-600', 'hover:border-amber-300', t('categoryZaak'))
