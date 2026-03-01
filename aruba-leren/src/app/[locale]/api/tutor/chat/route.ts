@@ -51,6 +51,8 @@ interface ChatRequestBody {
   childId: string;
   hiatenTopic?: string;
   huiswerkMode?: boolean;
+  /** When true, skip loading DB context — used for locale-switch triggers */
+  noHistory?: boolean;
 }
 
 export async function POST(
@@ -60,7 +62,7 @@ export async function POST(
   try {
     // Parse request body
     const body: ChatRequestBody = await request.json();
-    const { messages, sessionId, subject, childId, hiatenTopic, huiswerkMode } = body;
+    const { messages, sessionId, subject, childId, hiatenTopic, huiswerkMode, noHistory } = body;
 
     // Basic validation
     if (!messages || messages.length === 0) {
@@ -142,11 +144,36 @@ export async function POST(
       }
     }
 
-    // Load conversation context (last 15 messages)
-    const contextMessages = await getRecentMessages(
-      currentSession.id,
-      MAX_CONTEXT_MESSAGES
-    );
+    // Load conversation context.
+    // - noHistory (locale-switch trigger): 0 messages — completely clean slate for the trigger response
+    // - locale changed since last request: 4 messages — enough to know what exercise was active, not enough to lock language
+    // - same locale: full context (MAX_CONTEXT_MESSAGES)
+    const lastLocale = currentSession.metadata.last_locale;
+    const localeChanged = !!lastLocale && lastLocale !== tutorLanguage;
+    const historyLimit = noHistory ? 0 : localeChanged ? 4 : MAX_CONTEXT_MESSAGES;
+    const contextMessages = historyLimit === 0 ? [] : await getRecentMessages(currentSession.id, historyLimit);
+
+    // When locale changed and we have context in the old language, inject a "prime" exchange
+    // right before the new user message. A synthetic [user → assistant] pair in the TARGET language
+    // strongly biases Claude toward that language without losing lesson content.
+    const localePrime: Array<{ role: 'user'; content: string } | { role: 'assistant'; content: string }> = [];
+    if (localeChanged && contextMessages.length > 0) {
+      const primes: Record<string, { u: string; a: string }> = {
+        nl:  { u: '[TAALWISSEL → NEDERLANDS] Ga nu over op uitsluitend NEDERLANDS. Ga door met dezelfde oefening.',
+               a: 'Begrepen! Ik ga door in het Nederlands.' },
+        pap: { u: '[CAMBIO → PAPIAMENTO] Cambia awor pa PAPIAMENTO. Sigui ku e mes ehersisio.',
+               a: 'Tá bon! Awor mi ta sigui den Papiamento.' },
+        es:  { u: '[CAMBIO → ESPAÑOL] Cambia ahora a ESPAÑOL. Continúa con el mismo ejercicio.',
+               a: '¡Entendido! Continúo en español.' },
+        en:  { u: '[SWITCH → ENGLISH] Now switch to ENGLISH only. Continue the same exercise.',
+               a: 'Got it! Continuing in English.' },
+      };
+      const p = primes[tutorLanguage];
+      if (p) {
+        localePrime.push({ role: 'user' as const, content: p.u });
+        localePrime.push({ role: 'assistant' as const, content: p.a });
+      }
+    }
 
     // Get the latest user message from request
     const latestUserMessage = messages[messages.length - 1];
@@ -212,7 +239,8 @@ export async function POST(
       );
     } else {
       // Get session history for continuity across sessions (tutoring only)
-      const sessionHistory = await getSessionHistory(childId, subject);
+      // Exclude current session so we get the PREVIOUS session's context
+      const sessionHistory = await getSessionHistory(childId, subject, currentSession.id);
 
       // Fetch leerstof for zaakvakken (subject-specific uploaded lesson material)
       let leerstofContext: string | null = null;
@@ -256,6 +284,7 @@ export async function POST(
         role: msg.role as 'user' | 'assistant',
         content: msg.content,
       })),
+      ...localePrime,
       {
         role: 'user' as const,
         content: buildMessageContent(latestUserMessage.content, latestUserMessage.imageUrl),
@@ -292,6 +321,7 @@ export async function POST(
           const metadataUpdates: Partial<SessionMetadata> = {
             total_messages: (currentSession.metadata.total_messages || 0) + 2,
             tokens_used: (currentSession.metadata.tokens_used || 0) + totalTokens,
+            last_locale: tutorLanguage,
           };
 
           // Record answer if we detected a definitive correct/incorrect signal

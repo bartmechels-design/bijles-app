@@ -117,6 +117,16 @@ Stappen:
 - Hook interface is drop-in — geen aanpassingen nodig in ChatInterface of andere consumers
 - Let op: zonder geldig OPENAI_API_KEY geeft de route HTTP 500 bij het aanroepen
 
+## Self-Check: PASSED
+
+- FOUND: aruba-leren/src/app/[locale]/api/tutor/tts/route.ts
+- FOUND: aruba-leren/src/hooks/useSpeech.ts
+- FOUND: .planning/phases/10-neural-tts-uitspraak/10-01-SUMMARY.md
+- FOUND commit ab85d1d (openai install)
+- FOUND commit c0000ad (TTS route)
+- FOUND commit 330cb2b (useSpeech update)
+- FOUND commit df8a766 (docs/metadata)
+
 ---
 *Phase: 10-neural-tts-uitspraak*
 *Completed: 2026-02-27*

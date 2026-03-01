@@ -9,7 +9,11 @@ interface ChatMessageProps {
   content: string;
   isStreaming?: boolean;
   locale?: string;
+  childAge?: number;
   imageUrl?: string;
+  /** True when the parent (ChatInterface) has finished speaking the explanation
+   *  and it is now safe to auto-play the first [SPREEK] dictation block. */
+  allowDictationAutoPlay?: boolean;
   onBoardClick?: (content: string) => void;
   onZinsontledingClick?: (content: string) => void;
 }
@@ -34,6 +38,7 @@ function cleanForSpeech(text: string): string {
     .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')      // [links](url)
     .replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FE0F}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{200D}\u{20E3}\u{E0020}-\u{E007F}]/gu, '') // strip emojis
     .replace(/[*_~`^#>|]/g, '')                    // remaining special chars
+    .replace(/["„"«»]/g, '')                       // strip quotation marks (OpenAI TTS handles them oddly)
     .replace(/\n{2,}/g, '. ')                      // double newlines → sentence break
     .replace(/\s{2,}/g, ' ')                       // collapse whitespace
     .trim();
@@ -60,7 +65,9 @@ interface SpokenSegment { type: 'spoken'; content: string; index: number }
 interface BoardSegment { type: 'board'; content: string; index: number }
 interface OpdrachtSegment { type: 'opdracht'; content: string; index: number }
 interface ZinsontledingSegment { type: 'zinsontleding'; content: string; index: number }
-type Segment = TextSegment | SpokenSegment | BoardSegment | OpdrachtSegment | ZinsontledingSegment;
+/** [NL] blocks: Dutch word references — shown as text, never spoken by the instructietaal TTS */
+interface NlWordSegment { type: 'nl-word'; content: string }
+type Segment = TextSegment | SpokenSegment | BoardSegment | OpdrachtSegment | ZinsontledingSegment | NlWordSegment;
 
 /** Check if content contains [BORD] blocks */
 export function hasBordBlocks(content: string): boolean {
@@ -138,7 +145,7 @@ function renderMathLine(text: string, className?: string): React.ReactElement {
 
 function parseSegments(content: string): Segment[] {
   // Combine all tag types into a unified parsing pass
-  const TAG_REGEX = /\[(SPREEK|BORD|OPDRACHT|ZINSONTLEDING)\]([\s\S]*?)\[\/\1\]/g;
+  const TAG_REGEX = /\[(SPREEK|BORD|OPDRACHT|ZINSONTLEDING|NL)\]([\s\S]*?)\[\/\1\]/g;
   const segments: Segment[] = [];
   let lastIndex = 0;
   let spokenIndex = 0;
@@ -162,6 +169,8 @@ function parseSegments(content: string): Segment[] {
       segments.push({ type: 'opdracht', content: match[2].trim(), index: boardIndex++ });
     } else if (match[1] === 'ZINSONTLEDING') {
       segments.push({ type: 'zinsontleding', content: match[2].trim(), index: boardIndex++ });
+    } else if (match[1] === 'NL') {
+      segments.push({ type: 'nl-word', content: match[2].trim() });
     }
 
     lastIndex = match.index + match[0].length;
@@ -250,52 +259,115 @@ function hasSpeekBlocks(content: string): boolean {
   return SPREEK_REGEX.test(content);
 }
 
+/** Speed for dictation based on child age — younger = slower */
+function dictationSpeed(childAge?: number): number {
+  if (!childAge || childAge <= 7) return 0.65;  // klas 1-2: very slow
+  if (childAge <= 9) return 0.70;                // klas 3-4: slow
+  return 0.75;                                   // klas 5-6: moderate
+}
+
 /**
  * Inline play button for a spoken segment (dictation / read-aloud).
- * Shows a speaker icon; plays the hidden text via TTS on click.
- * NOTE: [SPREEK] content is always school content (Dutch), so we always use nl-NL for TTS.
+ * Plays the word TWICE with a 2-second pause in between — like a real dictation teacher.
+ * Uses the browser's built-in SpeechSynthesis API with nl-NL voice for correct Dutch pronunciation.
+ * OpenAI TTS has an English accent on Dutch words — browser voices are native Dutch.
  */
-function SpokenBlock({ text, autoPlay }: { text: string; locale?: string; autoPlay?: boolean }) {
-  const { speak, stop, isSpeaking } = useTextToSpeech();
+function SpokenBlock({ text, autoPlay, childAge }: { text: string; locale?: string; autoPlay?: boolean; childAge?: number }) {
   const [played, setPlayed] = useState(false);
+  const [isSequencePlaying, setIsSequencePlaying] = useState(false);
   const autoPlayedRef = useRef(false);
+  const pauseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const stoppedRef = useRef(false);
+
+  const clean = cleanForSpeech(text);
+  const speed = dictationSpeed(childAge);
+
+  /** Speak once using browser SpeechSynthesis — native Dutch pronunciation, instant, no API cost */
+  const speakOnce = useCallback((): Promise<void> => {
+    return new Promise((resolve) => {
+      if (stoppedRef.current || typeof window === 'undefined') { resolve(); return; }
+
+      const utter = new SpeechSynthesisUtterance(clean);
+      utter.lang = 'nl-NL';
+      utter.rate = speed;  // 0.65–0.75 depending on child age
+
+      // Pick the best Dutch voice available on this device
+      const voices = window.speechSynthesis.getVoices();
+      const nlVoice = voices.find(v => v.lang === 'nl-NL') ?? voices.find(v => v.lang.startsWith('nl'));
+      if (nlVoice) utter.voice = nlVoice;
+
+      utter.onend = () => resolve();
+      utter.onerror = () => resolve();
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utter);
+    });
+  }, [clean, speed]);
+
+  const playSequence = useCallback(async () => {
+    stoppedRef.current = false;
+    setIsSequencePlaying(true);
+    setPlayed(true);
+
+    await speakOnce();
+    if (stoppedRef.current) { setIsSequencePlaying(false); return; }
+
+    // Wait 2 seconds, then repeat — same as a real dictation teacher
+    pauseTimerRef.current = setTimeout(async () => {
+      if (stoppedRef.current) { setIsSequencePlaying(false); return; }
+      await speakOnce();
+      setIsSequencePlaying(false);
+    }, 2000);
+  }, [speakOnce]);
+
+  const stopSequence = useCallback(() => {
+    stoppedRef.current = true;
+    if (pauseTimerRef.current) {
+      clearTimeout(pauseTimerRef.current);
+      pauseTimerRef.current = null;
+    }
+    if (typeof window !== 'undefined') window.speechSynthesis.cancel();
+    setIsSequencePlaying(false);
+  }, []);
 
   const handlePlay = useCallback(() => {
-    if (isSpeaking) {
-      stop();
+    if (isSequencePlaying) {
+      stopSequence();
     } else {
-      // Always Dutch for school content (dictation words, reading texts)
-      speak(cleanForSpeech(text), 'nl-NL');
-      setPlayed(true);
+      playSequence();
     }
-  }, [isSpeaking, speak, stop, text]);
+  }, [isSequencePlaying, stopSequence, playSequence]);
 
   // Auto-play on mount for dictation (only once)
   useEffect(() => {
     if (autoPlay && !autoPlayedRef.current) {
       autoPlayedRef.current = true;
-      // Small delay so the message renders first
-      const timer = setTimeout(() => {
-        speak(cleanForSpeech(text), 'nl-NL');
-        setPlayed(true);
-      }, 500);
-      return () => clearTimeout(timer);
+      playSequence();
     }
-  }, [autoPlay, speak, text]);
+  }, [autoPlay, playSequence]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      stoppedRef.current = true;
+      if (pauseTimerRef.current) clearTimeout(pauseTimerRef.current);
+    };
+  }, []);
+
+  const showStopping = isSequencePlaying;
 
   return (
     <span className="inline-flex items-center gap-1.5 my-1">
       <button
         onClick={handlePlay}
         className={`inline-flex items-center gap-1.5 font-medium px-3 py-1.5 rounded-full transition-all ${
-          isSpeaking
+          showStopping
             ? 'bg-sky-500 text-white animate-pulse'
             : played
               ? 'bg-sky-200 text-sky-700 hover:bg-sky-300'
               : 'bg-amber-400 text-white hover:bg-amber-500 shadow-md'
         }`}
       >
-        {isSpeaking ? (
+        {showStopping ? (
           <>
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
               <rect x="6" y="6" width="12" height="12" rx="2" />
@@ -315,7 +387,7 @@ function SpokenBlock({ text, autoPlay }: { text: string; locale?: string; autoPl
   );
 }
 
-export default function ChatMessage({ role, content, isStreaming = false, locale, imageUrl, onBoardClick, onZinsontledingClick }: ChatMessageProps) {
+export default function ChatMessage({ role, content, isStreaming = false, locale, childAge, imageUrl, allowDictationAutoPlay, onBoardClick, onZinsontledingClick }: ChatMessageProps) {
   const [shouldAnimate, setShouldAnimate] = useState(true);
   const { speak, stop, isSpeaking } = useTextToSpeech();
 
@@ -339,7 +411,8 @@ export default function ChatMessage({ role, content, isStreaming = false, locale
     hasSpeekBlocks(content) ||
     hasBordBlocks(content) ||
     hasOpdrachtBlocks(content) ||
-    hasZinsontledingBlocks(content)
+    hasZinsontledingBlocks(content) ||
+    /\[NL\]/.test(content)
   );
 
   if (role === 'assistant') {
@@ -362,7 +435,8 @@ export default function ChatMessage({ role, content, isStreaming = false, locale
                     key={`spoken-${segment.index}`}
                     text={segment.content}
                     locale={locale}
-                    autoPlay={segment.index === 0}
+                    childAge={childAge}
+                    autoPlay={segment.index === 0 && !!allowDictationAutoPlay}
                   />
                 ) : segment.type === 'board' ? (
                   <button
@@ -408,6 +482,9 @@ export default function ChatMessage({ role, content, isStreaming = false, locale
                       Zinsontleding bekijken
                     </span>
                   </button>
+                ) : segment.type === 'nl-word' ? (
+                  // [NL] block: Dutch word reference — visible as text, skipped by instructietaal TTS
+                  <strong key={`nl-${i}`} className="font-semibold">{segment.content}</strong>
                 ) : null
               )}
             </div>

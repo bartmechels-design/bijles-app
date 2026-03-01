@@ -107,7 +107,7 @@ export default function SubjectSelector({ childId, childName, locale, progressMa
             {/* No assessment badge — content upload unlocks assessment in Phase 6 */}
             <div className="mt-3 mb-1">
               <span className="inline-flex items-center gap-1.5 bg-white/20 text-white text-xs font-semibold px-3 py-1 rounded-full">
-                📄 Tekstbladen uploaden voor toets
+                📄 {t('uploadTextsForAssessment')}
               </span>
             </div>
             <div className="flex items-center justify-center gap-2 font-semibold mt-4">
@@ -133,7 +133,7 @@ export default function SubjectSelector({ childId, childName, locale, progressMa
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {kernSubjects.map((subject) =>
-            renderCard(subject, 'from-sky-400', 'to-sky-600', 'hover:border-sky-300', 'Kernvak')
+            renderCard(subject, 'from-sky-400', 'to-sky-600', 'hover:border-sky-300', t('categoryKern'))
           )}
         </div>
       </div>
@@ -147,7 +147,7 @@ export default function SubjectSelector({ childId, childName, locale, progressMa
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {zaakSubjects.map((subject) =>
-            renderZaakCard(subject, 'from-amber-400', 'to-amber-600', 'hover:border-amber-300', 'Zaakvak')
+            renderZaakCard(subject, 'from-amber-400', 'to-amber-600', 'hover:border-amber-300', t('categoryZaak'))
           )}
         </div>
       </div>

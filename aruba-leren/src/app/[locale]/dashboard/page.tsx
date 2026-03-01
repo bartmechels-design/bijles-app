@@ -81,10 +81,11 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
   function relTime(iso: string | null): string {
     if (!iso) return '—'
     const diff = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000)
-    if (diff === 0) return 'Vandaag'
-    if (diff === 1) return 'Gisteren'
-    if (diff < 7) return `${diff}d geleden`
-    return new Date(iso).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' })
+    if (diff === 0) return t('dashboard.today')
+    if (diff === 1) return t('dashboard.yesterday')
+    if (diff < 7) return t('dashboard.daysAgo', { count: diff })
+    const dateLocale = locale === 'es' ? 'es-ES' : locale === 'en' ? 'en-US' : 'nl-NL'
+    return new Date(iso).toLocaleDateString(dateLocale, { day: 'numeric', month: 'short' })
   }
 
   return (
@@ -104,10 +105,10 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
               </Link>
             )}
             <Link href={`/${locale}/subscription/status`} className="bg-white/20 hover:bg-white/30 text-white text-sm font-semibold px-3 py-2 rounded-xl transition-colors">
-              💳 Abonnement
+              💳 {t('parent.subscription')}
             </Link>
             <Link href={`/${locale}/vakanties`} className="bg-white/20 hover:bg-white/30 text-white text-sm font-semibold px-3 py-2 rounded-xl transition-colors">
-              📅 Vakanties
+              📅 {t('dashboard.vacations')}
             </Link>
             <form action={signOut}>
               <button type="submit" className="bg-white/10 hover:bg-white/20 text-white text-sm font-semibold px-3 py-2 rounded-xl transition-colors">
@@ -129,12 +130,12 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
                   <div className="flex items-center gap-4">
                     <span className="text-5xl">🐵</span>
                     <div className="text-white">
-                      <p className="text-xl font-bold">Bijles met Koko</p>
-                      <p className="text-amber-100 text-sm">Start een les met onze AI-leraar</p>
+                      <p className="text-xl font-bold">{t('dashboard.tutorCta')}</p>
+                      <p className="text-amber-100 text-sm">{t('dashboard.tutorCtaSub')}</p>
                     </div>
                   </div>
                   <div className="bg-white text-sky-600 font-bold px-5 py-2 rounded-xl group-hover:bg-sky-50 transition-colors shadow text-sm">
-                    Start nu →
+                    {t('dashboard.tutorCtaBtn')}
                   </div>
                 </div>
               </Link>
@@ -144,9 +145,9 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
             {children && children.length > 0 && (
               <section>
                 <div className="flex items-center justify-between mb-3">
-                  <h2 className="text-lg font-bold text-gray-800">Voortgang per kind</h2>
+                  <h2 className="text-lg font-bold text-gray-800">{t('dashboard.progressPerChild')}</h2>
                   <Link href={`/${locale}/dashboard/kinderen`} className="text-sm text-sky-600 hover:underline font-semibold">
-                    Beheren →
+                    {t('dashboard.manage')}
                   </Link>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -171,11 +172,11 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
                             </div>
                             <div>
                               <p className="font-bold text-gray-900">{child.first_name}</p>
-                              <p className="text-sm text-gray-400">Klas {child.grade}</p>
+                              <p className="text-sm text-gray-400">{t('child.grade')} {child.grade}</p>
                             </div>
                           </div>
                           {isStuck && (
-                            <span className="text-xs bg-orange-100 text-orange-700 font-semibold px-2 py-1 rounded-full">⚠ Hulp nodig</span>
+                            <span className="text-xs bg-orange-100 text-orange-700 font-semibold px-2 py-1 rounded-full">⚠ {t('dashboard.helpNeeded')}</span>
                           )}
                         </div>
 
@@ -183,28 +184,28 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
                         <div className="grid grid-cols-3 gap-2 mb-3">
                           <div className="bg-sky-50 rounded-xl py-2 text-center">
                             <p className="text-lg font-bold text-sky-600">{assessed}/6</p>
-                            <p className="text-xs text-gray-500">Getoetst</p>
+                            <p className="text-xs text-gray-500">{t('dashboard.assessed')}</p>
                           </div>
                           <div className="bg-amber-50 rounded-xl py-2 text-center">
                             <p className="text-lg font-bold text-amber-600">{totalSessions}</p>
-                            <p className="text-xs text-gray-500">Lessen</p>
+                            <p className="text-xs text-gray-500">{t('dashboard.lessons')}</p>
                           </div>
                           <div className="bg-gray-50 rounded-xl py-2 text-center">
                             <p className="text-sm font-bold text-gray-600">{relTime(lastSession)}</p>
-                            <p className="text-xs text-gray-500">Laatste les</p>
+                            <p className="text-xs text-gray-500">{t('dashboard.lastLesson')}</p>
                           </div>
                         </div>
 
                         {/* Actie-knoppen */}
                         <div className="flex gap-2">
                           <Link href={`/${locale}/dashboard/kind/${child.id}`} className="flex-1 text-center text-sm font-semibold bg-sky-50 hover:bg-sky-100 text-sky-700 py-2 rounded-xl transition-colors">
-                            Voortgang
+                            {t('dashboard.viewProgress')}
                           </Link>
                           <Link href={`/${locale}/dashboard/kind/${child.id}/rapport`} className="flex-1 text-center text-sm font-semibold bg-violet-50 hover:bg-violet-100 text-violet-700 py-2 rounded-xl transition-colors">
-                            Rapport
+                            {t('dashboard.viewReport')}
                           </Link>
                           <Link href={`/${locale}/tutor?child=${child.id}`} className="flex-1 text-center text-sm font-semibold bg-amber-50 hover:bg-amber-100 text-amber-700 py-2 rounded-xl transition-colors">
-                            Bijles
+                            {t('dashboard.startTutoring')}
                           </Link>
                         </div>
                       </div>
@@ -217,28 +218,28 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
             {/* Geen kinderen */}
             {(!children || children.length === 0) && (
               <Link href={`/${locale}/dashboard/kinderen`} className="flex items-center justify-center gap-2 border-2 border-dashed border-sky-300 text-sky-600 hover:border-sky-500 hover:bg-sky-50 rounded-2xl py-10 text-base font-semibold transition-colors">
-                + Eerste kind toevoegen
+                {t('dashboard.addFirstChild')}
               </Link>
             )}
 
             {/* Kind toevoegen knop */}
             {children && children.length > 0 && (
               <Link href={`/${locale}/dashboard/kinderen`} className="flex items-center justify-center gap-2 border-2 border-dashed border-sky-200 text-sky-500 hover:border-sky-400 hover:bg-sky-50 rounded-xl py-3 text-sm font-semibold transition-colors">
-                + Kind toevoegen of beheren
+                {t('dashboard.addOrManageChildren')}
               </Link>
             )}
           </>
         ) : (
           <div className="bg-white rounded-2xl shadow-xl p-8 border-t-4 border-amber-500 max-w-md mx-auto mt-4">
             <div className="text-center text-5xl mb-4">🔒</div>
-            <h2 className="text-xl font-bold text-gray-900 text-center mb-3">Actief abonnement vereist</h2>
-            <p className="text-gray-500 text-sm text-center mb-6">Je hebt een actief abonnement nodig om ArubaLeren te gebruiken.</p>
+            <h2 className="text-xl font-bold text-gray-900 text-center mb-3">{t('dashboard.subscriptionRequired')}</h2>
+            <p className="text-gray-500 text-sm text-center mb-6">{t('dashboard.subscriptionRequiredDesc')}</p>
             <div className="flex flex-col gap-3">
               <Link href={`/${locale}/subscription/request`} className="bg-amber-500 text-white font-bold py-3 rounded-xl hover:bg-amber-600 text-center text-sm">
-                Betalingsverzoek indienen
+                {t('dashboard.submitPaymentRequest')}
               </Link>
               <Link href={`/${locale}/subscription/status`} className="bg-sky-100 text-sky-700 font-bold py-3 rounded-xl hover:bg-sky-200 text-center text-sm">
-                Abonnementsstatus bekijken
+                {t('dashboard.viewSubscriptionStatus')}
               </Link>
             </div>
           </div>

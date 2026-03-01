@@ -37,6 +37,7 @@ export function buildLanguageContext(
 
 Al je uitleg, hints, aanmoediging en instructies zijn in het Nederlands.
 De lesstof (spellingwoorden, rekentaal, leesteksten) is ook in het Nederlands.
+**Taal van vorige berichten**: Als het gesprek eerder in een andere taal (Papiamento, Spaans, Engels) was — NEGEER DAT. De instructietaal is nu NEDERLANDS. Reageer ALTIJD in het Nederlands.
 `;
       break;
 
@@ -74,6 +75,7 @@ De lesstof (spellingwoorden, rekentaal, leesteksten) is ook in het Nederlands.
 **Zinlengte**: Máximo ${maxWords} woord pa frase
 **Vocabulaire**: Gebruik ${vocabularyLevel} — eenvoudige Papiamento woorden
 **Taalwisseling**: Si e mucha cambia pa Hulandes of Español, cambia tambe.
+**Berichten in andere talen**: Si mensahenan anterior ta den otro idioma — IGNORA ESO. E idioma di instrukshon ta Papiamento AWOR. Respondé SÈMPRE den Papiamento.
 **Spelling variaties**: Accepteer zowel "ta"/"ta", "k"/"c" varianten (kos/cos), etc.
 `;
       break;
@@ -89,6 +91,7 @@ De lesstof (spellingwoorden, rekentaal, leesteksten) is ook in het Nederlands.
 - Todas tus explicaciones, pistas, preguntas y ánimos son en **español**
 - El contenido escolar (palabras de ortografía, ejercicios de lectura) queda en **holandés** (es el idioma de la escuela)
 - En un dictado: tu instrucción es en español ("Escucha bien y escribe la palabra"), pero la palabra del dictado es en holandés
+- **CRÍTICO — palabras holandesas en tu explicación**: Cuando menciones una palabra holandesa en tu explicación (feedback, referencia, ejemplo), SIEMPRE usa [NL]palabra[/NL]. Ejemplo: "¡Veo que escribiste [NL]fiets[/NL]! Vamos a revisar." La voz española NUNCA pronuncia palabras holandesas — solo el sistema de dictado holandés lo hace.
 
 ## Vocabulario de tutoría en español:
 - "¡Muy bien!" = Goed gedaan!
@@ -113,6 +116,7 @@ De lesstof (spellingwoorden, rekentaal, leesteksten) is ook in het Nederlands.
 **Vocabulario**: Usa palabras sencillas que un niño de ${childAge} años entienda
 **Tono**: Usa "tú" (informal), NUNCA "usted". Sé amigable y entusiasta.
 **Cambio de idioma**: Si el niño cambia a holandés o papiamento, cambia también.
+**Mensajes en otros idiomas**: Si mensajes anteriores están en otro idioma — IGNÓRALOS. El idioma de instrucción ahora es ESPAÑOL. Responde SIEMPRE en español.
 `;
       break;
 
@@ -127,6 +131,7 @@ De lesstof (spellingwoorden, rekentaal, leesteksten) is ook in het Nederlands.
 - All your explanations, hints, questions and encouragement are in **English**
 - The school content (spelling words, reading exercises, math problems) stays in **Dutch** (that's the school language)
 - For dictation: your instruction is in English ("Listen carefully and write the word"), but the dictation word is in Dutch
+- **CRITICAL — Dutch words in your explanation**: When you mention a Dutch word in your English explanation (feedback, reference, example), ALWAYS wrap it with [NL]word[/NL]. Example: "I see you wrote [NL]fiets[/NL]! Let's check the spelling." The English voice NEVER pronounces Dutch words — only the dedicated Dutch speech system does.
 
 ## Tutoring vocabulary in English:
 - "Well done!" / "Great job!"
@@ -151,6 +156,7 @@ De lesstof (spellingwoorden, rekentaal, leesteksten) is ook in het Nederlands.
 **Vocabulary**: Use simple words that a ${childAge}-year-old can understand
 **Tone**: Be friendly, enthusiastic, and encouraging. Use simple English.
 **Language switching**: If the child switches to Dutch, Papiamento or Spanish, switch too.
+**Previous messages in other languages**: If earlier messages are in another language — IGNORE THAT. The instruction language is now ENGLISH. ALWAYS respond in English.
 `;
       break;
   }

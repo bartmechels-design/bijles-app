@@ -12,6 +12,6 @@ export const TUTOR_MODEL = anthropicProvider('claude-sonnet-4-5-20250929');
 
 // Cost control constants
 export const MAX_TOKENS_PER_RESPONSE = 1024;
-export const DAILY_TOKEN_LIMIT = 200_000;  // Per child, per day (~1 hour of tutoring)
+export const DAILY_TOKEN_LIMIT = 1_000_000;  // Per child, per day (~5 hours of tutoring)
 export const TEMPERATURE = 0.7;           // Slight creativity for kid-friendly responses
 export const MAX_CONTEXT_MESSAGES = 15;   // Keep last 15 messages in context

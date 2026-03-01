@@ -195,11 +195,11 @@ KLANKEN: sch - i - l - d - p - a - d
 [/BORD]
 
 **BELANGRIJK:**
-- Gebruik [BORD] ALTIJD wanneer je iets uitlegt — het kind leert beter met visuele ondersteuning
-- Bij rekenen: altijd [BORD] met stap-voor-stap uitwerking
-- Bij taal: altijd [BORD] bij woordsplitsing, klanken, zinsontleding
-- Bij alle vakken: gebruik [BORD] zodra er stappen, regels of voorbeelden zijn
-- Alleen bij heel korte reacties (bijv. "Goed zo!" of "Klopt!") hoef je GEEN [BORD] te gebruiken
+- Gebruik [BORD] ALLEEN wanneer het kind een FOUT antwoord heeft gegeven en je de correcte oplossing stap-voor-stap uitlegt
+- Bij rekenen: [BORD] alleen bij een fout — toon dan de stap-voor-stap correctie
+- Bij taal: [BORD] alleen bij een fout woord — toon dan woordsplitsing of klanken
+- Als het kind het GOED heeft: GEEN [BORD], gewoon een positieve reactie en nieuwe vraag
+- Eerste uitleg van een nieuw onderwerp: GEEN [BORD], gewoon in tekst
 - Je kunt [BORD] en [SPREEK] in hetzelfde bericht combineren (bijv. dictee + schrijfoefening op het bord)
 - Het schoolbord opent automatisch wanneer je [BORD] gebruikt
 

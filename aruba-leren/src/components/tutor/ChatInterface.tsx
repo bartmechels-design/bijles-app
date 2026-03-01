@@ -87,6 +87,14 @@ export default function ChatInterface({
   const t = useTranslations('tutor');
   const router = useRouter();
   const isAssessmentMode = sessionType === 'assessment';
+  // Instructietaal: can be switched mid-session without page reload.
+  // Persisted in localStorage so it survives page refresh (URL stays at old locale).
+  const [tutoringLocale, setTutoringLocale] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem(`tutorLocale_${childId}`) ?? locale;
+    }
+    return locale;
+  });
   const [currentSessionId, setCurrentSessionId] = useState(existingSessionId);
   const [messages, setMessages] = useState<Message[]>([]);
   const [assessmentDone, setAssessmentDone] = useState(false);
@@ -104,14 +112,28 @@ export default function ChatInterface({
   const [showZinsontleding, setShowZinsontleding] = useState(false);
   const [zinsontledingData, setZinsontledingData] = useState<ZinsontledingData | null>(null);
   const [showScratchpad, setShowScratchpad] = useState(false);
+  // Tracks which assistant message's dictation block may auto-play.
+  // Set AFTER the explanation TTS finishes, so dictation plays sequentially.
+  const [dictationReadyId, setDictationReadyId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  // Tracks a sentence pre-fetched during streaming so autoSpeak can play it instantly
+  const streamingPrefetchRef = useRef<string | null>(null);
+  // Fresh message/loading refs for locale-switch effect (avoids stale closure)
+  const messagesRef = useRef(messages);
+  const isLoadingRef = useRef(false);
+  // AbortController for in-flight locale-switch requests
+  const localeSwitchAbortRef = useRef<AbortController | null>(null);
+  // Previous locale — used to detect mid-session locale changes (skip initial mount)
+  const prevLocaleRef = useRef(locale);
+  // After a locale switch, the next N child messages also skip DB history (avoids language bleed-through)
+  const noHistoryCountRef = useRef(0);
 
-  // Speech hooks
+  // Speech hooks — use tutoringLocale so they update when language is switched mid-session
   const { startListening, stopListening, isListening, transcript, isSupported: sttSupported } =
-    useSpeechToText(getSttLang(locale));
-  const { speak, stop: stopSpeaking, isSpeaking } = useTextToSpeech();
+    useSpeechToText(getSttLang(tutoringLocale));
+  const { speak, stop: stopSpeaking, prefetch: prefetchTts, isSpeaking } = useTextToSpeech();
 
   // Koko avatar state
   const { emotion, deriveEmotion, setEmotion } = useKokoState();
@@ -119,8 +141,21 @@ export default function ChatInterface({
   // Voice-first mode — disabled for begrijpend_lezen (reading comprehension requires reading, not listening)
   const { isVoiceFirst: isVoiceFirstRaw, setVoiceFirst } = useVoiceFirstMode();
   const isVoiceFirst = subject === 'begrijpend_lezen' ? false : isVoiceFirstRaw;
-  // Papiamento heeft geen OpenAI-stem — TTS is altijd uitgeschakeld
-  const isPapiamento = locale === 'pap';
+
+  // Keep refs in sync with latest state (for use in effects with limited deps)
+  useEffect(() => { messagesRef.current = messages; }, [messages]);
+  useEffect(() => { isLoadingRef.current = isLoading; }, [isLoading]);
+
+  // Persist chosen locale to localStorage (survives page refresh)
+  // Also sync top nav LanguageSwitcher on first mount if saved locale differs from URL locale
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem(`tutorLocale_${childId}`, tutoringLocale);
+    // Sync top nav on first mount when saved locale differs from URL locale
+    if (tutoringLocale !== locale) {
+      window.dispatchEvent(new CustomEvent('tutoringLocaleChange', { detail: tutoringLocale }));
+    }
+  }, [tutoringLocale]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Track last completed assistant message for auto-TTS
   const lastCompletedRef = useRef<string | null>(null);
@@ -233,19 +268,134 @@ export default function ChatInterface({
     }
   };
 
-  // Auto-TTS: speak completed assistant messages in voice-first mode
-  const autoSpeak = useCallback((text: string) => {
+  // Auto-TTS: speak completed assistant messages in voice-first mode.
+  //
+  // Flow:
+  //   1. Speak the explanation (non-[SPREEK] text) in the locale voice (instructietaal).
+  //   2. When explanation finishes → mark this message's dictation block as ready.
+  //   3. SpokenBlock sees allowDictationAutoPlay=true and plays the word in nl-NL.
+  //
+  // If the message has no explanation (only [SPREEK]), dictation plays immediately.
+  // If voice-first is off, nothing auto-plays (student uses the Luister button).
+  const autoSpeak = useCallback((messageId: string, text: string) => {
     if (!isVoiceFirst) return;
-    if (isPapiamento) return; // Geen OpenAI-stem voor Papiamento
-    if (hasSpeekBlocks(text)) return; // [SPREEK] blocks handle their own TTS
-    const cleaned = cleanForTts(text);
-    if (!cleaned) return;
 
-    speak(cleaned, getTtsLang(locale), {
-      onStart: () => setEmotion('speaking'),
-      onEnd: () => setEmotion('idle'),
-    });
-  }, [isVoiceFirst, isPapiamento, locale, speak, setEmotion]);
+    // Papiamento has no native TTS voice — show text only, dictation blocks still work
+    if (tutoringLocale === 'pap') {
+      if (hasSpeekBlocks(text)) setDictationReadyId(messageId);
+      return;
+    }
+
+    const hasSpreek = hasSpeekBlocks(text);
+    const cleaned = cleanForTts(text);
+
+    if (!cleaned) {
+      if (hasSpreek) setDictationReadyId(messageId);
+      return;
+    }
+
+    const lang = getTtsLang(tutoringLocale);
+
+    // Claim any prefetched sentence from streaming; clear so it's used only once.
+    const prefetchedText = streamingPrefetchRef.current;
+    streamingPrefetchRef.current = null;
+
+    const onDone = () => {
+      setEmotion('idle');
+      if (hasSpreek) setDictationReadyId(messageId);
+    };
+
+    // If we prefetched a prefix during streaming that matches the start of the
+    // full cleaned text, play it immediately (from cache / in-flight fetch), then
+    // fetch+play the remainder while the prefix is still playing — nearly zero gap.
+    if (prefetchedText && cleaned.startsWith(prefetchedText)) {
+      const remainder = cleaned.slice(prefetchedText.length).trim();
+      if (!remainder) {
+        // Prefetch covers the entire response → single speak from cache
+        speak(cleaned, lang, { onStart: () => setEmotion('speaking'), onEnd: onDone });
+      } else {
+        // Play prefix (from cache), then play remainder after it finishes
+        speak(prefetchedText, lang, {
+          onStart: () => setEmotion('speaking'),
+          onEnd: () => speak(remainder, lang, { onEnd: onDone }),
+        });
+      }
+    } else {
+      // No matching prefetch — normal OpenAI TTS (~1s wait for API)
+      speak(cleaned, lang, { onStart: () => setEmotion('speaking'), onEnd: onDone });
+    }
+  }, [isVoiceFirst, tutoringLocale, speak, setEmotion]);
+
+  // Auto-continuation: when resuming an active session (< 30 min idle), auto-trigger Koko
+  // to continue exactly where the lesson left off — without the child needing to type first.
+  // Not used for assessment sessions (they have their own start flow).
+  useEffect(() => {
+    if (!existingSessionId || isAssessmentMode) return;
+
+    const triggerText: Record<string, string> = {
+      nl: '[VERVOLG_SESSIE] Hoi! Ik ben er weer. Ga direct verder met de les waar we gebleven waren.',
+      pap: '[VERVOLG_SESSIE] Halo! Mi ta akí. Sigui direktamente ku e les unda nos a keda.',
+      es: '[VERVOLG_SESSIE] ¡Hola! Ya estoy aquí. Continúa directamente con la lección donde nos quedamos.',
+      en: '[VERVOLG_SESSIE] Hi! I\'m back. Continue directly with the lesson where we left off.',
+    };
+    const trigger = triggerText[tutoringLocale] ?? triggerText.nl;
+
+    const abortCtrl = new AbortController();
+    const resumeMsgId = `assistant-resume-${Date.now()}`;
+    setIsLoading(true);
+    setMessages([{ id: resumeMsgId, role: 'assistant', content: '' }]);
+
+    (async () => {
+      try {
+        const response = await fetch(`/${tutoringLocale}/api/tutor/chat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messages: [{ role: 'user', content: trigger }],
+            sessionId: existingSessionId,
+            subject,
+            childId,
+          }),
+          signal: abortCtrl.signal,
+        });
+
+        if (!response.ok || !response.body) {
+          setMessages([{ id: 'koko-greeting', role: 'assistant', content: t('kokoGreeting', { childName, subject: subjectLabel }) }]);
+          return;
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let responseText = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          responseText += decoder.decode(value, { stream: true });
+          setMessages(prev => prev.map(m =>
+            m.id === resumeMsgId ? { ...m, content: responseText } : m
+          ));
+        }
+
+        if (responseText) {
+          lastCompletedRef.current = responseText;
+          autoSpeak(resumeMsgId, responseText);
+        }
+      } catch (err) {
+        if (err instanceof Error && err.name === 'AbortError') {
+          // Strict-mode double-fire: clean up and let the second run handle it
+          setMessages([]);
+          return;
+        }
+        // Network error: fall back to generic greeting
+        setMessages([{ id: 'koko-greeting', role: 'assistant', content: t('kokoGreeting', { childName, subject: subjectLabel }) }]);
+      } finally {
+        setIsLoading(false);
+      }
+    })();
+
+    return () => abortCtrl.abort();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -255,6 +405,8 @@ export default function ChatInterface({
     // Stop listening/speaking if active
     if (isListening) stopListening();
     if (isSpeaking) stopSpeaking();
+    if (typeof window !== 'undefined') window.speechSynthesis.cancel();
+    streamingPrefetchRef.current = null; // clear any stale prefetch from previous message
 
     const messageText = input.trim() || (pendingImage ? 'Kun je mijn huiswerk bekijken?' : '');
 
@@ -276,8 +428,12 @@ export default function ChatInterface({
     // Create abort controller for this request
     abortControllerRef.current = new AbortController();
 
+    // After a locale switch, skip DB history for several messages so the old language can't bleed through
+    const sendNoHistory = noHistoryCountRef.current > 0;
+    if (sendNoHistory) noHistoryCountRef.current--;
+
     try {
-      const response = await fetch(`/${locale}/api/tutor/chat`, {
+      const response = await fetch(`/${tutoringLocale}/api/tutor/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -295,6 +451,7 @@ export default function ChatInterface({
             ? (HIAAT_TOPICS[subject].find(t => t.id === hiatenTopicId)?.prompt ?? null)
             : null,
           huiswerkMode: huiswerkMode || undefined,
+          noHistory: sendNoHistory || undefined,
         }),
         signal: abortControllerRef.current.signal,
       });
@@ -316,7 +473,6 @@ export default function ChatInterface({
       const decoder = new TextDecoder();
       let assistantMessage = '';
       const assistantMessageId = `assistant-${Date.now()}`;
-
       // Add empty assistant message that we'll update
       setMessages(prev => [...prev, {
         id: assistantMessageId,
@@ -338,6 +494,28 @@ export default function ChatInterface({
             ? { ...m, content: assistantMessage }
             : m
         ));
+
+        // Prefetch TTS for the first complete sentence during streaming.
+        // This starts the OpenAI API call early so audio is ready (or in-flight)
+        // when streaming ends, eliminating most of the perceived TTS latency.
+        if (isVoiceFirst && !streamingPrefetchRef.current) {
+          const cleanedSoFar = cleanForTts(assistantMessage);
+          if (cleanedSoFar.length >= 80) {
+            const lastSentEnd = Math.max(
+              cleanedSoFar.lastIndexOf('. '),
+              cleanedSoFar.lastIndexOf('! '),
+              cleanedSoFar.lastIndexOf('? '),
+            );
+            if (lastSentEnd >= 60) {
+              const prefText = cleanedSoFar.slice(0, lastSentEnd + 1).trim();
+              if (prefText) {
+                streamingPrefetchRef.current = prefText;
+                prefetchTts(prefText, getTtsLang(tutoringLocale), 0.88, false);
+              }
+            }
+          }
+        }
+
       }
 
       // Mark session as started (hides HiatenSelector)
@@ -358,7 +536,9 @@ export default function ChatInterface({
       if (assistantMessage && assistantMessage !== lastCompletedRef.current) {
         lastCompletedRef.current = assistantMessage;
         const speakText = isAssessmentMode ? stripAssessmentSignal(assistantMessage) : assistantMessage;
-        autoSpeak(speakText);
+
+        // Auto-TTS: browser SpeechSynthesis starts immediately (no API latency)
+        autoSpeak(assistantMessageId, speakText);
 
         // Auto-open whiteboard if [BORD] detected
         if (hasBordBlocks(assistantMessage)) {
@@ -405,6 +585,7 @@ export default function ChatInterface({
 
   const handleMicToggle = () => {
     if (isSpeaking) stopSpeaking();
+    if (typeof window !== 'undefined') window.speechSynthesis.cancel();
     if (isListening) {
       stopListening();
     } else {
@@ -412,11 +593,136 @@ export default function ChatInterface({
     }
   };
 
+  // Listen for language switches from the top nav LanguageSwitcher
+  useEffect(() => {
+    const handler = (e: CustomEvent) => setTutoringLocale(e.detail);
+    window.addEventListener('tutoringLocaleChange', handler as EventListener);
+    return () => window.removeEventListener('tutoringLocaleChange', handler as EventListener);
+  }, []);
+
+  // When instructietaal changes mid-session: stop TTS and have Koko immediately
+  // respond in the new language (without the user needing to send another message).
+  useEffect(() => {
+    const prevLocale = prevLocaleRef.current;
+    prevLocaleRef.current = tutoringLocale;
+
+    // Skip initial mount and no-op changes
+    if (prevLocale === tutoringLocale) return;
+
+    // Always stop current speech
+    stopSpeaking();
+    if (typeof window !== 'undefined') window.speechSynthesis.cancel();
+
+    // Next 6 child messages skip DB history so Papiamento context can't bleed through
+    noHistoryCountRef.current = 6;
+
+    // If no conversation yet or a request is in flight, skip the re-explain
+    if (messagesRef.current.length === 0 || isLoadingRef.current) return;
+
+    // Cancel any previous locale-switch request
+    if (localeSwitchAbortRef.current) localeSwitchAbortRef.current.abort();
+    const switchAbort = new AbortController();
+    localeSwitchAbortRef.current = switchAbort;
+
+    // Explicit trigger — must be strong enough to override previous conversation language.
+    // We send NO history at all (empty context) so previous language cannot bleed through.
+    const switchTrigger: Record<string, string> = {
+      nl:  'De taal is gewisseld naar NEDERLANDS. Begroet me kort in het NEDERLANDS en ga verder in het NEDERLANDS. Spreek ALLEEN Nederlands.',
+      pap: 'E idioma a cambia na PAPIAMENTO. Saluda mi brèf den PAPIAMENTO i sigui den PAPIAMENTO. Papia SOLAMENTE Papiamento.',
+      es:  'El idioma cambió a ESPAÑOL. Salúdame brevemente en ESPAÑOL y continúa en ESPAÑOL. Habla SOLO en español.',
+      en:  'The language changed to ENGLISH. Greet me briefly in ENGLISH and continue in ENGLISH only. Speak ONLY English.',
+    };
+    const triggerText = switchTrigger[tutoringLocale] ?? 'Continue.';
+    const newLocale = tutoringLocale;
+
+    // Include the last 2 messages (1 exchange) so Koko knows what the child was working on.
+    // 2 messages is not enough to establish a language pattern that overrides the system prompt.
+    const recentContext = messagesRef.current
+      .filter(m => m.role === 'user' || m.role === 'assistant')
+      .slice(-2)
+      .map(m => ({ role: m.role as 'user' | 'assistant', content: m.content }));
+    const apiMessages = [
+      ...recentContext,
+      { role: 'user' as const, content: triggerText },
+    ];
+
+    const newMsgId = `assistant-switch-${Date.now()}`;
+    setIsLoading(true);
+    streamingPrefetchRef.current = null;
+    setMessages(prev => [...prev, { id: newMsgId, role: 'assistant', content: '' }]);
+
+    (async () => {
+      try {
+        const response = await fetch(`/${newLocale}/api/tutor/chat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messages: apiMessages,
+            sessionId: currentSessionId,
+            subject,
+            childId,
+            hiatenTopic: null,
+            noHistory: true,
+          }),
+          signal: switchAbort.signal,
+        });
+
+        if (!response.ok || !response.body) return;
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let responseText = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          responseText += decoder.decode(value, { stream: true });
+          setMessages(prev => prev.map(m =>
+            m.id === newMsgId ? { ...m, content: responseText } : m
+          ));
+
+          // Prefetch TTS for first complete sentence (same as in handleSubmit)
+          if (isVoiceFirst && !streamingPrefetchRef.current) {
+            const cleanedSoFar = cleanForTts(responseText);
+            if (cleanedSoFar.length >= 80) {
+              const lastSentEnd = Math.max(
+                cleanedSoFar.lastIndexOf('. '),
+                cleanedSoFar.lastIndexOf('! '),
+                cleanedSoFar.lastIndexOf('? '),
+              );
+              if (lastSentEnd >= 60) {
+                const prefText = cleanedSoFar.slice(0, lastSentEnd + 1).trim();
+                if (prefText) {
+                  streamingPrefetchRef.current = prefText;
+                  prefetchTts(prefText, getTtsLang(newLocale), 0.88, false);
+                }
+              }
+            }
+          }
+        }
+
+        if (responseText && !switchAbort.signal.aborted) {
+          lastCompletedRef.current = responseText;
+          autoSpeak(newMsgId, responseText);
+        }
+      } catch {
+        // AbortError and network errors are silently ignored for locale switches
+      } finally {
+        if (!switchAbort.signal.aborted) {
+          setIsLoading(false);
+        }
+      }
+    })();
+  }, [tutoringLocale]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
+      }
+      if (localeSwitchAbortRef.current) {
+        localeSwitchAbortRef.current.abort();
       }
       stopSpeaking();
     };
@@ -440,6 +746,7 @@ export default function ChatInterface({
         <div className="flex-1">
           <SessionTimer childAge={childAge} />
         </div>
+
         {/* Whiteboard toggle */}
         <button
           type="button"
@@ -464,8 +771,37 @@ export default function ChatInterface({
           subjectLabel={subjectLabel}
         />
 
-        {/* Voice-first toggle — verborgen voor begrijpend_lezen en Papiamento */}
-        {subject !== 'begrijpend_lezen' && !isPapiamento && (
+        {/* Language switcher — child can switch instruction language mid-lesson */}
+        <div className="flex items-center gap-0.5" role="group" aria-label="Taal kiezen">
+          {(['nl', 'pap', 'es', 'en'] as const).map((loc) => {
+            const flags: Record<string, string> = { nl: '🇳🇱', pap: '🇦🇼', es: '🇪🇸', en: '🇬🇧' };
+            const labels: Record<string, string> = { nl: 'Nederlands', pap: 'Papiamento', es: 'Español', en: 'English' };
+            const isActive = tutoringLocale === loc;
+            return (
+              <button
+                key={loc}
+                type="button"
+                onClick={() => {
+                  setTutoringLocale(loc);
+                  window.dispatchEvent(new CustomEvent('tutoringLocaleChange', { detail: loc }));
+                }}
+                className={`w-8 h-8 rounded-full text-base flex items-center justify-center transition-all ${
+                  isActive
+                    ? 'ring-2 ring-sky-400 bg-sky-50 scale-110 shadow-sm'
+                    : 'opacity-50 hover:opacity-90 hover:scale-105'
+                }`}
+                title={labels[loc]}
+                aria-label={`Taal: ${labels[loc]}`}
+                aria-current={isActive ? 'true' : undefined}
+              >
+                {flags[loc]}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Voice-first toggle — verborgen voor begrijpend_lezen */}
+        {subject !== 'begrijpend_lezen' && (
           <button
             type="button"
             onClick={() => setVoiceFirst(!isVoiceFirstRaw)}
@@ -481,19 +817,6 @@ export default function ChatInterface({
             </svg>
             {isVoiceFirstRaw ? 'Aan' : 'Uit'}
           </button>
-        )}
-
-        {/* Papiamento: geen spraak beschikbaar — toon "Alleen lezen" badge */}
-        {isPapiamento && subject !== 'begrijpend_lezen' && (
-          <div
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-amber-50 text-amber-700 border border-amber-200"
-            title="Papiamento heeft geen spraakondersteuning"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-            </svg>
-            Alleen lezen
-          </div>
         )}
       </div>
 
@@ -542,9 +865,11 @@ export default function ChatInterface({
             key={message.id}
             role={message.role}
             content={message.content}
-            locale={locale}
+            locale={tutoringLocale}
+            childAge={childAge}
             imageUrl={message.imageUrl}
             isStreaming={isLoading && message.id === messages[messages.length - 1]?.id && message.role === 'assistant'}
+            allowDictationAutoPlay={message.id === dictationReadyId}
             onBoardClick={(boardText) => {
               setBoardContent(boardText);
               setShowWhiteboard(true);

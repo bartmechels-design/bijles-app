@@ -83,7 +83,7 @@ export default async function SubjectSelectionPage({ params }: SubjectSelectionP
                   {t('tutor.selectSubject', { childName: child.first_name })}
                 </h1>
                 <p className="text-sky-100 text-lg">
-                  Kies een vak om mee te beginnen
+                  {t('tutor.chooseSubjectSub')}
                 </p>
               </div>
             </div>

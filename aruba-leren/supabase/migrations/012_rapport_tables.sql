@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS report_tokens (
   created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_report_tokens_token ON report_tokens(token) WHERE expires_at > NOW();
+CREATE INDEX IF NOT EXISTS idx_report_tokens_token ON report_tokens(token);
 CREATE INDEX IF NOT EXISTS idx_report_tokens_child ON report_tokens(child_id);
 
 ALTER TABLE report_tokens ENABLE ROW LEVEL SECURITY;

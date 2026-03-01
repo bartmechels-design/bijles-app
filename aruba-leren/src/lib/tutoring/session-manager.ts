@@ -102,20 +102,25 @@ export async function getLastDifficultyLevel(
 /**
  * Get a summary of the most recent session for a child+subject.
  * Used to give Koko context about what was covered before.
+ *
+ * @param excludeSessionId - Current session ID to exclude, so we get the PREVIOUS session's context
  */
 export async function getSessionHistory(
   childId: string,
-  subject: Subject
+  subject: Subject,
+  excludeSessionId?: string
 ): Promise<{ lastLevel: number; lastMessages: string[]; totalSessions: number } | null> {
   const supabase = await createClient();
 
-  // Get most recent ended session
-  const { data: lastSession, error: sessionError } = await supabase
+  // Get most recent session (regardless of ended_at — sessions may never be explicitly ended)
+  // Exclude current session so we get PREVIOUS session context for continuity
+  const baseQuery = supabase
     .from('tutoring_sessions')
     .select('id, difficulty_level, metadata')
     .eq('child_id', childId)
-    .eq('subject', subject)
-    .not('ended_at', 'is', null)
+    .eq('subject', subject);
+  const filteredQuery = excludeSessionId ? baseQuery.neq('id', excludeSessionId) : baseQuery;
+  const { data: lastSession, error: sessionError } = await filteredQuery
     .order('last_activity_at', { ascending: false })
     .limit(1)
     .maybeSingle();

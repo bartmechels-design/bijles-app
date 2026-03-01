@@ -112,7 +112,8 @@ export function splitIntoSegments(text: string): TtsSegment[] {
 export function cleanForTts(text: string): string {
   const cleaned = text
     .replace(/\[BORD\][\s\S]*?\[\/BORD\]/g, '')           // strip board content
-    .replace(/\[SPREEK\][\s\S]*?\[\/SPREEK\]/g, '')        // strip spreek blocks
+    .replace(/\[SPREEK\][\s\S]*?\[\/SPREEK\]/g, '')        // strip spreek blocks (dictation)
+    .replace(/\[NL\][\s\S]*?\[\/NL\]/g, '')                // strip Dutch word refs (visible in chat, not spoken)
     .replace(/\[ZINSONTLEDING\][\s\S]*?\[\/ZINSONTLEDING\]/g, '') // strip zinsontleding JSON
     .replace(/\*{1,3}([^*]+)\*{1,3}/g, '$1')               // bold/italic
     .replace(/_{1,3}([^_]+)_{1,3}/g, '$1')                 // underline bold/italic

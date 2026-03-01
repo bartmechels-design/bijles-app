@@ -146,35 +146,35 @@ export default function Whiteboard({ boardContent, subject, drawingEnabled = fal
   const containerRef = useRef<HTMLDivElement>(null)
   const [isDrawing, setIsDrawing] = useState(false)
   const [drawColor, setDrawColor] = useState(COLORS[0])
-  const [visibleLines, setVisibleLines] = useState(0)
-  const animFrameRef = useRef<number>(0)
+  // Click-based step reveal: tracks how many ContentBlocks are currently visible
+  const [visibleBlocks, setVisibleBlocks] = useState(1)
   const lastPointRef = useRef<{ x: number; y: number } | null>(null)
 
   const parsedLines = boardContent ? parseLines(boardContent) : []
   const blocks = boardContent ? groupIntoBlocks(parsedLines) : []
   const isRuled = subject === 'taal' || subject === 'begrijpend_lezen'
 
-  // Step delay based on child age
-  const stepDelay = !childAge ? 1500 : childAge <= 7 ? 2000 : childAge <= 9 ? 1500 : 1200
-  const firstDelay = !childAge ? 800 : childAge <= 7 ? 1000 : 800
-
-  // Animate lines one by one
+  // Reset to first block whenever content changes (e.g. new Koko message)
   useEffect(() => {
-    if (!parsedLines.length) return
-    setVisibleLines(0)
+    setVisibleBlocks(1)
+  }, [boardContent])
 
-    let current = 0
-    const showNext = () => {
-      current++
-      setVisibleLines(current)
-      if (current < parsedLines.length) {
-        animFrameRef.current = window.setTimeout(showNext, stepDelay) as unknown as number
-      }
+  // Derive visible line count from visible block count
+  function getVisibleLines(blockCount: number): number {
+    let lineCount = 0
+    for (let i = 0; i < Math.min(blockCount, blocks.length); i++) {
+      const block = blocks[i]
+      lineCount += block.kind === 'sum-block' ? block.lines.length : 1
     }
+    return lineCount
+  }
 
-    animFrameRef.current = window.setTimeout(showNext, firstDelay) as unknown as number
-    return () => clearTimeout(animFrameRef.current)
-  }, [boardContent, stepDelay, firstDelay])
+  const visibleLines = getVisibleLines(visibleBlocks)
+  const allVisible = visibleBlocks >= blocks.length
+
+  const showNextBlock = () => {
+    if (!allVisible) setVisibleBlocks(v => v + 1)
+  }
 
   // Draw background (grid or ruled lines)
   const drawBackground = useCallback(() => {
@@ -311,6 +311,33 @@ export default function Whiteboard({ boardContent, subject, drawingEnabled = fal
 
   return (
     <div className="flex flex-col h-full">
+      {/* Step counter bar — shown when board content and not drawing */}
+      {boardContent && !drawingEnabled && (
+        <div className="flex items-center justify-between px-3 py-2 bg-indigo-50 border-b border-indigo-100">
+          <span className="text-xs font-medium text-indigo-500">
+            Stap {Math.min(visibleBlocks, blocks.length)} van {blocks.length}
+          </span>
+          {!allVisible ? (
+            <button
+              onClick={showNextBlock}
+              className="flex items-center gap-1.5 bg-indigo-500 hover:bg-indigo-600 active:scale-95 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-all shadow-sm"
+            >
+              Volgende stap
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </button>
+          ) : (
+            <span className="text-xs font-semibold text-green-600 flex items-center gap-1">
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+              </svg>
+              Klaar!
+            </span>
+          )}
+        </div>
+      )}
+
       {/* Toolbar (only when drawing enabled) */}
       {drawingEnabled && (
         <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 border-b border-gray-200">

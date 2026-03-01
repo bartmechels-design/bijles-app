@@ -59,6 +59,9 @@ export default function SessionTimer({ childAge }: SessionTimerProps) {
           size={40}
           onComplete={() => setShowWarning(true)}
         />
+        <span className="text-xs font-semibold text-gray-500">
+          {t('sessionTimer')}
+        </span>
         {Math.floor(elapsedSeconds / 60) >= sessionLimitMinutes - 2 && (
           <span className="text-amber-600 text-xs font-semibold animate-pulse">
             ({sessionLimitMinutes} min)

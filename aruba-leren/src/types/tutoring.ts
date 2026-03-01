@@ -43,6 +43,7 @@ export interface SessionMetadata {
   igdi_phase: IGDIPhase;
   assessment_questions_asked?: number;  // Added for assessment sessions (migration 007)
   huiswerkMode?: boolean;               // Added for huiswerk hulp sessions (plan 06-04)
+  last_locale?: string;                 // Last language used — skip DB context when locale changes
 }
 
 // IGDI model phases mapped to conversation flow

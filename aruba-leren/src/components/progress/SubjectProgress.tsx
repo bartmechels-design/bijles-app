@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import type { ChildSubjectProgress } from '@/types/progress';
 import ProgressBar from './ProgressBar';
 import LevelBadge from './LevelBadge';
@@ -17,13 +18,15 @@ interface SubjectProgressProps {
  *   3. assessment_completed = true   — LevelBadge + ProgressBar (+ optional stuck indicator)
  */
 export default function SubjectProgress({ progress, locale }: SubjectProgressProps) {
+  const t = useTranslations('tutor');
+
   // States 1 and 2: assessment not yet completed
   if (!progress || !progress.assessment_completed) {
     return (
       <div className="mt-3">
         <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-100 text-amber-800 border-2 border-amber-300 font-semibold text-sm">
           <span>📋</span>
-          <span>Toets nodig</span>
+          <span>{t('assessmentNeeded')}</span>
         </span>
       </div>
     );
@@ -37,7 +40,7 @@ export default function SubjectProgress({ progress, locale }: SubjectProgressPro
       {progress.is_stuck && (
         <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-red-100 text-red-800 border border-red-300 text-xs font-semibold">
           <span>⚠️</span>
-          <span>Vastgelopen</span>
+          <span>{t('stuck')}</span>
         </div>
       )}
     </div>
