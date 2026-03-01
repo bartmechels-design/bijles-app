@@ -53,6 +53,14 @@ Requirements: DEPLOY-01, DEPLOY-02, DEPLOY-03, DEPLOY-04
 
 Dependencies: Geen (startpunt v1.1)
 
+**Plans:** 4 plans
+
+Plans:
+- [ ] 12-01-PLAN.md — Vercel project importeren met Root Directory aruba-leren, eerste build triggeren
+- [ ] 12-02-PLAN.md — SQL migraties 008, 009, 011, 012 uitvoeren in Supabase SQL Editor
+- [ ] 12-03-PLAN.md — Environment variables instellen in Vercel en nieuwe deployment triggeren
+- [ ] 12-04-PLAN.md — Google OAuth en Facebook OAuth configureren met productie callback URLs
+
 Success criteria:
 1. De app is bereikbaar op de productie-URL (vercel.app) en toont de landingspagina zonder build- of runtime-fouten.
 2. Alle 4 pending SQL migrations (008, 009, 011, 012) zijn uitgevoerd — de tabellen `leerstof_items`, `school_vacations`, `scratchpads` en `report_tokens` bestaan in de productiedatabase.
@@ -129,10 +137,10 @@ Total v1.1 requirements: 26/26 mapped.
 | 9. Visuele Leerondersteuning | v1.0 | 4/4 | ✅ Complete | 2026-02-27 |
 | 10. Neural TTS & Uitspraak | v1.0 | 4/4 | ✅ Complete | 2026-02-28 |
 | 11. Rapportages & PDF-Deling | v1.0 | 4/4 | ✅ Complete | 2026-02-28 |
-| 12. Productie Deployment | v1.1 | 0/? | Pending | — |
+| 12. Productie Deployment | v1.1 | 0/4 | Planned | — |
 | 13. QA & Bug Fixes | v1.1 | 0/? | Pending | — |
 
 ---
 
 *Roadmap created: 2026-02-12*
-*Last updated: 2026-03-01 — v1.1 milestone added, phases 12–13 defined*
+*Last updated: 2026-03-01 — Phase 12 planned (4 plans, 3 waves)*
