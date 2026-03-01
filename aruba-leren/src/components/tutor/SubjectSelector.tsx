@@ -146,21 +146,35 @@ export default function SubjectSelector({ childId, childName, locale, progressMa
         </h2>
 
         {/* NotebookLM uitleg voor het kind */}
-        <div className="bg-amber-50 border-2 border-amber-200 rounded-2xl p-4 mb-5 flex flex-col sm:flex-row items-start sm:items-center gap-3">
-          <span className="text-3xl flex-shrink-0">📚</span>
-          <p className="text-amber-900 text-sm flex-1">{t('zaakVakBannerText')}</p>
-          <a
-            href="https://notebooklm.google.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex-shrink-0 inline-flex items-center gap-1.5 bg-amber-500 hover:bg-amber-600 text-white font-semibold text-sm px-4 py-2 rounded-xl transition-colors"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {t('notebooklmButton')}
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg>
-          </a>
+        <div className="bg-amber-50 border-2 border-amber-200 rounded-2xl p-4 mb-5">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+            <span className="text-3xl flex-shrink-0">📚</span>
+            <p className="text-amber-900 text-sm flex-1">{t('zaakVakBannerText')}</p>
+            <div className="flex flex-col gap-2 flex-shrink-0 w-full sm:w-auto">
+              <a
+                href="https://notebooklm.google.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-1.5 bg-amber-500 hover:bg-amber-600 text-white font-semibold text-sm px-4 py-2 rounded-xl transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {t('notebooklmButton')}
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+              <a
+                href="https://youtu.be/AQud2TtgBp8?si=xzMILttM8wHUTgvL"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-1.5 bg-white border-2 border-amber-400 text-amber-700 hover:bg-amber-100 font-semibold text-sm px-4 py-2 rounded-xl transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {t('notebooklmVideoButton')}
+              </a>
+            </div>
+          </div>
+          <p className="text-amber-700 text-xs mt-3 sm:pl-12">{t('notebooklmAgeNote')}</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

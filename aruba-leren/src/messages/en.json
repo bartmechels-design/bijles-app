@@ -214,6 +214,8 @@
     "zaakVakHint": "Use your own school textbook 📚",
     "zaakVakBannerText": "For History, Geography and Natural Sciences, you use your own school textbook. Put your text in NotebookLM, or ask mom/dad to upload it here.",
     "notebooklmButton": "Go to NotebookLM →",
+    "notebooklmVideoButton": "▶ Watch tutorial video",
+    "notebooklmAgeNote": "📌 Tip for parents: NotebookLM is easiest for grade 4 and above. Children in grades 1–3 will need help from mum or dad. Too difficult? The text can also be uploaded directly via the upload links in the lesson with Koko.",
     "zaakVakSessionHint": "Have your lesson text? Put it in NotebookLM to study together!",
     "stuck": "Stuck",
     "sessionTimer": "Lesson time",

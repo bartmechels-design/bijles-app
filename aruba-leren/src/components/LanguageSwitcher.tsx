@@ -36,7 +36,9 @@ export default function LanguageSwitcher() {
   const t = useTranslations("languageSwitcher");
   const router = useRouter();
   const pathname = usePathname();
-  const isOnTutorPage = pathname.startsWith('/tutor/');
+  // Only skip page reload on the actual chat page (/tutor/[childId]/[subject])
+  // Subject selection (/tutor/[childId]) still needs a full navigation to re-render translations
+  const isOnTutorPage = /^\/tutor\/[^/]+\/[^/]+/.test(pathname);
 
   // On tutor pages, track active locale separately — no page reload needed
   const [tutorLocale, setTutorLocale] = useState(locale);
