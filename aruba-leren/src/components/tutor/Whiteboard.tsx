@@ -152,7 +152,7 @@ export default function Whiteboard({ boardContent, subject, drawingEnabled = fal
 
   const parsedLines = boardContent ? parseLines(boardContent) : []
   const blocks = boardContent ? groupIntoBlocks(parsedLines) : []
-  const isRuled = subject === 'taal' || subject === 'begrijpend_lezen'
+  const isRuled = subject === 'taal_verwerken' || subject === 'spelling' || subject === 'tekst'
 
   // Reset to first block whenever content changes (e.g. new Koko message)
   useEffect(() => {

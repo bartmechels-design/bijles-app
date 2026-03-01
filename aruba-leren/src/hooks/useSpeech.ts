@@ -75,19 +75,28 @@ export function useTextToSpeech() {
       setIsSpeaking(true);
       callbacks?.onStart?.();
 
-      // Preprocess: only split on paragraph breaks (double newlines).
-      // Do NOT split on sentence endings — that creates unnatural micro-pauses
-      // because each chunk is a separate API call with no prosody context.
+      // Collapse ALL line breaks into spaces → one TTS call = no inter-call gap.
+      // OpenAI TTS handles up to 4096 chars with natural prosody; no need to split.
       const processed = text.trim()
-        .replace(/\n{2,}/g, ' ... ')   // paragraph breaks → chunk separator
-        .replace(/\n/g, ' ');           // single newlines → space
+        .replace(/\n+/g, ' ')
+        .replace(/\s{2,}/g, ' ');
 
-      // Split into paragraph-level chunks only.
-      // Short responses (most of Koko's replies) stay as one chunk — natural sound.
-      const chunks = processed
-        .split(' ... ')
-        .map(s => s.trim())
-        .filter(s => s.length > 0);
+      // Only split if text exceeds OpenAI's limit (safety margin below 4096).
+      const MAX_CHARS = 3800;
+      let chunks: string[];
+      if (processed.length <= MAX_CHARS) {
+        chunks = [processed];
+      } else {
+        chunks = [];
+        let remaining = processed;
+        while (remaining.length > MAX_CHARS) {
+          const cutAt = remaining.lastIndexOf('. ', MAX_CHARS);
+          const split = cutAt > 0 ? cutAt + 2 : MAX_CHARS;
+          chunks.push(remaining.slice(0, split).trim());
+          remaining = remaining.slice(split).trim();
+        }
+        if (remaining) chunks.push(remaining);
+      }
 
       const speed = callbacks?.speed ?? 0.88;
       const highQuality = callbacks?.highQuality ?? false;

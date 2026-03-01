@@ -138,9 +138,9 @@ export default function ChatInterface({
   // Koko avatar state
   const { emotion, deriveEmotion, setEmotion } = useKokoState();
 
-  // Voice-first mode — disabled for begrijpend_lezen (reading comprehension requires reading, not listening)
+  // Voice-first mode — disabled for tekst (reading comprehension requires reading, not listening)
   const { isVoiceFirst: isVoiceFirstRaw, setVoiceFirst } = useVoiceFirstMode();
-  const isVoiceFirst = subject === 'begrijpend_lezen' ? false : isVoiceFirstRaw;
+  const isVoiceFirst = subject === 'tekst' ? false : isVoiceFirstRaw;
 
   // Keep refs in sync with latest state (for use in effects with limited deps)
   useEffect(() => { messagesRef.current = messages; }, [messages]);
@@ -296,8 +296,6 @@ export default function ChatInterface({
 
     const lang = getTtsLang(tutoringLocale);
 
-    // Claim any prefetched sentence from streaming; clear so it's used only once.
-    const prefetchedText = streamingPrefetchRef.current;
     streamingPrefetchRef.current = null;
 
     const onDone = () => {
@@ -305,25 +303,7 @@ export default function ChatInterface({
       if (hasSpreek) setDictationReadyId(messageId);
     };
 
-    // If we prefetched a prefix during streaming that matches the start of the
-    // full cleaned text, play it immediately (from cache / in-flight fetch), then
-    // fetch+play the remainder while the prefix is still playing — nearly zero gap.
-    if (prefetchedText && cleaned.startsWith(prefetchedText)) {
-      const remainder = cleaned.slice(prefetchedText.length).trim();
-      if (!remainder) {
-        // Prefetch covers the entire response → single speak from cache
-        speak(cleaned, lang, { onStart: () => setEmotion('speaking'), onEnd: onDone });
-      } else {
-        // Play prefix (from cache), then play remainder after it finishes
-        speak(prefetchedText, lang, {
-          onStart: () => setEmotion('speaking'),
-          onEnd: () => speak(remainder, lang, { onEnd: onDone }),
-        });
-      }
-    } else {
-      // No matching prefetch — normal OpenAI TTS (~1s wait for API)
-      speak(cleaned, lang, { onStart: () => setEmotion('speaking'), onEnd: onDone });
-    }
+    speak(cleaned, lang, { onStart: () => setEmotion('speaking'), onEnd: onDone });
   }, [isVoiceFirst, tutoringLocale, speak, setEmotion]);
 
   // Auto-continuation: when resuming an active session (< 30 min idle), auto-trigger Koko
@@ -800,8 +780,8 @@ export default function ChatInterface({
           })}
         </div>
 
-        {/* Voice-first toggle — verborgen voor begrijpend_lezen */}
-        {subject !== 'begrijpend_lezen' && (
+        {/* Voice-first toggle — verborgen voor tekst */}
+        {subject !== 'tekst' && (
           <button
             type="button"
             onClick={() => setVoiceFirst(!isVoiceFirstRaw)}
@@ -870,6 +850,7 @@ export default function ChatInterface({
             imageUrl={message.imageUrl}
             isStreaming={isLoading && message.id === messages[messages.length - 1]?.id && message.role === 'assistant'}
             allowDictationAutoPlay={message.id === dictationReadyId}
+            disableReadAloud={subject === 'tekst'}
             onBoardClick={(boardText) => {
               setBoardContent(boardText);
               setShowWhiteboard(true);

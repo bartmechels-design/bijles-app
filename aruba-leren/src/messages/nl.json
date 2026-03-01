@@ -43,9 +43,10 @@
     "consentRequired": "Toestemming is verplicht om verder te gaan."
   },
   "subjects": {
-    "taal": "Taal (Nederlands)",
+    "taal_verwerken": "Taal Verwerken",
+    "spelling": "Spelling",
+    "tekst": "Tekst",
     "rekenen": "Rekenen",
-    "begrijpendLezen": "Begrijpend Lezen",
     "geschiedenis": "Geschiedenis",
     "aardrijkskunde": "Aardrijkskunde",
     "kennisdernatuur": "Kennis der Natuur",
@@ -235,9 +236,10 @@
       "vr": "Vrijdag"
     },
     "subjects": {
+      "taal_verwerken": "Taal Verwerken",
+      "spelling": "Spelling",
+      "tekst": "Tekst",
       "rekenen": "Rekenen",
-      "taal": "Taal",
-      "begrijpend_lezen": "Begrijpend lezen",
       "geschiedenis": "Geschiedenis",
       "aardrijkskunde": "Aardrijkskunde",
       "kennis_der_natuur": "Kennis der natuur"

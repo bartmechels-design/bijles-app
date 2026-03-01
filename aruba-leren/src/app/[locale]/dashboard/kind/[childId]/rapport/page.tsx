@@ -22,9 +22,10 @@ import type { StudyPlanEntry } from '@/lib/rapport/study-plan-generator';
 // ============================================
 
 const SUBJECT_LABELS: Record<string, string> = {
-  taal: 'Taal',
+  taal_verwerken: 'Taal Verwerken',
+  spelling: 'Spelling',
+  tekst: 'Tekst',
   rekenen: 'Rekenen',
-  begrijpend_lezen: 'Begrijpend lezen',
   geschiedenis: 'Geschiedenis',
   aardrijkskunde: 'Aardrijkskunde',
   kennis_der_natuur: 'Kennis der natuur',

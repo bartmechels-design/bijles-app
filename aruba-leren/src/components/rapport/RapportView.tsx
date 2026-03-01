@@ -15,9 +15,10 @@ import { getTranslations } from 'next-intl/server';
 // ============================================
 
 const SUBJECT_ICONS: Record<string, string> = {
-  taal: '📖',
+  taal_verwerken: '📝',
+  spelling: '✏️',
+  tekst: '📚',
   rekenen: '🔢',
-  begrijpend_lezen: '📚',
   geschiedenis: '🏛️',
   aardrijkskunde: '🌍',
   kennis_der_natuur: '🌱',
@@ -65,9 +66,10 @@ type TFunc = Awaited<ReturnType<typeof getTranslations<'rapport'>>>;
 
 // Known subject translation keys mapped from subject slugs
 const SUBJECT_TRANSLATION_KEYS: Record<string, string> = {
+  taal_verwerken: 'subjects.taal_verwerken',
+  spelling: 'subjects.spelling',
+  tekst: 'subjects.tekst',
   rekenen: 'subjects.rekenen',
-  taal: 'subjects.taal',
-  begrijpend_lezen: 'subjects.begrijpend_lezen',
   geschiedenis: 'subjects.geschiedenis',
   aardrijkskunde: 'subjects.aardrijkskunde',
   kennis_der_natuur: 'subjects.kennis_der_natuur',

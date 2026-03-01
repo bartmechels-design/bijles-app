@@ -44,9 +44,10 @@ interface StuckAlert {
 }
 
 const SUBJECT_LABELS: Record<string, string> = {
-  taal: 'Nederlandse Taal',
+  taal_verwerken: 'Taal Verwerken',
+  spelling: 'Spelling',
+  tekst: 'Tekst',
   rekenen: 'Rekenen',
-  begrijpend_lezen: 'Begrijpend Lezen',
   geschiedenis: 'Geschiedenis',
   aardrijkskunde: 'Aardrijkskunde',
   kennis_der_natuur: 'Kennis der Natuur',

@@ -1,21 +1,23 @@
-// Subject enum — the 6 vakken (3 kern + 3 zaak)
-export type Subject = 'taal' | 'rekenen' | 'begrijpend_lezen' | 'geschiedenis' | 'aardrijkskunde' | 'kennis_der_natuur';
+// Subject enum — Taal is split into 3 sub-subjects; 3 zaak vakken
+export type Subject = 'taal_verwerken' | 'spelling' | 'tekst' | 'rekenen' | 'geschiedenis' | 'aardrijkskunde' | 'kennis_der_natuur';
 
 // Subject metadata for UI display
 export interface SubjectInfo {
   id: Subject;
-  labelNl: string;    // "Nederlandse Taal"
-  labelPap: string;   // "Idioma Hulandes"
-  labelEs: string;    // "Idioma Neerlandés"
-  labelEn: string;    // "Dutch Language"
+  labelNl: string;    // "Taal Verwerken"
+  labelPap: string;   // "Idioma"
+  labelEs: string;    // "Idioma"
+  labelEn: string;    // "Language"
   icon: string;       // emoji or icon name for UI
   category: 'kern' | 'zaak';
+  taalGroup?: true;   // marks as part of the Taal group
 }
 
 export const SUBJECTS: SubjectInfo[] = [
-  { id: 'taal', labelNl: 'Nederlandse Taal', labelPap: 'Idioma Hulandes', labelEs: 'Idioma Neerlandés', labelEn: 'Dutch Language', icon: '📖', category: 'kern' },
+  { id: 'taal_verwerken', labelNl: 'Taal Verwerken', labelPap: 'Idioma', labelEs: 'Lenguaje', labelEn: 'Language', icon: '📝', category: 'kern', taalGroup: true },
+  { id: 'spelling', labelNl: 'Spelling', labelPap: 'Ortografia', labelEs: 'Ortografía', labelEn: 'Spelling', icon: '✏️', category: 'kern', taalGroup: true },
+  { id: 'tekst', labelNl: 'Tekst', labelPap: 'Teksto', labelEs: 'Texto', labelEn: 'Text', icon: '📚', category: 'kern', taalGroup: true },
   { id: 'rekenen', labelNl: 'Rekenen', labelPap: 'Matematica', labelEs: 'Matemáticas', labelEn: 'Mathematics', icon: '🔢', category: 'kern' },
-  { id: 'begrijpend_lezen', labelNl: 'Begrijpend Lezen', labelPap: 'Comprension di Lectura', labelEs: 'Comprensión Lectora', labelEn: 'Reading Comprehension', icon: '📚', category: 'kern' },
   { id: 'geschiedenis', labelNl: 'Geschiedenis', labelPap: 'Historia', labelEs: 'Historia', labelEn: 'History', icon: '🏛️', category: 'zaak' },
   { id: 'aardrijkskunde', labelNl: 'Aardrijkskunde', labelPap: 'Geografia', labelEs: 'Geografía', labelEn: 'Geography', icon: '🌍', category: 'zaak' },
   { id: 'kennis_der_natuur', labelNl: 'Kennis der Natuur', labelPap: 'Conocemento di Naturalesa', labelEs: 'Ciencias Naturales', labelEn: 'Natural Sciences', icon: '🌱', category: 'zaak' },

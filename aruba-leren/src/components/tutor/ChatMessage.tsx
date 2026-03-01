@@ -14,6 +14,8 @@ interface ChatMessageProps {
   /** True when the parent (ChatInterface) has finished speaking the explanation
    *  and it is now safe to auto-play the first [SPREEK] dictation block. */
   allowDictationAutoPlay?: boolean;
+  /** Hide the "Lees voor" button — used for tekst (reading comprehension) where reading aloud defeats the purpose */
+  disableReadAloud?: boolean;
   onBoardClick?: (content: string) => void;
   onZinsontledingClick?: (content: string) => void;
 }
@@ -387,7 +389,7 @@ function SpokenBlock({ text, autoPlay, childAge }: { text: string; locale?: stri
   );
 }
 
-export default function ChatMessage({ role, content, isStreaming = false, locale, childAge, imageUrl, allowDictationAutoPlay, onBoardClick, onZinsontledingClick }: ChatMessageProps) {
+export default function ChatMessage({ role, content, isStreaming = false, locale, childAge, imageUrl, allowDictationAutoPlay, disableReadAloud, onBoardClick, onZinsontledingClick }: ChatMessageProps) {
   const [shouldAnimate, setShouldAnimate] = useState(true);
   const { speak, stop, isSpeaking } = useTextToSpeech();
 
@@ -401,8 +403,9 @@ export default function ChatMessage({ role, content, isStreaming = false, locale
     if (isSpeaking) {
       stop();
     } else {
-      // For full message read-aloud, strip [SPREEK] tags and read everything
-      const fullText = content.replace(/\[SPREEK\]|\[\/SPREEK\]/g, '');
+      // For full message read-aloud, strip [SPREEK] blocks entirely.
+      // Dutch dictation words are played by SpokenBlock (nl-NL voice) — not here.
+      const fullText = content.replace(/\[SPREEK\][\s\S]*?\[\/SPREEK\]/g, '');
       speak(cleanForSpeech(fullText), getLang(locale));
     }
   };
@@ -500,8 +503,8 @@ export default function ChatMessage({ role, content, isStreaming = false, locale
               )}
             </div>
           )}
-          {/* Speak button — only show when not streaming and content exists */}
-          {!isStreaming && content && (
+          {/* Speak button — hidden while streaming, and for subjects where reading aloud defeats the purpose */}
+          {!isStreaming && content && !disableReadAloud && (
             <button
               onClick={handleSpeak}
               className={`mt-2 inline-flex items-center gap-1 text-sm font-medium px-3 py-1 rounded-lg transition-all ${

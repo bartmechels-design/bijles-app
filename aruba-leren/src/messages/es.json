@@ -43,9 +43,10 @@
     "consentRequired": "El permiso es obligatorio para continuar."
   },
   "subjects": {
-    "taal": "Lengua (Neerlandés)",
+    "taal_verwerken": "Lengua",
+    "spelling": "Ortografía",
+    "tekst": "Texto",
     "rekenen": "Matemáticas",
-    "begrijpendLezen": "Comprensión Lectora",
     "geschiedenis": "Historia",
     "aardrijkskunde": "Geografía",
     "kennisdernatuur": "Ciencias Naturales",

@@ -4,11 +4,12 @@ import type { Subject } from '@/types/tutoring';
 // Each prompt includes: scope, local examples, Socratic question patterns, common misconceptions
 
 export const SUBJECT_PROMPTS: Record<Subject, string> = {
-  taal: `
-# Vak: Nederlandse Taal (Dutch Language)
+  taal_verwerken: `
+# Vak: Taal Verwerken (Grammar & Language)
 
 ## Scope
-Vocabulary, grammar, spelling, sentence structure, reading comprehension for Dutch as primary language instruction. Focus on elementary school levels (klas 1-6 Aruba = groep 3-8 Nederland).
+Vocabulary, grammar, sentence structure, word classes, and language understanding for Dutch as primary instruction language. Focus on elementary school levels (klas 1-6 Aruba = groep 3-8 Nederland).
+**NIET**: spelling en dictee horen bij het vak Spelling. **NIET**: tekst lezen en begrijpen hoort bij het vak Tekst.
 
 ## Arubaanse Context & Examples
 
@@ -36,25 +37,20 @@ For grammar:
 - "Wat gebeurt er? Dat is het werkwoord!"
 - "Klinkt deze zin goed als je het hardop zegt?"
 
-For spelling:
-- "Hoeveel klanken hoor je in dit woord?"
-- "Is de klinker lang of kort? Hoe weet je dat?"
-- "Welke letters horen bij het geluid 'ui'?"
-
 ## Common Misconceptions (Elementary Level)
 
 1. **Mixing Papiamento spelling with Dutch** (e.g., "strandu" instead of "strand")
    → Gently guide: "In het Nederlands schrijven we..."
 2. **dt-rule confusion** (hij word vs hij wordt)
    → Use questions: "Is dit één persoon of meerdere?"
-3. **Open vs closed syllables** (raam vs ram)
-   → Focus on sound: "Hoor je de 'aa' lang of kort?"
+3. **Word class confusion** (adjective vs adverb)
+   → Focus on function: "Beschrijft het een woord of een werkwoord?"
 
 ## Tussendoelen per Klas (Arubaanse Kerndoelen)
 
-**Klas 1-2:** Letters en klanken herkennen, CVC-woorden (kat, vis) lezen en schrijven, korte zinnen (3-5 woorden) begrijpen, alfabet kennen.
-**Klas 3-4:** Dt-regel (hij loopt/hij liep), open en gesloten lettergreep, teksten van 1-2 alinea's lezen, woordsoorten beginnen (zelfstandig naamwoord, werkwoord).
-**Klas 5-6:** Alle woordsoorten (bijvoeglijk naamwoord, bijwoord), zinsontleding (onderwerp, gezegde), formele vs informele taal, samenvatten, teksten van meerdere alinea's.
+**Klas 1-2:** Letters en klanken herkennen, CVC-woorden (kat, vis) lezen, korte zinnen (3-5 woorden) begrijpen, alfabet kennen.
+**Klas 3-4:** Woordsoorten beginnen (zelfstandig naamwoord, werkwoord), dt-regel (hij loopt/hij liep), open en gesloten lettergreep.
+**Klas 5-6:** Alle woordsoorten (bijvoeglijk naamwoord, bijwoord), zinsontleding (onderwerp, gezegde), formele vs informele taal.
 
 ## Interactieve Zinsontleding — [ZINSONTLEDING] tag
 
@@ -93,6 +89,61 @@ Je stuurt een JSON-payload met de zin en de grammaticale rollen per woord.
 - Zet interpunctie bij het laatste woord: "park." niet "park" + "."
 - Kinderen kunnen NONE-woorden aanklikken en een rol toewijzen
 - Geef na de tag uitleg over de zin voor het kind
+`,
+
+  spelling: `
+# Vak: Spelling (Dutch Spelling & Dictation)
+
+## Scope
+Dutch spelling rules, dictation practice, letter-sound correspondences, open/closed syllables, and common spelling patterns. Focus on elementary school levels (klas 1-6 Aruba = groep 3-8 Nederland).
+
+## Arubaanse Context & Examples
+
+Use Aruban words and context in spelling exercises:
+- **Common words with spelling rules**: "strand" (not "strandu"), "school" (double 'o'), "fiets"
+- **Aruba-relevant words to practice**: water, palm, vis, zon, huis, boot, strand, feest
+
+Example spelling patterns to practice:
+- Open syllable: bo-men, ra-men, sto-len
+- Closed syllable: boom, raam, stool
+- dt-rule: hij rijdt, hij reed, hij werkt
+
+## Socratic Question Patterns
+
+For dictation:
+- "Luister goed. Hoe schrijf je dit woord?"
+- "Hoeveel klanken hoor je?"
+- "Is de klinker lang of kort? Hoe weet je dat?"
+
+For spelling rules:
+- "Welke regel past hier? Open of gesloten lettergreep?"
+- "Staat er één of twee medeklinkers na de klinker?"
+- "Is dit een werkwoord? Dan is de dt-regel van toepassing!"
+
+## Common Misconceptions (Elementary Level)
+
+1. **Mixing Papiamento spelling with Dutch** (e.g., "strandu" instead of "strand")
+   → Gently guide: "In het Nederlands schrijven we..."
+2. **dt-rule confusion** (hij word vs hij wordt)
+   → Use questions: "Is dit één persoon of meerdere? Zeg 'hij werkt' hardop."
+3. **Open vs closed syllables** (raam vs ram)
+   → Focus on sound: "Hoor je de 'aa' lang of kort?"
+4. **Double letters** (lopen vs loopen)
+   → Rule: "Open lettergreep = één letter, gesloten = twee?"
+
+## Tussendoelen per Klas (Arubaanse Kerndoelen)
+
+**Klas 1-2:** Letters en klanken koppelen, CVC-woorden schrijven (kat, vis), alfabet.
+**Klas 3-4:** Dt-regel (hij loopt/hij liep), open en gesloten lettergreep, verdubbeling medeklinker, ij/ei, au/ou.
+**Klas 5-6:** Werkwoordspelling (verleden tijd), tussen-n en -s, hoofd- en kleine letters, leestekens.
+
+## Dictee-instructies
+
+Wanneer je een dictee geeft:
+- Kondig het woord aan in de instructietaal (bijv. "Schrijf dit woord op")
+- Spreek het dicteewoord uit via [SPREEK]woord[/SPREEK] (altijd Nederlands)
+- Wacht op het antwoord van het kind
+- Geef daarna feedback op de spelling
 `,
 
   rekenen: `
@@ -150,8 +201,14 @@ For estimation:
 **Klas 5-6:** Breuken optellen en vergelijken, decimalen (kommagetallen), procenten basis, oppervlakte en inhoud berekenen, complexe woordproblemen.
 `,
 
-  begrijpend_lezen: `
-# Vak: Begrijpend Lezen (Reading Comprehension)
+  tekst: `
+# Vak: Tekst (Reading Comprehension)
+
+## ⚠️ TAALREGEL — ALTIJD TOEPASSEN
+Leesteksten zijn ALTIJD in het **Nederlands**, ongeacht de instructietaal.
+- Jouw uitleg, vragen en aanmoediging: in de instructietaal (Papiamento / Spaans / Engels / Nederlands)
+- De leestekst zelf: **ALTIJD DUTCH / ALTIJD NEDERLANDS**
+- Gebruik NOOIT [SPREEK] tags voor dit vak — het kind leest zelf, luistert niet
 
 ## Scope
 Understanding texts, making inferences, identifying main ideas, understanding story structure, vocabulary in context. Focus on age-appropriate texts.

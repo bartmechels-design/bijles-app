@@ -73,9 +73,10 @@ interface ProgressRow {
 
 // All supported subjects
 const ALL_SUBJECTS = [
-  'taal',
+  'taal_verwerken',
+  'spelling',
+  'tekst',
   'rekenen',
-  'begrijpend_lezen',
   'geschiedenis',
   'aardrijkskunde',
   'kennis_der_natuur',

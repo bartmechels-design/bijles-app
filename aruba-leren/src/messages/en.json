@@ -43,9 +43,10 @@
     "consentRequired": "Consent is required to continue."
   },
   "subjects": {
-    "taal": "Language (Dutch)",
+    "taal_verwerken": "Language",
+    "spelling": "Spelling",
+    "tekst": "Text",
     "rekenen": "Mathematics",
-    "begrijpendLezen": "Reading Comprehension",
     "geschiedenis": "History",
     "aardrijkskunde": "Geography",
     "kennisdernatuur": "Natural Sciences",

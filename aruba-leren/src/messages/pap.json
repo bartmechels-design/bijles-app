@@ -43,9 +43,10 @@
     "consentRequired": "Permiso ta obligatorio pa sigui."
   },
   "subjects": {
-    "taal": "Taal (Hulandes)",
+    "taal_verwerken": "Idioma",
+    "spelling": "Ortografia",
+    "tekst": "Teksto",
     "rekenen": "Rekenen",
-    "begrijpendLezen": "Comprension di Lectura",
     "geschiedenis": "Historia",
     "aardrijkskunde": "Heografia",
     "kennisdernatuur": "Conocemento di Naturalesa",
@@ -235,9 +236,10 @@
       "vr": "Diabièrnè"
     },
     "subjects": {
+      "taal_verwerken": "Idioma",
+      "spelling": "Ortografia",
+      "tekst": "Teksto",
       "rekenen": "Rekenen",
-      "taal": "Taal",
-      "begrijpend_lezen": "Begrijpend lezen",
       "geschiedenis": "Geschiedenis",
       "aardrijkskunde": "Aardrijkskunde",
       "kennis_der_natuur": "Kennis der natuur"

@@ -10,7 +10,7 @@
  * CREATE TABLE IF NOT EXISTS tutoring_sessions (
  *   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
  *   child_id UUID NOT NULL REFERENCES children(id) ON DELETE CASCADE,
- *   subject TEXT NOT NULL CHECK (subject IN ('taal', 'rekenen', 'begrijpend_lezen', 'geschiedenis', 'aardrijkskunde', 'kennis_der_natuur')),
+ *   subject TEXT NOT NULL CHECK (subject IN ('taal_verwerken', 'spelling', 'tekst', 'rekenen', 'geschiedenis', 'aardrijkskunde', 'kennis_der_natuur')),
  *   difficulty_level INT NOT NULL DEFAULT 1 CHECK (difficulty_level BETWEEN 1 AND 5),
  *   started_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
  *   last_activity_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),

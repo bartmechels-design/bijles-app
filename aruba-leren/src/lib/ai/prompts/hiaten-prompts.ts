@@ -11,19 +11,7 @@ export interface HiaatTopic {
 }
 
 export const HIAAT_TOPICS: Record<Subject, HiaatTopic[]> = {
-  taal: [
-    {
-      id: 'spellen_lange_klinkers',
-      label: 'Lange klinkers',
-      prompt:
-        'Focus UITSLUITEND op het spellen van woorden met lange klinkers (open lettergreep, dubbele klinker). Stel ALLEEN vragen over dit onderwerp. Gebruik Arubaanse context: woorden zoals "zee", "boom", "brood", namen van plekken op Aruba.',
-    },
-    {
-      id: 'spellen_dt_regel',
-      label: 'dt-regel',
-      prompt:
-        'Focus UITSLUITEND op de dt-regel (hij loopt / jij loopt / hij liep). Oefen ALLEEN zinnen waarbij het kind moet kiezen tussen -t of -dt of -d. Gebruik korte, duidelijke zinnen met Arubaanse context.',
-    },
+  taal_verwerken: [
     {
       id: 'zinsontleding',
       label: 'Zinsontleding',
@@ -35,18 +23,6 @@ export const HIAAT_TOPICS: Record<Subject, HiaatTopic[]> = {
       label: 'Woordsoorten',
       prompt:
         'Focus UITSLUITEND op woordsoorten: zelfstandig naamwoord, bijvoeglijk naamwoord en werkwoord herkennen. Stel ALLEEN vragen hierover. Gebruik voorbeeldzinnen met Arubaanse context.',
-    },
-    {
-      id: 'samenvatten',
-      label: 'Samenvatten',
-      prompt:
-        'Focus UITSLUITEND op het samenvatten van een korte tekst. Geef een korte tekst (3-5 zinnen) en vraag het kind de hoofdgedachte of een samenvatting te geven. Gebruik teksten over Aruba.',
-    },
-    {
-      id: 'dictee_oefening',
-      label: 'Dictee',
-      prompt:
-        'Focus UITSLUITEND op dictee-oefening. Gebruik [SPREEK]woord[/SPREEK] tags voor elk woord dat het kind moet opschrijven. Begin met eenvoudige woorden passend bij het niveau van het kind.',
     },
     {
       id: 'lidwoorden',
@@ -61,10 +37,42 @@ export const HIAAT_TOPICS: Record<Subject, HiaatTopic[]> = {
         'Focus UITSLUITEND op het vormen van meervouden in het Nederlands: -en (boom→bomen), -s (auto→auto\'s), onregelmatig (bad→banden, schip→schepen). Arubaanse kinderen maken hier fouten door transfer vanuit Papiamento. Gebruik Arubaanse woorden en context. Stel ALLEEN vragen over meervoud.',
     },
     {
+      id: 'samenvatten',
+      label: 'Samenvatten',
+      prompt:
+        'Focus UITSLUITEND op het samenvatten van een korte tekst. Geef een korte tekst (3-5 zinnen) en vraag het kind de hoofdgedachte of een samenvatting te geven. Gebruik teksten over Aruba.',
+    },
+  ],
+  spelling: [
+    {
+      id: 'lange_klinkers',
+      label: 'Lange klinkers',
+      prompt:
+        'Focus UITSLUITEND op het spellen van woorden met lange klinkers (open lettergreep, dubbele klinker). Stel ALLEEN vragen over dit onderwerp. Gebruik Arubaanse context: woorden zoals "zee", "boom", "brood", namen van plekken op Aruba.',
+    },
+    {
+      id: 'dt_regel',
+      label: 'dt-regel',
+      prompt:
+        'Focus UITSLUITEND op de dt-regel (hij loopt / jij loopt / hij liep). Oefen ALLEEN zinnen waarbij het kind moet kiezen tussen -t of -dt of -d. Gebruik korte, duidelijke zinnen met Arubaanse context.',
+    },
+    {
+      id: 'dictee_oefening',
+      label: 'Dictee',
+      prompt:
+        'Focus UITSLUITEND op dictee-oefening. Gebruik [SPREEK]woord[/SPREEK] tags voor elk woord dat het kind moet opschrijven. Begin met eenvoudige woorden passend bij het niveau van het kind.',
+    },
+    {
       id: 'werkwoordsspelling',
       label: 'Werkwoordsspelling (stam)',
       prompt:
         'Focus UITSLUITEND op werkwoordsspelling via de stam-regel: de stam bepalen, -t toevoegen voor derde persoon enkelvoud, en het verschil met de infinitief. Oefen met zinnen als "hij werkt", "zij speelt", "de vogel vliegt". Gebruik Arubaanse context in de voorbeeldzinnen.',
+    },
+    {
+      id: 'ij_ei_au_ou',
+      label: 'ij/ei en au/ou',
+      prompt:
+        'Focus UITSLUITEND op de spelling van ij/ei en au/ou. Geef woorden en zinnen waarbij het kind de juiste variant moet kiezen. Gebruik Arubaanse context. Bespreek ezelsbruggetjes waar nuttig.',
     },
   ],
   rekenen: [
@@ -129,7 +137,7 @@ export const HIAAT_TOPICS: Record<Subject, HiaatTopic[]> = {
         'Focus UITSLUITEND op meetkunde: omtrek en oppervlakte berekenen van rechthoeken en vierkanten (klas 5-6). Stel ALLEEN vragen hierover. Gebruik Arubaanse context: oppervlakte van een zwembad, omtrek van een stuk strand, afmetingen van een huis.',
     },
   ],
-  begrijpend_lezen: [
+  tekst: [
     {
       id: 'hoofdgedachte_bepalen',
       label: 'Hoofdgedachte',
