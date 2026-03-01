@@ -2,86 +2,118 @@
 
 ## What This Is
 
-Een autonoom AI-bijlesplatform voor basisschoolleerlingen (6-12 jaar) op Aruba. Het platform toetst het niveau van het kind, identificeert hiaten, en biedt gepersonaliseerde bijles via "Koko" — een geduldige, Socratische AI-tutor die Nederlands spreekt met Papiamento-aanmoediging. Ouders beheren abonnementen en volgen de voortgang via een ouderportaal.
+Een autonoom AI-bijlesplatform voor basisschoolleerlingen (6-12 jaar, klas 1-6) op Aruba. Het platform toetst het niveau van het kind via een adaptieve beginsituatietoets, identificeert hiaten per vak, en biedt gepersonaliseerde bijles via "Koko" — een geduldige, Socratische AI-tutor die Nederlands spreekt met Papiamento-aanmoediging. Ouders beheren abonnementen via handmatige betalingsverificatie en volgen de voortgang via een ouderportaal met wekelijkse e-mails en deelbare PDF-rapporten.
 
 ## Core Value
 
 Kinderen op Aruba krijgen persoonlijke bijles die zich aanpast aan hun niveau, zonder dat een ouder of leerkracht erbij hoeft te zitten — volledig zelfstandig, in hun eigen taal en context.
 
-## Current Milestone: v1.0 MVP Launch
+## Current State (v1.0 Shipped 2026-03-01)
 
-**Goal:** Een volledig werkend AI-bijlesplatform waar Arubaanse kinderen zelfstandig bijles krijgen van Koko in alle 6 vakken, met ouderportaal, admin panel, en tweetalige interface.
+**Shipped v1.0** — alle 11 fases compleet. Platform is volledig functioneel en klaar voor productie-deployment.
 
-**Target features:**
-- Ouder authenticatie (Google, Facebook, email) met kindprofielen
-- AI-tutor Koko met Socratische methode voor alle 6 vakken
-- Beginsituatietoets per vak via chat-interface
-- Ouder dashboard met voortgang per kind
-- Admin panel voor betalingsverificatie en gebruikersbeheer
-- Handmatige betalingsflow (bankovermaking/contant)
-- Tweetalige UI (Nederlands/Papiamento)
-- Voortgangstracking per kind, per vak, per niveau
+- **~16,500 LOC** TypeScript/TSX (121 bestanden)
+- **Tech stack:** Next.js (App Router), TypeScript, Tailwind CSS 4, Supabase, Vercel AI SDK, OpenAI TTS
+- **Locales:** nl, pap, es, en (next-intl 3.x)
+- **AI:** Claude Sonnet 4.5 voor tutoring, OpenAI tts-1-hd voor spraak
+
+**What was built beyond original scope:**
+- Neural TTS (OpenAI tts-1-hd, nova stem) — browser TTS was v2 plan
+- Koko avatar with 7 expressions + Time Timer — v1.1 plan promoted to v1.0
+- KaTeX wiskunde, interactieve zinsontleding, kladblaadje canvas — v1.1 plan promoted
+- Voortgangsrapporten met WhatsApp-deling en PIN-gate — v1.1 plan promoted
+
+**Pending for production deployment:**
+- SQL migrations 008, 009, 011, 012 — handmatig uitvoeren in Supabase SQL Editor
+- "genoeg geoefend" bug in bestaande DB-sessies met oude context (nieuwe sessies werken correct)
 
 ## Requirements
 
 ### Validated
 
-(None yet — ship to validate)
+- ✓ Ouder authenticatie (Google, Facebook, email/password) — v1.0
+- ✓ Meerdere kindprofielen per ouderaccount — v1.0
+- ✓ Handmatige betalingsflow (bankovermaking / contant) + admin verificatie — v1.0
+- ✓ AI-tutor Koko met Socratische methode (nooit direct antwoord) — v1.0
+- ✓ Koko gebruikt Arubaanse context (Hooiberg, Florins, Shoco, Arikok) — v1.0
+- ✓ Koko spreekt Nederlands + Papiamento aanmoediging, kan schakelen — v1.0
+- ✓ 6 vakken: Taal, Rekenen, Begrijpend Lezen, Geschiedenis, Aardrijkskunde, Kennis der Natuur — v1.0
+- ✓ Beginsituatietoets per vak (adaptief via chat) — v1.0
+- ✓ Voortgangsregistratie per kind, per vak, per niveau — v1.0
+- ✓ Ouderportaal met voortgangskaarten — v1.0
+- ✓ Wekelijkse automatische voortgangsmail via Supabase Edge Function + pg_cron — v1.0
+- ✓ Admin panel voor betalingen, families, stuck-kind alerting, vakantierooster — v1.0
+- ✓ PDF-werkbladen (react-to-print v3, [OPDRACHT] tag) — v1.0
+- ✓ Huiswerk-sessie modus met foto-upload — v1.0
+- ✓ Hiaten-selector per kernvak — v1.0
+- ✓ Leerstof upload voor zaakvakken (PDF/foto, Claude Vision) — v1.0
+- ✓ Neural TTS (OpenAI tts-1-hd, nova stem) + Arubaanse fonetische substitutie — v1.0
+- ✓ Papiamento "Alleen lezen" modus — v1.0
+- ✓ Koko avatar (7 expressies, 3D radialGradient) + Time Timer component — v1.0
+- ✓ Whiteboard animaties (CSS clip-path), KaTeX breuken, interactieve zinsontleding — v1.0
+- ✓ Kladblaadje canvas bij rekenen (PointerEvent, Supabase storage) — v1.0
+- ✓ Voortgangsrapporten (Recharts, studieplan editor, deelbare link + PIN-gate, WhatsApp) — v1.0
+- ✓ Tweetalige interface NL + PAP (+ ES, EN) via next-intl — v1.0
+- ✓ RLS op alle database tabellen — v1.0
+- ✓ Privacy policy pagina — v1.0
 
-### Active
+### Active (v2.0)
 
-- [ ] Ouder kan account aanmaken via Google, Facebook of email
-- [ ] Ouder kan meerdere kindprofielen koppelen aan hun account
-- [ ] Ouder kan abonnement aanvragen via handmatige betaling (bankovermaking Arubabank / contant)
-- [ ] Ouder kan betalingsbewijs uploaden of contante betaling aanvragen
-- [ ] Admin (eigenaar) kan betalingen verifi\u00ebren en toegang verlenen
-- [ ] Ouder kan voortgang van elk kind bekijken op een dashboard
-- [ ] Kind doorloopt een autonome beginsituatietoets via chat-interface per vak
-- [ ] AI-tutor "Koko" begeleidt het kind Socratisch (geeft nooit direct het antwoord)
-- [ ] AI-tutor gebruikt Arubaanse context in alle voorbeelden (locaties, flora/fauna, Florins)
-- [ ] AI-tutor spreekt Nederlands met Papiamento-aanmoediging
-- [ ] Platform ondersteunt kernvakken: Taal (Nederlands), Rekenen, Begrijpend Lezen
-- [ ] Platform ondersteunt zaakvakken: Geschiedenis, Aardrijkskunde, Kennis der Natuur (Arubaanse context)
-- [ ] UI schakelt tussen Nederlands en Papiamento (taalswitch)
-- [ ] Voortgang wordt bijgehouden per kind, per vak, per niveau
+- [ ] Offline oefenmodus — lessen downloaden voor offline gebruik
+- [ ] Geavanceerde leeranalytics met voorspellende inzichten
+- [ ] Milestone-vieringen en badges voor behaalde vaardigheden
+- [ ] WhatsApp/Facebook community-integratie voor ouders
+- [ ] Leerkrachtportaal met klasoverzicht (als scholen adopteren)
+- [ ] Volledige voice/audio-first modus (STT + TTS volledig geïntegreerd, geen tekst nodig)
 
 ### Out of Scope
 
-- Real-time video/audio tutoring — te hoge complexiteit en kosten voor MVP
+- Real-time video/audio tutoring — te hoge complexiteit en kosten
 - Automatische betalingsverwerking (iDEAL, creditcard) — Arubaanse markt vereist handmatig model
-- Native mobile app — web-first, responsive design volstaat voor MVP
+- Native mobile app — web-first (responsive) volstaat; TTS werkt goed op mobiel
 - Ouder-leerkracht communicatieplatform — focus op kind-tutor interactie
 - Multiplayer/samenwerkingsfeatures — individueel leerpad eerst
+- Social features (vrienden, chat) — COPPA-compliancerisico; afleidend
+- Competitieve leaderboards — negatief effect op intrinsieke motivatie bij kinderen
+- AI-beoordeling van open opdrachten — onbetrouwbaar voor genuanceerd werk
 
 ## Context
 
-- **Doelgroep:** Basisschoolleerlingen op Aruba, 6-12 jaar (groep 3-8 equivalent)
-- **Onderwijs:** Volgt het offici\u00eble Arubaanse curriculum
-- **Taal:** Kinderen groeien op met Papiamento als moedertaal, krijgen onderwijs in het Nederlands. De tutor sluit hier op aan met Nederlands als instructietaal en Papiamento voor aanmoediging
-- **Cultuur:** Alle voorbeelden gebruiken Arubaanse context — Hooiberg, Arikok, Oranjestad, San Nicolas, Shoco, Divi-divi, Florins (Afl.), Carnival, Caquet\u00edo-geschiedenis
+- **Doelgroep:** Basisschoolleerlingen op Aruba, 6-12 jaar (klas 1 = groep 3, klas 6 = groep 8)
+- **Onderwijs:** Volgt het officiële Arubaanse curriculum
+- **Taal:** Kinderen groeien op met Papiamento als moedertaal, krijgen onderwijs in het Nederlands. Koko sluit hier op aan: Nederlands als instructietaal, Papiamento voor aanmoediging
+- **Cultuur:** Alle voorbeelden gebruiken Arubaanse context — Hooiberg, Arikok, Oranjestad, San Nicolas, Shoco, Divi-divi, Florins (Afl.), Carnival, Caquetío-geschiedenis
 - **Betalingen:** Aruba heeft beperkte online-betalingsinfrastructuur. Model is handmatige verificatie: ouder maakt over via Arubabank of betaalt contant, admin verifieert en activeert
-- **AI Tutor "Koko":** Gedetailleerde pedagogische skill beschikbaar in `.agents/skills/aruba-teacher-logic/SKILL.md` — definieert Socratische methode, growth mindset, foutafhandeling, vakspecifieke instructies, en Papiamento-aanmoedigingen
+- **AI Tutor "Koko":** Pedagogische skill in `.agents/skills/aruba-teacher-logic/SKILL.md` — Socratische methode, IGDI-model, growth mindset, vakspecifieke instructies, Papiamento-aanmoedigingen
 - **Admin:** Eenpersoonsoperatie — eigenaar beheert betalingsverificatie en platform
 
 ## Constraints
 
-- **Tech Stack:** Next.js 16+ (App Router), TypeScript, Tailwind CSS 4, Supabase (PostgreSQL, Auth, Real-time), Vercel AI SDK 6 met Anthropic Claude 3.5 Sonnet, Vercel deployment
-- **Tweetaligheid:** Volledige UI-switch Nederlands/Papiamento vereist (next-intl 3.x)
+- **Tech Stack:** Next.js (App Router), TypeScript, Tailwind CSS 4, Supabase (PostgreSQL, Auth, Storage, Edge Functions), Vercel AI SDK 6 met Claude Sonnet 4.5, OpenAI TTS (tts-1-hd), Vercel deployment
+- **Tweetaligheid:** Volledige UI-switch NL/PAP vereist (next-intl 3.x); ES en EN ook ondersteund
 - **Authenticatie:** Supabase Auth met Google, Facebook en email/password providers
-- **AI Budget:** Claude API-kosten moeten beheersbaar blijven — sessielengtes en prompt-effici\u00ebntie zijn belangrijk
-- **Deployment:** Vercel (serverless) — past bij Next.js stack
+- **AI Budget:** Claude API-kosten beheersbaar via prompt caching (~90% reductie), sessielimieten, 50K daily token limit per kind
+- **Deployment:** Vercel (serverless) + Supabase Edge Functions voor email scheduling
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Handmatige betalingsverificatie i.p.v. payment gateway | Arubaanse markt heeft beperkte online-betalingsopties; bankovermaking en contant zijn standaard | — Pending |
-| Claude 3.5 Sonnet als AI-engine | Beste balans tussen kwaliteit en kosten voor educatieve conversaties | — Pending |
-| Supabase als backend | Combineert PostgreSQL, Auth, en real-time in \u00e9\u00e9n platform; snel op te zetten | — Pending |
-| Tweetalige UI (NL/PAP) | Sluit aan bij de taalrealiteit van Arubaanse kinderen | — Pending |
-| Meerdere kinderen per ouderaccount | Gezinnen op Aruba hebben vaak meerdere schoolgaande kinderen | — Pending |
-| Koko als tutor-persona | Vriendelijke, herkenbare naam; pedagogische regels vastgelegd in skill-bestand | — Pending |
-| Next.js 16 + Tailwind 4 + Vercel AI SDK 6 | Meest recente stabiele stack per research (2026-02-11) | — Pending |
+| Handmatige betalingsverificatie i.p.v. payment gateway | Arubaanse markt heeft beperkte online-betalingsopties | ✓ Good — werkt goed voor MVP, admin-overhead acceptabel |
+| Claude Sonnet 4.5 als AI-engine | Beste balans kwaliteit/kosten voor educatieve conversaties | ✓ Good — $3/MTok, prompt caching effectief |
+| Prompt caching (statische base + guards eerst) | ~90% kostenreductie op herhaalde prompts | ✓ Good — kritisch voor schaalbaarheid |
+| Supabase als backend | Combineert PostgreSQL, Auth, Storage, Edge Functions in één platform | ✓ Good — snel op te zetten, pg_cron voor scheduling |
+| Tweetalige UI (NL/PAP) | Sluit aan bij taalrealiteit Arubaanse kinderen | ✓ Good — next-intl werkt soepel |
+| profiles.id vs user_id strikte scheiding | Voorkomt veelvoorkomende auth bugs | ✓ Good — MEMORY.md patroon vastgelegd |
+| client-side router.push() na auth | Server-side redirect() verliest Supabase auth cookies | ✓ Good — voorkomt auth-loop bugs |
+| react-to-print v3 over @react-pdf/renderer | @react-pdf/renderer crasht in Next.js App Router | ✓ Good — stabiel, werkt ook voor werkbladen |
+| Text injection over RAG voor leerstof | Simpler at MVP scale, geen vector database nodig | ✓ Good — voldoende voor zaakvak content |
+| clip-path over SVG stroke-dashoffset voor whiteboard | GPU-compositor-threaded, beter voor low-end Android | ✓ Good — vloeiende animaties op mobiel |
+| Neural TTS (OpenAI tts-1-hd, nova stem) | Kindvriendelijk stemgeluid, aangenaam bij langdurig luisteren | ✓ Good — aanzienlijke kwaliteitsverbetering |
+| Rule-based study plan over AI-gegenereerd | Deterministisch, geen extra Claude API kosten | ✓ Good — voldoende voor MVP rapportage |
+| session_type in tutoring_sessions tabel | Vermijdt schema duplicatie voor assessment sessies | ✓ Good — eenvoudiger queries |
+| vakOverride als laatste sectie in system prompt | Hoogste Claude prioriteit, overschrijft basis gedrag | ✓ Good — kritisch voor vak-restricties |
+| Zaakvakken bypass assessment gate | Content upload is toekomstige fase; direct naar tutoring | ✓ Good — gebruiksvriendelijker voor MVP |
 
 ---
-*Last updated: 2026-02-12 after milestone v1.0 start*
+*Last updated: 2026-03-01 after v1.0 milestone*
