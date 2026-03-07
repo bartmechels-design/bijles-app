@@ -123,6 +123,27 @@ function preprocessMathForTts(text: string, locale: string): string {
 
   let r = text;
 
+  // Step 0: Convert LaTeX notation to plain text BEFORE fraction/operator handling
+  r = r
+    // Block math: $$...$$ → strip delimiters
+    .replace(/\$\$/g, '')
+    // \frac{num}{den} → "num/den" (picked up by fraction regex below)
+    .replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '$1/$2')
+    // LaTeX operators → Unicode (picked up by operator regex below)
+    .replace(/\\times/g, '×')
+    .replace(/\\div/g, '÷')
+    .replace(/\\cdot/g, '×')
+    .replace(/\\pm/g, nl ? 'plus of min' : es ? 'más o menos' : 'plus or minus')
+    // \sqrt{n} → spoken form
+    .replace(/\\sqrt\{([^}]+)\}/g, (_, n) =>
+      nl ? `wortel van ${n}` : es ? `raíz cuadrada de ${n}` : `square root of ${n}`)
+    // Inline math: $...$ → strip delimiters
+    .replace(/\$([^$]+)\$/g, '$1')
+    // Remaining backslash commands (\ge, \le, \neq, \approx etc) → strip
+    .replace(/\\[a-zA-Z]+/g, ' ')
+    // Strip remaining LaTeX curly braces
+    .replace(/[{}]/g, ' ');
+
   // Fractions → ordinal spoken form (math-correct, as taught in school)
   // 1/2 → "één tweede", 2/3 → "twee derde", 3/4 → "drie vierde"
   if (nl) {

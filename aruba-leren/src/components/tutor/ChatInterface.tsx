@@ -11,7 +11,6 @@ import type { ZinsontledingData } from './ZinsontledingPanel';
 import SessionTimer from './SessionTimer';
 import PhoneUploadModal from './PhoneUploadModal';
 import WhiteboardPanel from './WhiteboardPanel';
-import Scratchpad from './Scratchpad';
 import KokoAvatar from './KokoAvatar';
 import VoiceWaveform from './VoiceWaveform';
 import HiatenSelector from './HiatenSelector';
@@ -110,7 +109,6 @@ export default function ChatInterface({
   const [boardContent, setBoardContent] = useState<string | undefined>(undefined);
   const [showZinsontleding, setShowZinsontleding] = useState(false);
   const [zinsontledingData, setZinsontledingData] = useState<ZinsontledingData | null>(null);
-  const [showScratchpad, setShowScratchpad] = useState(false);
   // Tracks which assistant message's dictation block may auto-play.
   // Set AFTER the explanation TTS finishes, so dictation plays sequentially.
   const [dictationReadyId, setDictationReadyId] = useState<string | null>(null);
@@ -195,24 +193,6 @@ export default function ChatInterface({
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Auto-toon kladblaadje bij rekenen zodra er een [BORD] blok is
-  useEffect(() => {
-    if (subject === 'rekenen' && boardContent) {
-      setShowScratchpad(true)
-    }
-  }, [subject, boardContent])
-
-  // Herstel kladblaadje bij page reload — scan bestaande berichten op [BORD] blokken
-  useEffect(() => {
-    if (subject !== 'rekenen') return
-    const hasBordInHistory = messages.some(msg =>
-      msg.role === 'assistant' && hasBordBlocks(msg.content)
-    )
-    if (hasBordInHistory) {
-      setShowScratchpad(true)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []) // Intentionally runs only on mount — messages array is stable at initial render
 
   // Auto-send first message when huiswerk mode activates with a pending image
   useEffect(() => {
@@ -307,18 +287,110 @@ export default function ChatInterface({
     speak(cleaned, lang, { onStart: () => setEmotion('speaking'), onEnd: onDone });
   }, [isVoiceFirst, tutoringLocale, speak, setEmotion]);
 
-  // Auto-speak the initial greeting for new sessions (voice-first mode)
+  // Auto-speak the initial greeting for new sessions — always, regardless of voice-first toggle.
+  // The greeting is Koko's first impression; it should always play so children know the app is ready.
+  // Uses speak() directly (not autoSpeak) to bypass the isVoiceFirst gate.
   useEffect(() => {
     if (
       !greetingSpokenRef.current &&
       messages.length === 1 &&
       messages[0].id === 'koko-greeting' &&
-      messages[0].content
+      messages[0].content &&
+      tutoringLocale !== 'pap' // Papiamento has no TTS voice
     ) {
       greetingSpokenRef.current = true;
-      autoSpeak('koko-greeting', messages[0].content);
+      const cleaned = cleanForTts(messages[0].content, tutoringLocale);
+      if (cleaned) {
+        speak(cleaned, getTtsLang(tutoringLocale), {
+          onStart: () => setEmotion('speaking'),
+          onEnd: () => setEmotion('idle'),
+        });
+      }
     }
-  }, [messages, autoSpeak]);
+  }, [messages, tutoringLocale, speak, setEmotion]);
+
+  // Auto-start new sessions: Koko begins the lesson immediately after the greeting,
+  // without the child needing to type anything first.
+  // Not used for existing sessions (they use [VERVOLG_SESSIE] below) or assessment/huiswerk.
+  const newSessionTriggeredRef = useRef(false);
+  useEffect(() => {
+    if (existingSessionId || isAssessmentMode) return;
+    if (newSessionTriggeredRef.current) return;
+    newSessionTriggeredRef.current = true;
+
+    const triggerText: Record<string, string> = {
+      nl:  '[START_SESSIE] Begin direct met de les. Stel je eerste vraag zonder inleiding.',
+      pap: '[START_SESSIE] Cuminsa direktamente ku e les. Hasi bo prome pregunta sin introdukshon.',
+      es:  '[START_SESSIE] Comienza directamente con la lección. Haz tu primera pregunta sin introducción.',
+      en:  '[START_SESSIE] Start the lesson directly. Ask your first question without introduction.',
+    };
+    const trigger = triggerText[tutoringLocale] ?? triggerText.nl;
+
+    const abortCtrl = new AbortController();
+    const startMsgId = `assistant-start-${Date.now()}`;
+    setIsLoading(true);
+    setMessages(prev => [...prev, { id: startMsgId, role: 'assistant', content: '' }]);
+
+    (async () => {
+      try {
+        const response = await fetch(`/${tutoringLocale}/api/tutor/chat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messages: [{ role: 'user', content: trigger }],
+            sessionId: null,
+            subject,
+            childId,
+            hiatenTopic: hiatenTopicId
+              ? (HIAAT_TOPICS[subject].find(t => t.id === hiatenTopicId)?.prompt ?? null)
+              : null,
+          }),
+          signal: abortCtrl.signal,
+        });
+
+        if (!response.ok || !response.body) {
+          setMessages(prev => prev.filter(m => m.id !== startMsgId));
+          return;
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let responseText = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          responseText += decoder.decode(value, { stream: true });
+          setMessages(prev => prev.map(m =>
+            m.id === startMsgId ? { ...m, content: responseText } : m
+          ));
+        }
+
+        if (responseText) {
+          lastCompletedRef.current = responseText;
+          autoSpeak(startMsgId, responseText);
+          setSessionStarted(true);
+        } else {
+          setMessages(prev => prev.filter(m => m.id !== startMsgId));
+        }
+      } catch (err) {
+        if (err instanceof Error && err.name === 'AbortError') {
+          // Strict-mode double-fire: clean up and let the second run handle it
+          setMessages(prev => prev.filter(m => m.id !== startMsgId));
+          return;
+        }
+        setMessages(prev => prev.filter(m => m.id !== startMsgId));
+      } finally {
+        setIsLoading(false);
+      }
+    })();
+
+    return () => {
+      abortCtrl.abort();
+      // Reset ref so the second Strict Mode invocation can proceed
+      newSessionTriggeredRef.current = false;
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Auto-continuation: when resuming an active session (< 30 min idle), auto-trigger Koko
   // to continue exactly where the lesson left off — without the child needing to type first.
@@ -541,11 +613,7 @@ export default function ChatInterface({
             setBoardContent(content);
             setShowWhiteboard(true);
           }
-          // Activeer kladblaadje bij rekenen + [BORD]
-          if (subject === 'rekenen') {
-            setShowScratchpad(true)
           }
-        }
 
         // Auto-open zinsontleding panel als [ZINSONTLEDING] gedetecteerd
         if (hasZinsontledingBlocks(assistantMessage)) {
@@ -900,12 +968,6 @@ export default function ChatInterface({
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Kladblaadje — altijd zichtbaar bij rekenen zodra [BORD] actief */}
-      <Scratchpad
-        childId={childId}
-        sessionId={currentSessionId}
-        isVisible={showScratchpad}
-      />
 
       {/* Pending Image Preview */}
       {pendingImage && (
