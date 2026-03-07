@@ -118,6 +118,9 @@ export default function ChatInterface({
   // Once unlocked, all subsequent speak() calls work automatically.
   const [audioUnlocked, setAudioUnlocked] = useState(false);
   const pendingSpeakRef = useRef<{ text: string; lang: string } | null>(null);
+  // Pre-fetched audio buffer for iOS gesture unlock (audio.play() must be synchronous).
+  // Fetched eagerly when a message arrives while audio is still locked.
+  const resolvedBufferRef = useRef<{ buffer: ArrayBuffer; lang: string } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -318,6 +321,29 @@ export default function ChatInterface({
       }
     }
   }, [messages, tutoringLocale, speak, setEmotion, audioUnlocked]);
+
+  // Eagerly pre-fetch TTS audio while the user hasn't unlocked audio yet (iOS fix).
+  // On iOS, audio.play() MUST be called synchronously within a gesture handler —
+  // any await (like a fetch) causes the gesture context to expire and play() to fail.
+  // By pre-fetching here, the ArrayBuffer is ready by the time the user taps the banner.
+  // handleUnlockAudio then plays it synchronously, no async in between.
+  useEffect(() => {
+    if (audioUnlocked || !isVoiceFirst || tutoringLocale === 'pap') return;
+    const lastAssistant = [...messages].reverse().find(m => m.role === 'assistant' && m.content);
+    if (!lastAssistant) return;
+    const cleaned = cleanForTts(lastAssistant.content, tutoringLocale);
+    if (!cleaned) return;
+    const lang = getTtsLang(tutoringLocale);
+    // Slice to keep fetch fast; banner waits a few seconds so usually resolves before tap
+    fetch('/nl/api/tutor/tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: cleaned.slice(0, 800), lang, speed: 0.88 }),
+    })
+      .then(r => r.ok ? r.arrayBuffer() : null)
+      .then(buf => { if (buf) resolvedBufferRef.current = { buffer: buf, lang }; })
+      .catch(() => {});
+  }, [messages, audioUnlocked, isVoiceFirst, tutoringLocale]);
 
   // Auto-start new sessions: Koko begins the lesson immediately after the greeting,
   // without the child needing to type anything first.
@@ -808,9 +834,28 @@ export default function ChatInterface({
   const handleUnlockAudio = useCallback(() => {
     if (audioUnlocked) return;
     setAudioUnlocked(true);
-    // Play a silent audio clip SYNCHRONOUSLY within the user gesture context.
-    // This permanently unlocks the AudioContext — subsequent audio.play() calls
-    // work even after async operations (like the OpenAI TTS fetch) complete.
+
+    // iOS fix: if we pre-fetched the audio buffer, play it SYNCHRONOUSLY right here —
+    // no await, no async fetch, just Blob → Audio → play() all within the gesture call stack.
+    // This is the only reliable way to play audio on iOS Safari after autoplay is blocked.
+    const resolved = resolvedBufferRef.current;
+    resolvedBufferRef.current = null;
+    if (resolved) {
+      try {
+        const blob = new Blob([resolved.buffer], { type: 'audio/mpeg' });
+        const url = URL.createObjectURL(blob);
+        const audio = new Audio(url);
+        const cleanup = () => URL.revokeObjectURL(url);
+        audio.onended = () => { cleanup(); setEmotion('idle'); };
+        audio.onerror = () => { cleanup(); setEmotion('idle'); };
+        setEmotion('speaking');
+        audio.play().catch(cleanup);
+      } catch {}
+      return;
+    }
+
+    // Chrome/desktop fallback: silent WAV to unlock AudioContext, then speak() async.
+    // Works on Chrome because any user gesture permanently grants autoplay permission.
     try {
       const silent = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
       silent.play().catch(() => {});
@@ -823,7 +868,6 @@ export default function ChatInterface({
         onEnd: () => setEmotion('idle'),
       });
     } else {
-      // Speak last assistant message if nothing pending
       const lastAssistant = [...messages].reverse().find(m => m.role === 'assistant' && m.content);
       if (lastAssistant && isVoiceFirst && tutoringLocale !== 'pap') {
         const cleaned = cleanForTts(lastAssistant.content, tutoringLocale);
