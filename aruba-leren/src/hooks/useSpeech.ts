@@ -25,7 +25,11 @@ async function fetchChunk(
       body: JSON.stringify({ text, lang, speed, highQuality }),
       signal,
     });
-    if (!response.ok) return null;
+    if (!response.ok) {
+      const errText = await response.text().catch(() => '');
+      console.warn(`TTS API ${response.status}:`, errText);
+      return null;
+    }
     return response.arrayBuffer();
   } catch {
     return null; // AbortError and network errors both return null

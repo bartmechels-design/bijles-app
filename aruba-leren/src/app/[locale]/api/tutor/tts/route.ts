@@ -36,7 +36,12 @@ export async function POST(
     const { data: { user }, error: authError } = await supabase.auth.getUser();
 
     if (authError || !user) {
-      return new Response('Unauthorized', { status: 401 });
+      console.error('TTS auth failed:', authError?.message ?? 'no user');
+      return new Response(`Unauthorized: ${authError?.message ?? 'no session'}`, { status: 401 });
+    }
+
+    if (!process.env.OPENAI_API_KEY) {
+      return new Response('OPENAI_API_KEY not configured', { status: 500 });
     }
 
     // Parse and validate request body
@@ -83,7 +88,8 @@ export async function POST(
       },
     });
   } catch (error) {
-    console.error('TTS API error:', error);
-    return new Response('TTS service error', { status: 500 });
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error('TTS API error:', msg);
+    return new Response(`TTS error: ${msg}`, { status: 500 });
   }
 }
