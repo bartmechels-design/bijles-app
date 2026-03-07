@@ -115,7 +115,26 @@ export function useTextToSpeech() {
         if (abort.signal.aborted) break;
 
         const buffer = await nextFetch;
-        if (!buffer || abort.signal.aborted) break;
+        if (abort.signal.aborted) break;
+        if (!buffer) {
+          // OpenAI TTS API failed (wrong key, 401, 500, network error).
+          // Fall back to speechSynthesis — works on Chrome after user gesture,
+          // and works on iOS if speechSynthesis was unlocked via the banner tap.
+          if (typeof window !== 'undefined' && window.speechSynthesis) {
+            await new Promise<void>(resolve => {
+              if (abort.signal.aborted) { resolve(); return; }
+              const utt = new SpeechSynthesisUtterance(chunks[i]);
+              utt.lang = lang;
+              utt.rate = speed;
+              utt.onend = () => resolve();
+              utt.onerror = () => resolve();
+              abort.signal.addEventListener('abort', () => { window.speechSynthesis.cancel(); resolve(); }, { once: true });
+              window.speechSynthesis.cancel();
+              window.speechSynthesis.speak(utt);
+            });
+          }
+          break;
+        }
 
         // While playing the current chunk, pre-fetch the next one (overlap I/O)
         if (i + 1 < chunks.length) {
