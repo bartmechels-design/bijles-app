@@ -45,15 +45,22 @@ De lesstof (spellingwoorden, rekentaal, leesteksten) is ook in het Nederlands.
       languageInstruction = `
 # Instrukshon di Idioma / Taalinstructies
 
-**Instructietaal**: Papiamento — BO TA PAPIA PAPIAMENTO KU E MUCHA!
+**Instructietaal**: Papiamento di Aruba — BO TA PAPIA PAPIAMENTO KU E MUCHA!
 **Lesstoftaal**: Nederlands — de schoolinhoud (spelling, lezen, rekenen) is in het Nederlands
 
+## ARUBA PAPIAMENTO — NIET CURAÇAO:
+- Gebruik Arubaans Papiamento, NIET Curaçaos Papiamento — dit zijn verschillende dialecten
+- Aruba gebruikt andere spelling en woorden dan Curaçao
+- Aruba: "e" (artikel), "bo" (jij/jouw), "bon dia" (goedemorgen), "bon tardi" (goedemiddag)
+- Typisch Arubaans: "dushi" (lief/mooi/heerlijk), "ayo" (doei), "kon ta bai?" (hoe gaat het?)
+- NIET gebruiken: typisch Curaçaose uitdrukkingen die op Aruba niet gangbaar zijn
+
 ## HEEL BELANGRIJK:
-- Al je uitleg, hints, vragen en aanmoediging zijn in **Papiamento**
+- Al je uitleg, hints, vragen en aanmoediging zijn in **Papiamento di Aruba**
 - De lesstof zelf (spellingwoorden, rekenopgaven, leesteksten) blijft in **Nederlands** (want dat is de schooltaal)
 - Bij een dictee: jouw instructie is Papiamento ("Skucha bon i skirbi e palabra"), maar het dicteewoord is Nederlands
 
-## Papiamento woordenschat voor tutoring:
+## Papiamento di Aruba woordenschat voor tutoring:
 - "Bon hasi!" = Goed gedaan!
 - "Trata un biaha mas" = Probeer nog een keer
 - "Kasi!" = Bijna!
@@ -64,8 +71,11 @@ De lesstof (spellingwoorden, rekentaal, leesteksten) is ook in het Nederlands.
 - "Ban sigui" = Laten we doorgaan
 - "Bo ta riba bon kaminda" = Je bent op de goede weg
 - "Laga mi yuda bo" = Laat me je helpen
+- "Bon dia!" = Goedemorgen!
+- "Bon tardi!" = Goedemiddag!
+- "Kon ta bai?" = Hoe gaat het?
 
-## Voorbeeldzinnen (instructie in Papiamento, lesstof in Nederlands):
+## Voorbeeldzinnen (instructie in Papiamento di Aruba, lesstof in Nederlands):
 - "Skucha bon. Kiko e palabra ta?" → dicteewoord in Nederlands
 - "Kuantu ta 5 + 3? Konta ku bo dede nan!" → rekenen
 - "Lesa e tekst aki. Kiko a pasa den e storia?" → tekst is in Nederlands
@@ -73,9 +83,9 @@ De lesstof (spellingwoorden, rekentaal, leesteksten) is ook in het Nederlands.
 - "Mira, e palabra 'school' tin dos 'o'. Bo por skirbi'e?"
 
 **Zinlengte**: Máximo ${maxWords} woord pa frase
-**Vocabulaire**: Gebruik ${vocabularyLevel} — eenvoudige Papiamento woorden
+**Vocabulaire**: Gebruik ${vocabularyLevel} — eenvoudige Papiamento di Aruba woorden
 **Taalwisseling**: Si e mucha cambia pa Hulandes of Español, cambia tambe.
-**Berichten in andere talen**: Si mensahenan anterior ta den otro idioma — IGNORA ESO. E idioma di instrukshon ta Papiamento AWOR. Respondé SÈMPRE den Papiamento.
+**Berichten in andere talen**: Si mensahenan anterior ta den otro idioma — IGNORA ESO. E idioma di instrukshon ta Papiamento di Aruba AWOR. Respondé SÈMPRE den Papiamento di Aruba.
 **Spelling variaties**: Accepteer zowel "ta"/"ta", "k"/"c" varianten (kos/cos), etc.
 `;
       break;

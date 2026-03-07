@@ -175,7 +175,7 @@ function SubjectCard({
       {/* Lijngrafieken niveau-over-tijd */}
       <div>
         <p className="text-xs text-gray-500 font-medium uppercase tracking-wide mb-2">
-          {locale === 'pap' ? 'Progreso' : 'Niveau-verloop'}
+          {t('levelProgress')}
         </p>
         <ProgressLineChartWrapper data={subject.levelHistory} subjectLabel={label} />
       </div>
@@ -215,7 +215,7 @@ export async function RapportView({ data, locale, readOnly = false }: RapportVie
             <p>{t('generatedAt', { date: formatDate(data.generatedAt, locale) })}</p>
             {readOnly && (
               <p className="mt-1 text-xs bg-sky-700/50 rounded-lg px-2 py-1 inline-block">
-                {locale === 'pap' ? 'Rapport parti' : 'Gedeeld rapport'}
+                {t('sharedReport')}
               </p>
             )}
           </div>
@@ -226,7 +226,7 @@ export async function RapportView({ data, locale, readOnly = false }: RapportVie
       {subjectsWithData.length > 0 && (
         <section>
           <h2 className="text-2xl font-bold text-gray-800 mb-4">
-            {locale === 'pap' ? 'Progreso pa materia' : 'Voortgang per vak'}
+            {t('progressPerSubject')}
           </h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {subjectsWithData.map((subject) => (
@@ -240,7 +240,7 @@ export async function RapportView({ data, locale, readOnly = false }: RapportVie
       {subjectsWithoutData.length > 0 && (
         <section>
           <h2 className="text-xl font-semibold text-gray-600 mb-3">
-            {locale === 'pap' ? 'Ainda no a cuminsa' : 'Nog niet gestart'}
+            {t('notStartedYet')}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {subjectsWithoutData.map((subject) => {
@@ -258,7 +258,7 @@ export async function RapportView({ data, locale, readOnly = false }: RapportVie
                   <div>
                     <p className="font-semibold text-gray-600 text-sm">{label}</p>
                     <p className="text-xs text-gray-400 italic">
-                      {locale === 'pap' ? 'Ainda no tin lesnan' : 'Nog geen lessen gevolgd'}
+                      {t('noLessonsYet')}
                     </p>
                   </div>
                 </div>
@@ -273,14 +273,10 @@ export async function RapportView({ data, locale, readOnly = false }: RapportVie
         <div className="bg-white rounded-2xl shadow-lg border-2 border-sky-100 p-8 text-center">
           <p className="text-4xl mb-3">📊</p>
           <p className="text-gray-600 font-semibold">
-            {locale === 'pap'
-              ? 'Ainda no tin dato di progreso'
-              : 'Nog geen voortgangsdata beschikbaar'}
+            {t('noProgressData')}
           </p>
           <p className="text-sm text-gray-400 mt-1">
-            {locale === 'pap'
-              ? 'Cuminsa cu un toets pa materia pa registrá progreso.'
-              : 'Start met een toets per vak om voortgang bij te houden.'}
+            {t('noProgressDataHint')}
           </p>
         </div>
       )}

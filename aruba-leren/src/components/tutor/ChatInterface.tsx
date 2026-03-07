@@ -51,10 +51,9 @@ function getSttLang(locale: string) {
   return 'nl-NL';
 }
 
-function getTtsLang(locale: string) {
-  if (locale === 'pap') return 'nl-NL';
-  if (locale === 'es') return 'es-ES';
-  if (locale === 'en') return 'en-US';
+function getTtsLang(_locale: string) {
+  // Always use Dutch TTS: all lesson content is Dutch regardless of instruction language.
+  // The Dutch voice handles mixed-language text better than Spanish/English handles Dutch.
   return 'nl-NL';
 }
 
@@ -129,6 +128,8 @@ export default function ChatInterface({
   const prevLocaleRef = useRef(locale);
   // After a locale switch, the next N child messages also skip DB history (avoids language bleed-through)
   const noHistoryCountRef = useRef(0);
+  // Tracks whether the greeting has been auto-spoken (prevent double-play on re-render)
+  const greetingSpokenRef = useRef(false);
 
   // Speech hooks — use tutoringLocale so they update when language is switched mid-session
   const { startListening, stopListening, isListening, transcript, isSupported: sttSupported } =
@@ -305,6 +306,19 @@ export default function ChatInterface({
 
     speak(cleaned, lang, { onStart: () => setEmotion('speaking'), onEnd: onDone });
   }, [isVoiceFirst, tutoringLocale, speak, setEmotion]);
+
+  // Auto-speak the initial greeting for new sessions (voice-first mode)
+  useEffect(() => {
+    if (
+      !greetingSpokenRef.current &&
+      messages.length === 1 &&
+      messages[0].id === 'koko-greeting' &&
+      messages[0].content
+    ) {
+      greetingSpokenRef.current = true;
+      autoSpeak('koko-greeting', messages[0].content);
+    }
+  }, [messages, autoSpeak]);
 
   // Auto-continuation: when resuming an active session (< 30 min idle), auto-trigger Koko
   // to continue exactly where the lesson left off — without the child needing to type first.
@@ -750,35 +764,6 @@ export default function ChatInterface({
           subject={subject}
           subjectLabel={subjectLabel}
         />
-
-        {/* Language switcher — child can switch instruction language mid-lesson */}
-        <div className="flex items-center gap-0.5" role="group" aria-label="Taal kiezen">
-          {(['nl', 'pap', 'es', 'en'] as const).map((loc) => {
-            const flags: Record<string, string> = { nl: '🇳🇱', pap: '🇦🇼', es: '🇪🇸', en: '🇬🇧' };
-            const labels: Record<string, string> = { nl: 'Nederlands', pap: 'Papiamento', es: 'Español', en: 'English' };
-            const isActive = tutoringLocale === loc;
-            return (
-              <button
-                key={loc}
-                type="button"
-                onClick={() => {
-                  setTutoringLocale(loc);
-                  window.dispatchEvent(new CustomEvent('tutoringLocaleChange', { detail: loc }));
-                }}
-                className={`w-8 h-8 rounded-full text-base flex items-center justify-center transition-all ${
-                  isActive
-                    ? 'ring-2 ring-sky-400 bg-sky-50 scale-110 shadow-sm'
-                    : 'opacity-50 hover:opacity-90 hover:scale-105'
-                }`}
-                title={labels[loc]}
-                aria-label={`Taal: ${labels[loc]}`}
-                aria-current={isActive ? 'true' : undefined}
-              >
-                {flags[loc]}
-              </button>
-            );
-          })}
-        </div>
 
         {/* Voice-first toggle — verborgen voor tekst */}
         {subject !== 'tekst' && (
