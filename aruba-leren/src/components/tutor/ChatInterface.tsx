@@ -835,47 +835,55 @@ export default function ChatInterface({
     if (audioUnlocked) return;
     setAudioUnlocked(true);
 
-    // iOS fix: if we pre-fetched the audio buffer, play it SYNCHRONOUSLY right here —
-    // no await, no async fetch, just Blob → Audio → play() all within the gesture call stack.
-    // This is the only reliable way to play audio on iOS Safari after autoplay is blocked.
+    // STEP 1: Determine what text to speak
+    const pending = pendingSpeakRef.current;
+    pendingSpeakRef.current = null;
+    const lastAssistant = [...messages].reverse().find(m => m.role === 'assistant' && m.content);
+    const textToSpeak = pending?.text
+      ?? (lastAssistant ? cleanForTts(lastAssistant.content, tutoringLocale) : '');
+    const langToSpeak = pending?.lang ?? getTtsLang(tutoringLocale);
+
+    // STEP 2 (iOS + all browsers): ALWAYS unlock speechSynthesis synchronously within the
+    // gesture. Once unlocked this way, speechSynthesis.speak() works for the rest of the session —
+    // including from async contexts (e.g. after OpenAI TTS fails). This makes the fallback
+    // in useSpeech.ts effective for all subsequent Koko messages on iOS.
+    if (typeof window !== 'undefined' && window.speechSynthesis && textToSpeak) {
+      const utt = new SpeechSynthesisUtterance(textToSpeak);
+      utt.lang = langToSpeak;
+      utt.rate = 0.88;
+      setEmotion('speaking');
+      utt.onend = () => setEmotion('idle');
+      utt.onerror = () => setEmotion('idle');
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utt);
+    }
+
+    // STEP 3 (iOS): If we pre-fetched the OpenAI TTS buffer, play it synchronously.
+    // This overrides the speechSynthesis above with higher-quality audio.
     const resolved = resolvedBufferRef.current;
     resolvedBufferRef.current = null;
     if (resolved) {
+      window.speechSynthesis?.cancel(); // Stop the browser TTS; MP3 takes over
       try {
         const blob = new Blob([resolved.buffer], { type: 'audio/mpeg' });
         const url = URL.createObjectURL(blob);
         const audio = new Audio(url);
-        const cleanup = () => URL.revokeObjectURL(url);
-        audio.onended = () => { cleanup(); setEmotion('idle'); };
-        audio.onerror = () => { cleanup(); setEmotion('idle'); };
+        const done = () => { URL.revokeObjectURL(url); setEmotion('idle'); };
+        audio.onended = done;
+        audio.onerror = done;
         setEmotion('speaking');
-        audio.play().catch(cleanup);
+        audio.play().catch(done);
       } catch {}
       return;
     }
 
-    // Chrome/desktop fallback: silent WAV to unlock AudioContext, then speak() async.
-    // Works on Chrome because any user gesture permanently grants autoplay permission.
-    try {
-      const silent = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
-      silent.play().catch(() => {});
-    } catch {}
-    const pending = pendingSpeakRef.current;
-    pendingSpeakRef.current = null;
-    if (pending) {
-      speak(pending.text, pending.lang, {
-        onStart: () => setEmotion('speaking'),
+    // STEP 4 (Chrome/desktop): async OpenAI TTS via speak() also works after a user gesture
+    // on Chrome (gesture grants page-level autoplay permission permanently).
+    if (textToSpeak) {
+      speak(textToSpeak, langToSpeak, {
+        onStart: () => { window.speechSynthesis?.cancel(); setEmotion('speaking'); },
         onEnd: () => setEmotion('idle'),
       });
-    } else {
-      const lastAssistant = [...messages].reverse().find(m => m.role === 'assistant' && m.content);
-      if (lastAssistant && isVoiceFirst && tutoringLocale !== 'pap') {
-        const cleaned = cleanForTts(lastAssistant.content, tutoringLocale);
-        if (cleaned) speak(cleaned, getTtsLang(tutoringLocale), {
-          onStart: () => setEmotion('speaking'),
-          onEnd: () => setEmotion('idle'),
-        });
-      }
     }
   }, [audioUnlocked, speak, setEmotion, messages, isVoiceFirst, tutoringLocale]);
 
