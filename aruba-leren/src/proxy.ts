@@ -5,7 +5,7 @@ import { routing } from './i18n/routing'
 
 const intlMiddleware = createIntlMiddleware(routing)
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // Step 1: Supabase session refresh — set cookies on request so they carry through
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
