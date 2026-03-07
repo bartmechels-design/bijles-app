@@ -125,6 +125,9 @@ function preprocessMathForTts(text: string, locale: string): string {
 
   // Step 0: Convert LaTeX notation to plain text BEFORE fraction/operator handling
   r = r
+    // Strip inline/display math delimiters: \(...\) and \[...\]
+    .replace(/\\\(/g, '').replace(/\\\)/g, '')
+    .replace(/\\\[/g, '').replace(/\\\]/g, '')
     // Block math: $$...$$ → strip delimiters
     .replace(/\$\$/g, '')
     // \frac{num}{den} → "num/den" (picked up by fraction regex below)
