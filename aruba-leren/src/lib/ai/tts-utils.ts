@@ -109,7 +109,7 @@ export function splitIntoSegments(text: string): TtsSegment[] {
  * Convert math notation to spoken words in the given locale.
  * Prevents OpenAI TTS from reading symbols in English regardless of language.
  *
- * Examples (nl): "2 × 3 = 6" → "2 keer 3 is 6", "1/2" → "een half"
+ * Examples (nl): "2 × 3 = 6" → "2 keer 3 is 6", "1/2" → "één tweede", "3/4" → "drie vierde"
  */
 function preprocessMathForTts(text: string, locale: string): string {
   const nl = locale === 'nl' || locale === 'pap';
@@ -123,32 +123,42 @@ function preprocessMathForTts(text: string, locale: string): string {
 
   let r = text;
 
-  // Common fractions → words (before generic fraction rule)
+  // Fractions → ordinal spoken form (math-correct, as taught in school)
+  // 1/2 → "één tweede", 2/3 → "twee derde", 3/4 → "drie vierde"
   if (nl) {
-    r = r
-      .replace(/\b1\/2\b/g, 'een half')
-      .replace(/\b1\/3\b/g, 'een derde')
-      .replace(/\b2\/3\b/g, 'twee derde')
-      .replace(/\b1\/4\b/g, 'een kwart')
-      .replace(/\b3\/4\b/g, 'drie kwart')
-      .replace(/\b1\/5\b/g, 'een vijfde')
-      .replace(/\b2\/5\b/g, 'twee vijfde')
-      .replace(/\b3\/5\b/g, 'drie vijfde')
-      .replace(/\b4\/5\b/g, 'vier vijfde');
+    const denomNl: Record<number, string> = {
+      2: 'tweede', 3: 'derde', 4: 'vierde', 5: 'vijfde',
+      6: 'zesde', 7: 'zevende', 8: 'achtste', 9: 'negende', 10: 'tiende',
+    };
+    r = r.replace(/(\d+)\/(\d+)/g, (_, num, den) => {
+      const n = parseInt(num, 10);
+      const d = parseInt(den, 10);
+      const numWord = n === 1 ? 'één' : String(n);
+      const denWord = denomNl[d] ?? `${d}de`;
+      return `${numWord} ${denWord}`;
+    });
   } else if (es) {
-    r = r
-      .replace(/\b1\/2\b/g, 'la mitad')
-      .replace(/\b1\/4\b/g, 'un cuarto')
-      .replace(/\b3\/4\b/g, 'tres cuartos');
+    const denomEs: Record<number, string> = {
+      2: 'medio', 3: 'tercio', 4: 'cuarto', 5: 'quinto',
+      6: 'sexto', 7: 'séptimo', 8: 'octavo', 9: 'noveno', 10: 'décimo',
+    };
+    r = r.replace(/(\d+)\/(\d+)/g, (_, num, den) => {
+      const d = parseInt(den, 10);
+      return `${num} ${denomEs[d] ?? `${d}vo`}`;
+    });
   } else {
-    r = r
-      .replace(/\b1\/2\b/g, 'one half')
-      .replace(/\b1\/4\b/g, 'one quarter')
-      .replace(/\b3\/4\b/g, 'three quarters');
+    const denomEn: Record<number, string> = {
+      2: 'half', 3: 'third', 4: 'quarter', 5: 'fifth',
+      6: 'sixth', 7: 'seventh', 8: 'eighth', 9: 'ninth', 10: 'tenth',
+    };
+    r = r.replace(/(\d+)\/(\d+)/g, (_, num, den) => {
+      const n = parseInt(num, 10);
+      const d = parseInt(den, 10);
+      const base = denomEn[d] ?? `${d}th`;
+      const denWord = n > 1 && d !== 2 ? `${base}s` : base;
+      return `${num} ${denWord}`;
+    });
   }
-
-  // General fractions: 3/8 → "3 gedeeld door 8"
-  r = r.replace(/(\d+)\/(\d+)/g, `$1 ${divided} $2`);
 
   // Math operators (Unicode symbols)
   r = r
