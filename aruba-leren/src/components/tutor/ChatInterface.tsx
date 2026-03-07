@@ -112,6 +112,10 @@ export default function ChatInterface({
   // Tracks which assistant message's dictation block may auto-play.
   // Set AFTER the explanation TTS finishes, so dictation plays sequentially.
   const [dictationReadyId, setDictationReadyId] = useState<string | null>(null);
+  // Audio unlock: browsers block autoplay until first user gesture.
+  // Once unlocked, all subsequent speak() calls work automatically.
+  const [audioUnlocked, setAudioUnlocked] = useState(false);
+  const pendingSpeakRef = useRef<{ text: string; lang: string } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -301,13 +305,17 @@ export default function ChatInterface({
       greetingSpokenRef.current = true;
       const cleaned = cleanForTts(messages[0].content, tutoringLocale);
       if (cleaned) {
-        speak(cleaned, getTtsLang(tutoringLocale), {
-          onStart: () => setEmotion('speaking'),
-          onEnd: () => setEmotion('idle'),
-        });
+        if (audioUnlocked) {
+          speak(cleaned, getTtsLang(tutoringLocale), {
+            onStart: () => setEmotion('speaking'),
+            onEnd: () => setEmotion('idle'),
+          });
+        } else {
+          pendingSpeakRef.current = { text: cleaned, lang: getTtsLang(tutoringLocale) };
+        }
       }
     }
-  }, [messages, tutoringLocale, speak, setEmotion]);
+  }, [messages, tutoringLocale, speak, setEmotion, audioUnlocked]);
 
   // Auto-start new sessions: Koko begins the lesson immediately after the greeting,
   // without the child needing to type anything first.
@@ -482,6 +490,9 @@ export default function ChatInterface({
       content: messageText,
       imageUrl: pendingImage || undefined,
     };
+
+    // Unlock audio on first user message (browser autoplay policy)
+    if (!audioUnlocked) setAudioUnlocked(true);
 
     // Add user message immediately
     setMessages(prev => [...prev, userMessage]);
@@ -790,6 +801,31 @@ export default function ChatInterface({
     };
   }, []);
 
+  // Unlock audio on first user gesture — required by browser autoplay policy.
+  // Plays any pending TTS that was queued before the user interacted.
+  const handleUnlockAudio = useCallback(() => {
+    if (audioUnlocked) return;
+    setAudioUnlocked(true);
+    const pending = pendingSpeakRef.current;
+    pendingSpeakRef.current = null;
+    if (pending) {
+      speak(pending.text, pending.lang, {
+        onStart: () => setEmotion('speaking'),
+        onEnd: () => setEmotion('idle'),
+      });
+    } else {
+      // Speak last assistant message if nothing pending
+      const lastAssistant = [...messages].reverse().find(m => m.role === 'assistant' && m.content);
+      if (lastAssistant && isVoiceFirst && tutoringLocale !== 'pap') {
+        const cleaned = cleanForTts(lastAssistant.content, tutoringLocale);
+        if (cleaned) speak(cleaned, getTtsLang(tutoringLocale), {
+          onStart: () => setEmotion('speaking'),
+          onEnd: () => setEmotion('idle'),
+        });
+      }
+    }
+  }, [audioUnlocked, speak, setEmotion, messages, isVoiceFirst, tutoringLocale]);
+
   const handleZinsontledingClick = (content: string) => {
     try {
       const parsed: ZinsontledingData = JSON.parse(content);
@@ -852,6 +888,20 @@ export default function ChatInterface({
           </button>
         )}
       </div>
+
+      {/* Audio Unlock Banner — shown until first user gesture unlocks browser audio */}
+      {!audioUnlocked && isVoiceFirst && tutoringLocale !== 'pap' && (
+        <button
+          type="button"
+          onClick={handleUnlockAudio}
+          className="w-full bg-sky-500 hover:bg-sky-600 text-white px-4 py-3 flex items-center justify-center gap-2 text-sm font-semibold transition-colors"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z" />
+          </svg>
+          Tik hier om geluid in te schakelen 🔊
+        </button>
+      )}
 
       {/* Assessment Mode Banner */}
       {isAssessmentMode && !assessmentDone && (
