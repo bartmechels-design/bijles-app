@@ -208,18 +208,34 @@ function renderMarkdown(text: string): React.ReactNode {
   let i = 0;
 
   const inlineFormat = (line: string, key: string | number): React.ReactNode => {
-    // Process **bold** and *italic* inline
-    const parts = line.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g);
+    // Split on inline math \(...\) first, then apply bold/italic to text parts
+    const mathParts = line.split(/(\\\([\s\S]*?\\\))/g);
     return (
       <span key={key}>
-        {parts.map((part, pi) => {
-          if (part.startsWith('**') && part.endsWith('**')) {
-            return <strong key={pi}>{part.slice(2, -2)}</strong>;
+        {mathParts.map((part, pi) => {
+          // Inline math: \(...\) → render with KaTeX
+          if (part.startsWith('\\(') && part.endsWith('\\)')) {
+            const inner = part.slice(2, -2).trim();
+            try {
+              const html = katex.renderToString(inner, {
+                throwOnError: false, displayMode: false, output: 'html', trust: false,
+              });
+              return <span key={pi} dangerouslySetInnerHTML={{ __html: html }} />;
+            } catch {
+              return <span key={pi}>{inner}</span>;
+            }
           }
-          if (part.startsWith('*') && part.endsWith('*') && part.length > 2) {
-            return <em key={pi}>{part.slice(1, -1)}</em>;
-          }
-          return part;
+          // Regular text: apply **bold** and *italic*
+          const textParts = part.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g);
+          return (
+            <span key={pi}>
+              {textParts.map((tp, ti) => {
+                if (tp.startsWith('**') && tp.endsWith('**')) return <strong key={ti}>{tp.slice(2, -2)}</strong>;
+                if (tp.startsWith('*') && tp.endsWith('*') && tp.length > 2) return <em key={ti}>{tp.slice(1, -1)}</em>;
+                return tp;
+              })}
+            </span>
+          );
         })}
       </span>
     );
