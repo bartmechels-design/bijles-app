@@ -808,6 +808,13 @@ export default function ChatInterface({
   const handleUnlockAudio = useCallback(() => {
     if (audioUnlocked) return;
     setAudioUnlocked(true);
+    // Play a silent audio clip SYNCHRONOUSLY within the user gesture context.
+    // This permanently unlocks the AudioContext — subsequent audio.play() calls
+    // work even after async operations (like the OpenAI TTS fetch) complete.
+    try {
+      const silent = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
+      silent.play().catch(() => {});
+    } catch {}
     const pending = pendingSpeakRef.current;
     pendingSpeakRef.current = null;
     if (pending) {
