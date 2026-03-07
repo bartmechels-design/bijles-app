@@ -20,10 +20,9 @@ interface ChatMessageProps {
   onZinsontledingClick?: (content: string) => void;
 }
 
-function getLang(locale?: string) {
-  if (locale === 'pap') return 'nl-NL'; // Papiamento fallback to Dutch
-  if (locale === 'es') return 'es-ES';
-  if (locale === 'en') return 'en-US';
+function getLang(_locale?: string) {
+  // Lesson content is ALWAYS Dutch — regardless of interface language.
+  // A Spanish/English TTS voice cannot pronounce Dutch words correctly.
   return 'nl-NL';
 }
 
@@ -128,31 +127,41 @@ function containsMath(text: string): boolean {
 }
 
 /**
- * Render een tekstregel met KaTeX als die LaTeX-tokens bevat.
- * Veilig: throwOnError: false + try/catch vangt alle parse-fouten op.
+ * Render een tekstregel met inline KaTeX voor \(...\) blokken.
+ * Niet-math tekst wordt als plain text getoond.
  */
 function renderMathLine(text: string, className?: string): React.ReactElement {
-  const clean = stripLatexDelimiters(text);
-  if (!containsMath(clean)) {
-    return <span className={className}>{clean}</span>
+  const stripped = stripLatexDelimiters(text);
+  // Split on \(...\) delimiters
+  const parts = stripped.split(/(\\\([\s\S]*?\\\))/g);
+  if (parts.length === 1) {
+    // No delimiters — try rendering as pure math if it contains LaTeX tokens
+    if (containsMath(stripped)) {
+      try {
+        const html = katex.renderToString(stripped, { throwOnError: false, displayMode: false, output: 'html', trust: false });
+        return <span className={className} dangerouslySetInnerHTML={{ __html: html }} />;
+      } catch {
+        return <span className={className}>{stripped}</span>;
+      }
+    }
+    return <span className={className}>{stripped}</span>;
   }
-  try {
-    const html = katex.renderToString(clean, {
-      throwOnError: false,
-      displayMode: false,
-      output: 'html',
-      trust: false,
-    })
-    return (
-      <span
-        className={className}
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
-    )
-  } catch {
-    // Fallback: toon plain text als KaTeX toch faalt
-    return <span className={className}>{clean}</span>
-  }
+  return (
+    <span className={className}>
+      {parts.map((p, i) => {
+        if (p.startsWith('\\(') && p.endsWith('\\)')) {
+          const inner = p.slice(2, -2).trim();
+          try {
+            const html = katex.renderToString(inner, { throwOnError: false, displayMode: false, output: 'html', trust: false });
+            return <span key={i} dangerouslySetInnerHTML={{ __html: html }} />;
+          } catch {
+            return <span key={i}>{inner}</span>;
+          }
+        }
+        return <span key={i}>{p}</span>;
+      })}
+    </span>
+  );
 }
 
 function parseSegments(content: string): Segment[] {
@@ -208,37 +217,43 @@ function renderMarkdown(text: string): React.ReactNode {
   let i = 0;
 
   const inlineFormat = (line: string, key: string | number): React.ReactNode => {
-    // Split on inline math \(...\) first, then apply bold/italic to text parts
-    const mathParts = line.split(/(\\\([\s\S]*?\\\))/g);
-    return (
-      <span key={key}>
-        {mathParts.map((part, pi) => {
-          // Inline math: \(...\) → render with KaTeX
-          if (part.startsWith('\\(') && part.endsWith('\\)')) {
-            const inner = part.slice(2, -2).trim();
-            try {
-              const html = katex.renderToString(inner, {
-                throwOnError: false, displayMode: false, output: 'html', trust: false,
-              });
-              return <span key={pi} dangerouslySetInnerHTML={{ __html: html }} />;
-            } catch {
-              return <span key={pi}>{inner}</span>;
-            }
-          }
-          // Regular text: apply **bold** and *italic*
-          const textParts = part.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g);
-          return (
-            <span key={pi}>
-              {textParts.map((tp, ti) => {
-                if (tp.startsWith('**') && tp.endsWith('**')) return <strong key={ti}>{tp.slice(2, -2)}</strong>;
-                if (tp.startsWith('*') && tp.endsWith('*') && tp.length > 2) return <em key={ti}>{tp.slice(1, -1)}</em>;
-                return tp;
-              })}
-            </span>
-          );
-        })}
-      </span>
-    );
+    // Single-pass tokenizer: bold-math, italic-math, math, bold, italic, plain text.
+    // Handles LaTeX inside **bold** correctly (e.g. **\(\frac{4}{8}\)**).
+    const INLINE = /(\*\*\\\([\s\S]*?\\\)\*\*|\*\\\([\s\S]*?\\\)\*|\\\([\s\S]*?\\\)|\*\*[^*\n]+\*\*|\*[^*\n]+\*)/g;
+    const nodes: React.ReactNode[] = [];
+    let last = 0;
+    let m: RegExpExecArray | null;
+    INLINE.lastIndex = 0;
+
+    const renderKatex = (src: string, Wrapper: 'span' | 'strong' | 'em', k: number) => {
+      try {
+        const html = katex.renderToString(src, { throwOnError: false, displayMode: false, output: 'html', trust: false });
+        return React.createElement(Wrapper, { key: k, dangerouslySetInnerHTML: { __html: html } });
+      } catch {
+        return React.createElement(Wrapper, { key: k }, src);
+      }
+    };
+
+    while ((m = INLINE.exec(line)) !== null) {
+      if (m.index > last) nodes.push(line.slice(last, m.index));
+      const p = m[0];
+      if (p.startsWith('**\\(') && p.endsWith('\\)**')) {
+        nodes.push(renderKatex(p.slice(4, -4).trim(), 'strong', m.index));
+      } else if (p.startsWith('*\\(') && p.endsWith('\\)*')) {
+        nodes.push(renderKatex(p.slice(3, -3).trim(), 'em', m.index));
+      } else if (p.startsWith('\\(') && p.endsWith('\\)')) {
+        nodes.push(renderKatex(p.slice(2, -2).trim(), 'span', m.index));
+      } else if (p.startsWith('**')) {
+        nodes.push(<strong key={m.index}>{p.slice(2, -2)}</strong>);
+      } else if (p.startsWith('*')) {
+        nodes.push(<em key={m.index}>{p.slice(1, -1)}</em>);
+      } else {
+        nodes.push(p);
+      }
+      last = m.index + p.length;
+    }
+    if (last < line.length) nodes.push(line.slice(last));
+    return <span key={key}>{nodes}</span>;
   };
 
   while (i < lines.length) {
