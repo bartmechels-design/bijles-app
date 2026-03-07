@@ -143,7 +143,21 @@ export function useTextToSpeech() {
           audio.onerror = done;
           // Resolve immediately if stop() is called mid-playback
           abort.signal.addEventListener('abort', () => { audio.pause(); done(); }, { once: true });
-          audio.play().catch(done);
+          audio.play().catch(() => {
+            // Browser blocked autoplay (no user gesture yet) — fall back to speechSynthesis
+            URL.revokeObjectURL(url);
+            if (typeof window !== 'undefined' && window.speechSynthesis) {
+              const utt = new SpeechSynthesisUtterance(text);
+              utt.lang = lang;
+              utt.rate = 0.92;
+              utt.onend = done;
+              utt.onerror = done;
+              abort.signal.addEventListener('abort', () => { window.speechSynthesis.cancel(); done(); }, { once: true });
+              window.speechSynthesis.speak(utt);
+            } else {
+              done();
+            }
+          });
         });
       }
 

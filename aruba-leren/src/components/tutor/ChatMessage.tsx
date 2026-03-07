@@ -113,6 +113,15 @@ export function extractOpdrachtBlocks(content: string): string[] {
 
 // --- KaTeX math rendering ---
 
+/** Strip LaTeX inline/display math delimiters: \(...\), \[...\], $$...$$  */
+function stripLatexDelimiters(text: string): string {
+  return text
+    .replace(/\\\(([\s\S]*?)\\\)/g, '$1')   // \(...\) → content
+    .replace(/\\\[([\s\S]*?)\\\]/g, '$1')   // \[...\] → content
+    .replace(/\$\$([\s\S]*?)\$\$/g, '$1')   // $$...$$ → content
+    .replace(/\$([^$]+)\$/g, '$1');          // $...$ → content
+}
+
 /** Detecteer of een string LaTeX-tokens bevat */
 function containsMath(text: string): boolean {
   return /\\frac|\\times|\\div|\\sqrt|\\cdot|\^{|_{/.test(text)
@@ -123,11 +132,12 @@ function containsMath(text: string): boolean {
  * Veilig: throwOnError: false + try/catch vangt alle parse-fouten op.
  */
 function renderMathLine(text: string, className?: string): React.ReactElement {
-  if (!containsMath(text)) {
-    return <span className={className}>{text}</span>
+  const clean = stripLatexDelimiters(text);
+  if (!containsMath(clean)) {
+    return <span className={className}>{clean}</span>
   }
   try {
-    const html = katex.renderToString(text, {
+    const html = katex.renderToString(clean, {
       throwOnError: false,
       displayMode: false,
       output: 'html',
@@ -141,7 +151,7 @@ function renderMathLine(text: string, className?: string): React.ReactElement {
     )
   } catch {
     // Fallback: toon plain text als KaTeX toch faalt
-    return <span className={className}>{text}</span>
+    return <span className={className}>{clean}</span>
   }
 }
 
