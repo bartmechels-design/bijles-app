@@ -50,10 +50,12 @@ function getSttLang(locale: string) {
   return 'nl-NL';
 }
 
-function getTtsLang(_locale: string) {
-  // Always use Dutch TTS: all lesson content is Dutch regardless of instruction language.
-  // The Dutch voice handles mixed-language text better than Spanish/English handles Dutch.
-  return 'nl-NL';
+function getTtsLang(locale: string) {
+  // Koko's uitleg wordt voorgelezen in de instructietaal.
+  // [SPREEK] dictee-woorden gebruiken altijd nl-NL (geregeld in SpokenBlock).
+  if (locale === 'es') return 'es-ES';
+  if (locale === 'en') return 'en-US';
+  return 'nl-NL'; // nl en pap → Dutch TTS
 }
 
 function hasSpeekBlocks(text: string) {

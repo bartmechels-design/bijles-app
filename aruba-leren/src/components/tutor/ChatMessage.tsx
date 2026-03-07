@@ -20,10 +20,11 @@ interface ChatMessageProps {
   onZinsontledingClick?: (content: string) => void;
 }
 
-function getLang(_locale?: string) {
-  // Lesson content is ALWAYS Dutch — regardless of interface language.
-  // A Spanish/English TTS voice cannot pronounce Dutch words correctly.
-  return 'nl-NL';
+function getLang(locale?: string) {
+  // Koko's uitleg in de instructietaal; [SPREEK] dictee-woorden altijd nl-NL (SpokenBlock).
+  if (locale === 'es') return 'es-ES';
+  if (locale === 'en') return 'en-US';
+  return 'nl-NL'; // nl en pap → Dutch TTS
 }
 
 /** Strip markdown formatting, emojis, and special characters so TTS reads clean text */
