@@ -287,7 +287,7 @@ export default function ChatInterface({
     }
 
     const hasSpreek = hasSpeekBlocks(text);
-    const cleaned = cleanForTts(text);
+    const cleaned = cleanForTts(text, tutoringLocale);
 
     if (!cleaned) {
       if (hasSpreek) setDictationReadyId(messageId);
@@ -479,7 +479,7 @@ export default function ChatInterface({
         // This starts the OpenAI API call early so audio is ready (or in-flight)
         // when streaming ends, eliminating most of the perceived TTS latency.
         if (isVoiceFirst && !streamingPrefetchRef.current) {
-          const cleanedSoFar = cleanForTts(assistantMessage);
+          const cleanedSoFar = cleanForTts(assistantMessage, tutoringLocale);
           if (cleanedSoFar.length >= 80) {
             const lastSentEnd = Math.max(
               cleanedSoFar.lastIndexOf('. '),
@@ -607,19 +607,19 @@ export default function ChatInterface({
     // Explicit trigger — must be strong enough to override previous conversation language.
     // We send NO history at all (empty context) so previous language cannot bleed through.
     const switchTrigger: Record<string, string> = {
-      nl:  'De taal is gewisseld naar NEDERLANDS. Begroet me kort in het NEDERLANDS en ga verder in het NEDERLANDS. Spreek ALLEEN Nederlands.',
-      pap: 'E idioma a cambia na PAPIAMENTO. Saluda mi brèf den PAPIAMENTO i sigui den PAPIAMENTO. Papia SOLAMENTE Papiamento.',
-      es:  'El idioma cambió a ESPAÑOL. Salúdame brevemente en ESPAÑOL y continúa en ESPAÑOL. Habla SOLO en español.',
-      en:  'The language changed to ENGLISH. Greet me briefly in ENGLISH and continue in ENGLISH only. Speak ONLY English.',
+      nl:  'Wissel nu naar NEDERLANDS. Ga DIRECT door met de les waar we mee bezig waren, zonder opnieuw te beginnen. Spreek ALLEEN Nederlands.',
+      pap: 'Cambia awo na PAPIAMENTO. Sigui DIRECTO cu e les cu nos tabata haci, sin cuminsa di nobo. Papia SOLAMENTE Papiamento.',
+      es:  'Cambia ahora a ESPAÑOL. Continúa DIRECTAMENTE con la lección que estábamos haciendo, sin empezar de nuevo. Habla SOLO en español.',
+      en:  'Switch now to ENGLISH. Continue DIRECTLY with the lesson we were doing, without starting over. Speak ONLY English.',
     };
     const triggerText = switchTrigger[tutoringLocale] ?? 'Continue.';
     const newLocale = tutoringLocale;
 
-    // Include the last 2 messages (1 exchange) so Koko knows what the child was working on.
+    // Include the last 6 messages (3 exchanges) so Koko knows what the child was working on.
     // 2 messages is not enough to establish a language pattern that overrides the system prompt.
     const recentContext = messagesRef.current
       .filter(m => m.role === 'user' || m.role === 'assistant')
-      .slice(-2)
+      .slice(-6)
       .map(m => ({ role: m.role as 'user' | 'assistant', content: m.content }));
     const apiMessages = [
       ...recentContext,
@@ -663,7 +663,7 @@ export default function ChatInterface({
 
           // Prefetch TTS for first complete sentence (same as in handleSubmit)
           if (isVoiceFirst && !streamingPrefetchRef.current) {
-            const cleanedSoFar = cleanForTts(responseText);
+            const cleanedSoFar = cleanForTts(responseText, tutoringLocale);
             if (cleanedSoFar.length >= 80) {
               const lastSentEnd = Math.max(
                 cleanedSoFar.lastIndexOf('. '),

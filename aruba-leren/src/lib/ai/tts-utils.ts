@@ -106,10 +106,74 @@ export function splitIntoSegments(text: string): TtsSegment[] {
 }
 
 /**
- * Apply TTS text cleaning: strip markdown, special tags, emojis.
- * Extracted from ChatInterface.tsx cleanForAutoTts() for reuse across hooks.
+ * Convert math notation to spoken words in the given locale.
+ * Prevents OpenAI TTS from reading symbols in English regardless of language.
+ *
+ * Examples (nl): "2 × 3 = 6" → "2 keer 3 is 6", "1/2" → "een half"
  */
-export function cleanForTts(text: string): string {
+function preprocessMathForTts(text: string, locale: string): string {
+  const nl = locale === 'nl' || locale === 'pap';
+  const es = locale === 'es';
+
+  const times    = nl ? 'keer'          : es ? 'por'           : 'times';
+  const divided  = nl ? 'gedeeld door'  : es ? 'dividido por'  : 'divided by';
+  const plus     = nl ? 'plus'          : es ? 'más'           : 'plus';
+  const minus    = nl ? 'min'           : es ? 'menos'         : 'minus';
+  const equals   = nl ? 'is'            : es ? 'es'            : 'equals';
+
+  let r = text;
+
+  // Common fractions → words (before generic fraction rule)
+  if (nl) {
+    r = r
+      .replace(/\b1\/2\b/g, 'een half')
+      .replace(/\b1\/3\b/g, 'een derde')
+      .replace(/\b2\/3\b/g, 'twee derde')
+      .replace(/\b1\/4\b/g, 'een kwart')
+      .replace(/\b3\/4\b/g, 'drie kwart')
+      .replace(/\b1\/5\b/g, 'een vijfde')
+      .replace(/\b2\/5\b/g, 'twee vijfde')
+      .replace(/\b3\/5\b/g, 'drie vijfde')
+      .replace(/\b4\/5\b/g, 'vier vijfde');
+  } else if (es) {
+    r = r
+      .replace(/\b1\/2\b/g, 'la mitad')
+      .replace(/\b1\/4\b/g, 'un cuarto')
+      .replace(/\b3\/4\b/g, 'tres cuartos');
+  } else {
+    r = r
+      .replace(/\b1\/2\b/g, 'one half')
+      .replace(/\b1\/4\b/g, 'one quarter')
+      .replace(/\b3\/4\b/g, 'three quarters');
+  }
+
+  // General fractions: 3/8 → "3 gedeeld door 8"
+  r = r.replace(/(\d+)\/(\d+)/g, `$1 ${divided} $2`);
+
+  // Math operators (Unicode symbols)
+  r = r
+    .replace(/[×✕]/g, ` ${times} `)
+    .replace(/[÷]/g, ` ${divided} `)
+    // = not preceded by < > ! and not followed by =
+    .replace(/(?<![<>!=])=(?!=)/g, ` ${equals} `);
+
+  // Operators between numbers (ASCII)
+  r = r
+    .replace(/(\d)\s*\+\s*(\d)/g, `$1 ${plus} $2`)
+    .replace(/(\d)\s*-\s*(\d)/g, `$1 ${minus} $2`)
+    // 'x' as multiply between digits: "2x3" or "2 x 3"
+    .replace(/(\d)\s*[xX]\s*(\d)/g, `$1 ${times} $2`);
+
+  return r.replace(/\s{2,}/g, ' ').trim();
+}
+
+/**
+ * Apply TTS text cleaning: strip markdown, special tags, emojis, math notation.
+ * Extracted from ChatInterface.tsx cleanForAutoTts() for reuse across hooks.
+ *
+ * Pass locale so math operators are spoken in the correct language.
+ */
+export function cleanForTts(text: string, locale: string = 'nl'): string {
   const cleaned = text
     .replace(/\[BORD\][\s\S]*?\[\/BORD\]/g, '')           // strip board content
     .replace(/\[SPREEK\][\s\S]*?\[\/SPREEK\]/g, '')        // strip spreek blocks (dictation)
@@ -128,6 +192,9 @@ export function cleanForTts(text: string): string {
     .replace(/\s{2,}/g, ' ')                               // collapse whitespace
     .trim();
 
-  // Apply Arubaanse name substitutions after markdown cleaning
-  return applyTtsSubstitutions(cleaned);
+  // Apply math preprocessing (locale-aware) before name substitutions
+  const mathProcessed = preprocessMathForTts(cleaned, locale);
+
+  // Apply Arubaanse name substitutions last
+  return applyTtsSubstitutions(mathProcessed);
 }
