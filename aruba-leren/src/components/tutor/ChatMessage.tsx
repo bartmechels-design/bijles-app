@@ -52,8 +52,6 @@ const SPREEK_REGEX = /\[SPREEK\]([\s\S]*?)\[\/SPREEK\]/g;
 /** Regex to find [BORD]...[/BORD] blocks */
 const BORD_REGEX = /\[BORD\]([\s\S]*?)\[\/BORD\]/g;
 
-/** Regex to find [OPDRACHT]...[/OPDRACHT] blocks */
-const OPDRACHT_REGEX = /\[OPDRACHT\]([\s\S]*?)\[\/OPDRACHT\]/g;
 
 /**
  * Parse message content into segments:
@@ -113,54 +111,49 @@ export function extractOpdrachtBlocks(content: string): string[] {
 
 // --- KaTeX math rendering ---
 
-/** Strip LaTeX inline/display math delimiters: \(...\), \[...\], $$...$$  */
-function stripLatexDelimiters(text: string): string {
-  return text
-    .replace(/\\\(([\s\S]*?)\\\)/g, '$1')   // \(...\) → content
-    .replace(/\\\[([\s\S]*?)\\\]/g, '$1')   // \[...\] → content
-    .replace(/\$\$([\s\S]*?)\$\$/g, '$1')   // $$...$$ → content
-    .replace(/\$([^$]+)\$/g, '$1');          // $...$ → content
-}
-
-/** Detecteer of een string LaTeX-tokens bevat */
-function containsMath(text: string): boolean {
-  return /\\frac|\\times|\\div|\\sqrt|\\cdot|\^{|_{/.test(text)
-}
 
 /**
  * Render een tekstregel met inline KaTeX voor \(...\) blokken.
  * Niet-math tekst wordt als plain text getoond.
+ *
+ * Handles both:
+ * - Delimited:  "De breuk is \(\frac{3}{4}\) van het geheel"
+ * - Bare LaTeX: "1. \frac{3}{4} = __"  (AI soms zonder delimiters)
  */
 function renderMathLine(text: string, className?: string): React.ReactElement {
-  const stripped = stripLatexDelimiters(text);
-  // Split on \(...\) delimiters
-  const parts = stripped.split(/(\\\([\s\S]*?\\\))/g);
+  // Normalise: wrap bare \frac{}{} / \sqrt{} that are NOT already inside \(...\)
+  // so the rest of the function only needs to handle the \(...\) case.
+  const normalised = text.includes('\\(')
+    ? text // already delimited — leave as-is
+    : text
+        .replace(/\\frac\{([^{}]*)\}\{([^{}]*)\}/g, '\\(\\frac{$1}{$2}\\)')
+        .replace(/\\sqrt\{([^{}]*)\}/g, '\\(\\sqrt{$1}\\)')
+        .replace(/\\(cdot|times|div|pm)\b/g, '\\($1\\)');
+
+  // Split on \(...\) delimiters — these now always exist for math content
+  const parts = normalised.split(/(\\\([\s\S]*?\\\))/g);
+
   if (parts.length === 1) {
-    // No delimiters — try rendering as pure math if it contains LaTeX tokens
-    if (containsMath(stripped)) {
-      try {
-        const html = katex.renderToString(stripped, { throwOnError: false, displayMode: false, output: 'html', trust: false });
-        return <span className={className} dangerouslySetInnerHTML={{ __html: html }} />;
-      } catch {
-        return <span className={className}>{stripped}</span>;
-      }
-    }
-    return <span className={className}>{stripped}</span>;
+    // No math at all — plain text
+    return <span className={className}>{text}</span>;
   }
+
+  const renderKatex = (src: string, k: number) => {
+    try {
+      const html = katex.renderToString(src.trim(), { throwOnError: false, displayMode: false, output: 'html', trust: false });
+      return <span key={k} dangerouslySetInnerHTML={{ __html: html }} />;
+    } catch {
+      return <span key={k}>{src}</span>;
+    }
+  };
+
   return (
     <span className={className}>
-      {parts.map((p, i) => {
-        if (p.startsWith('\\(') && p.endsWith('\\)')) {
-          const inner = p.slice(2, -2).trim();
-          try {
-            const html = katex.renderToString(inner, { throwOnError: false, displayMode: false, output: 'html', trust: false });
-            return <span key={i} dangerouslySetInnerHTML={{ __html: html }} />;
-          } catch {
-            return <span key={i}>{inner}</span>;
-          }
-        }
-        return <span key={i}>{p}</span>;
-      })}
+      {parts.map((p, i) =>
+        p.startsWith('\\(') && p.endsWith('\\)')
+          ? renderKatex(p.slice(2, -2), i)
+          : <span key={i}>{p}</span>
+      )}
     </span>
   );
 }
