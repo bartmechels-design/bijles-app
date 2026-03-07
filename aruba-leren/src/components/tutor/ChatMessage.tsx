@@ -474,7 +474,7 @@ export default function ChatMessage({ role, content, isStreaming = false, locale
             <div className="text-lg">
               {parseSegments(content).map((segment, i) =>
                 segment.type === 'text' ? (
-                  <span key={i} className="whitespace-pre-wrap">{segment.content}</span>
+                  <span key={i}>{renderMarkdown(segment.content)}</span>
                 ) : segment.type === 'spoken' ? (
                   <SpokenBlock
                     key={`spoken-${segment.index}`}
